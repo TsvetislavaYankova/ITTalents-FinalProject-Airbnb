@@ -1,2 +1,2 @@
 # ITTalents-FinalProject-Airbnb
-Final Project ITTalents Java Season 13
+Final Project of Tsvetislava Yankova and Niya Popova, ITTalents Season 13, Java EE
