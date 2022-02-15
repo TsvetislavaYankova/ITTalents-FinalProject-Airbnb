@@ -1,9 +1,10 @@
 package com.example.ittalentsfinalprojectairbnb.services;
 
+import com.example.ittalentsfinalprojectairbnb.exceptions.BadRequestException;
+import com.example.ittalentsfinalprojectairbnb.exceptions.UnauthorizedException;
 import com.example.ittalentsfinalprojectairbnb.model.entities.User;
 import com.example.ittalentsfinalprojectairbnb.model.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -20,17 +21,14 @@ public class UserService {
 
     public User login(String email, String password) {
         if (email.isBlank() || email == null) {
-            //todo throw exception
+            throw new BadRequestException("Email is a mandatory field!");
         }
-
         if (password.isBlank() || password == null) {
-            //todo throw exception
+            throw new BadRequestException("Password is a mandatory field!");
         }
-
         User user = repository.findByEmailAndPassword(email, password);
-
         if (user == null) {
-            //todo throw exception
+            throw new UnauthorizedException("Wrong credentials! Access denied!");
         }
 
         return user;
@@ -41,7 +39,6 @@ public class UserService {
         if (email.isBlank() || email == null) {
 
         }
-        //todo encode
         User user = new User();
         user.setEmail(email);
         //user.setPassword(password);
