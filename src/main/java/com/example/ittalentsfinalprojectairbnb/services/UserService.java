@@ -45,9 +45,9 @@ public class UserService {
         User user = new User();
         user.setEmail(email);
         //user.setPassword(password);
-        user.set_host(false);
-        user.setFirst_name("nqkoj");
-        user.setLast_name("nikoj");
+        user.setHost(false);
+        user.setFirstName("nqkoj");
+        user.setLastName("nikoj");
         user.setPassword(passwordEncoder.encode(password));//TODO add bcrypt
 
         repository.save(user);
