@@ -3,8 +3,8 @@ POST localhost:9999/login
 Content-Type: application/json
 
 {
-  "email": "john",
-  "password": "345"
+  "email": "mysite@ourearth.com",
+  "password": "MorskoKonche3!"
 }
 
 ### register
