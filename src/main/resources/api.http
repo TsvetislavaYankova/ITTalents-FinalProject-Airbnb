@@ -8,13 +8,13 @@ Content-Type: application/json
 }
 
 ### register
-POST localhost:9999/user/register
+POST localhost:9999/users/register
 Content-Type: application/json
 
 {
   "email" : "john",
   "password" : "345",
-  "verifiedPassword" : "345"
+  "verifyPassword" : "345"
 }
 
 ### get by id
