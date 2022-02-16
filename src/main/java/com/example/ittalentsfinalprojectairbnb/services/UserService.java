@@ -42,8 +42,8 @@ public class UserService {
         if (email.isBlank() || email == null) {
             throw new BadRequestException("Email is a mandatory field!");
         }
-        if (!email.matches("^ [a-zA-Z0-9+_.-]+@ [a-zA-Z0-9.-]+$")) {
-            throw new BadRequestException("You must enter valid email address!");
+        if (email.matches("^ [a-zA-Z0-9+_.-]+@ [a-zA-Z0-9.-]+$")) {
+           throw new BadRequestException("You must enter valid email address!");
         }
         if(password == null || password.isBlank()){
             throw new BadRequestException("Password is a mandatory field!");
