@@ -17,7 +17,7 @@ import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-@RestController("/users")
+@RestController
 public class UserController {
 
     public static final String LOGGED = "logged";
