@@ -42,24 +42,24 @@ public class UserService {
         if (email.isBlank() || email == null) {
             throw new BadRequestException("Email is a mandatory field!");
         }
-        if (!email.matches("^ [a-zA-Z0-9+_.-]+@ [a-zA-Z0-9.-]+$")) {
-            throw new BadRequestException("You must enter valid email address!");
-        }
+//        if (!email.matches("^ [a-zA-Z0-9+_.-]+@ [a-zA-Z0-9.-]+$")) {
+//            throw new BadRequestException("You must enter valid email address!");
+//        }
         if(password == null || password.isBlank()){
             throw new BadRequestException("Password is a mandatory field!");
         }
-       if(!password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&-+=()])(?=\\\\S+$).{8,20}$")){
-            throw new BadRequestException("Password should be: at least 8 symbols long. " +
-                    "Contain at least one digit. " +
-                    "Contain at least one upper case character. " +
-                    "No spaces are allowed");
-       }
+//       if(!password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&-+=()])(?=\\\\S+$).{8,20}$")){
+//            throw new BadRequestException("Password should be: at least 8 symbols long. " +
+//                    "Contain at least one digit. " +
+//                    "Contain at least one upper case character. " +
+//                    "No spaces are allowed");
+//       }
         if(!password.equals(confirmedPassword)){
             throw new BadRequestException("Passwords mismatch!");
         }
-        if(!phoneNumber.matches("^\\\\d{10}$")){
-            throw new BadRequestException("Phone number should be 10 digits long. " );
-        }
+//        if(!phoneNumber.matches("^\\\\d{10}$")){
+//            throw new BadRequestException("Phone number should be 10 digits long. " );
+//        }
         if(repository.findByEmail(email) != null){
             throw new BadRequestException("User already exists!");
         }
