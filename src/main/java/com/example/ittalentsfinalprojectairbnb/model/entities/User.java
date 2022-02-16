@@ -13,22 +13,22 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column
-    private String first_name;
+    private String firstName;
     @Column
-    private String last_name;
+    private String lastName;
     @Column
     private char gender;
     @Column
-    private LocalDateTime date_of_birth;
+    private LocalDateTime dateOfBirth;
     @Column
     private String email;
     @Column
     private String password;
     @Column
-    private String phone_number;
+    private String phoneNumber;
     @Column
-    private String photo_url;
+    private String photoUrl;
     @Column
-    private boolean is_host;
+    private boolean isHost;
 
 }
