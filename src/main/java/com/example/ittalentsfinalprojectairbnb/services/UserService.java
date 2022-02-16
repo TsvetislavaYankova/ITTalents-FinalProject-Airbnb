@@ -35,7 +35,7 @@ public class UserService {
 
         return user;
     }
-    
+
     public User register(String email, String password, String confirmedPassword,
                          String firstName, String lastName, char gender,
                          LocalDateTime dateOfBirth, String phoneNumber, boolean isHost) {
