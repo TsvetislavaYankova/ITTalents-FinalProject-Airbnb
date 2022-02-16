@@ -12,13 +12,13 @@ POST localhost:9999/register
 Content-Type: application/json
 
 {
-  "email": "na@ourearth.com",
+  "email": "niya@ourbarth4.com",
   "password": "MorskoKonche3!",
   "confirmedPassword": "MorskoKonche3!",
   "firstName": "John",
   "lastName": "Ivanov",
   "gender": "m",
-  "phoneNumber": "0987589195",
+ "phoneNumber": "0999889095",
   "isHost": "false"
 }
 
