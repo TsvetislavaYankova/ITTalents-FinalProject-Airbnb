@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 @RestController("/users")
@@ -27,7 +28,6 @@ public class UserController {
     @Autowired
     private ModelMapper mapper;
 
-    private ArrayList<User> users = new ArrayList<>();
 
     @PostMapping("/login")
     public UserResponseDTO login(@RequestBody User user, HttpSession session, HttpServletRequest request) {
@@ -44,14 +44,20 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserRegisterDTO> register(@RequestBody UserRegisterDTO user) {
+    public ResponseEntity<UserResponseDTO> register(@RequestBody UserRegisterDTO user) {
         String email = user.getEmail();
         String password = user.getPassword();
-        String verifiedPassword = user.getVerifyPassword();
+        String confirmedPassword = user.getConfirmedPassword();
+        String firstName = user.getFirstName();
+        String lastName = user.getLastName();
+        char gender = user.getGender();
+        LocalDateTime dateOfBirth = user.getDateOfBirth();
+        String phoneNumber = user.getPhoneNumber();
+        boolean isHost = user.isHost();
 
-        User u = service.register(email, password, verifiedPassword);
-        users.add(u);
-        UserRegisterDTO dto = mapper.map(u, UserRegisterDTO.class);
+        User u = service.register(email, password, confirmedPassword, firstName, lastName, gender, dateOfBirth, phoneNumber, isHost);
+
+        UserResponseDTO dto = mapper.map(u, UserResponseDTO.class);
 
         return ResponseEntity.ok(dto);
     }
