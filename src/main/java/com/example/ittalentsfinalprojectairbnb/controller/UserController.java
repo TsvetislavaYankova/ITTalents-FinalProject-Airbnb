@@ -22,6 +22,7 @@ public class UserController {
 
     public static final String LOGGED = "logged";
     public static final String LOGGED_FROM = "logged_from";
+    public static final String USER_ID = "user_id";
 
     @Autowired
     private UserService service;
@@ -96,7 +97,7 @@ public class UserController {
         return ResponseEntity.ok(dto);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/get_user/{id}")
     public ResponseEntity<UserGetByIdDTO> getById(@PathVariable("id") int id, HttpSession session, HttpServletRequest request) {
         validateLogin(session, request);
         User user = service.getUserById(id);

@@ -7,4 +7,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Integer> {
 
+    Reservation findReservationById(Integer id);
+    @Override
+    void deleteById(Integer integer);
 }
