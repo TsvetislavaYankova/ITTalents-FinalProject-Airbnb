@@ -14,7 +14,7 @@ Content-Type: application/json
 {
   "email" : "john",
   "password" : "345",
-  "verifiedPassword" : "345"
+  "verifyPassword" : "345"
 }
 
 ### get by id

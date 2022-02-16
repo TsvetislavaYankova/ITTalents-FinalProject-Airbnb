@@ -1,5 +1,6 @@
 package com.example.ittalentsfinalprojectairbnb.controller;
 
+import com.example.ittalentsfinalprojectairbnb.exceptions.UnauthorizedException;
 import com.example.ittalentsfinalprojectairbnb.model.dto.UserGetByIdDTO;
 import com.example.ittalentsfinalprojectairbnb.model.dto.UserResponseDTO;
 import com.example.ittalentsfinalprojectairbnb.model.dto.UserRegisterDTO;
@@ -98,12 +99,11 @@ public class UserController {
         return ResponseEntity.ok(dto);
     }
 
-    //todo
     private void validateLogin(HttpSession session, HttpServletRequest request) {
         if (session.isNew() ||
                 (!(Boolean) session.getAttribute(LOGGED)) ||
                 (!request.getRemoteAddr().equals(session.getAttribute(LOGGED_FROM)))) {
-            //throw new UnauthorizedException("You have to login!");
+            throw new UnauthorizedException("You have to login!");
         }
     }
 }
