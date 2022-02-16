@@ -1,12 +1,18 @@
 package com.example.ittalentsfinalprojectairbnb.model.entities;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 public class User {
 
     @Id

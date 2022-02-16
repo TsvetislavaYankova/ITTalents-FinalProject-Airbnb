@@ -8,7 +8,7 @@ Content-Type: application/json
 }
 
 ### register
-POST localhost:9999/user/register
+POST localhost:9999/users/register
 Content-Type: application/json
 
 {

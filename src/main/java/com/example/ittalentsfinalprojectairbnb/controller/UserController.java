@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 
-@RestController("/user")
+@RestController("/users")
 public class UserController {
 
     public static final String LOGGED = "logged";
