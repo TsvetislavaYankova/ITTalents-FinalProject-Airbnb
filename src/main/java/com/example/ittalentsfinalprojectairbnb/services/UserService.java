@@ -6,6 +6,7 @@ import com.example.ittalentsfinalprojectairbnb.exceptions.UnauthorizedException;
 import com.example.ittalentsfinalprojectairbnb.model.entities.User;
 import com.example.ittalentsfinalprojectairbnb.model.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -22,17 +23,21 @@ public class UserService {
 
 
     public User login(String email, String password) {
+
         if (email.isBlank() || email == null) {
             throw new BadRequestException("Email is a mandatory field!");
         }
         if (password.isBlank() || password == null) {
             throw new BadRequestException("Password is a mandatory field!");
         }
-        User user = repository.findByEmailAndPassword(email, password);
+        User user = repository.findByEmail(email);
+
+        if (!BCrypt.checkpw(password, user.getPassword())) {
+            throw new UnauthorizedException("Please enter a valid password!");
+        }
         if (user == null) {
             throw new UnauthorizedException("Wrong credentials! Access denied!");
         }
-
         return user;
     }
 
@@ -69,7 +74,7 @@ public class UserService {
         }
         User user = new User();
         user.setEmail(email);
-        user.setPassword(passwordEncoder.encode(password));
+        user.setPassword(BCrypt.hashpw(password, BCrypt.gensalt()));
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setDateOfBirth(dateOfBirth);

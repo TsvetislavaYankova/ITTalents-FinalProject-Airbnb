@@ -22,6 +22,7 @@ public class UserController {
 
     public static final String LOGGED = "logged";
     public static final String LOGGED_FROM = "logged_from";
+    public static final String USER_ID = "user_id";
 
     @Autowired
     private UserService service;
@@ -37,7 +38,7 @@ public class UserController {
         User u = service.login(email, password);
         session.setAttribute(LOGGED, true);
         session.setAttribute(LOGGED_FROM, request.getRemoteAddr());
-
+        session.setAttribute(USER_ID, u.getId());
         UserResponseDTO dto = mapper.map(u, UserResponseDTO.class);
 
         return dto;

@@ -22,6 +22,7 @@ public class ProjectDefinedExceptionHandler extends ResponseEntityExceptionHandl
         ErrorDTO dto = new ErrorDTO();
         dto.setMsg(e.getMessage());
         dto.setStatus(HttpStatus.UNAUTHORIZED.value());
+        e.printStackTrace();
         return dto;
     }
 
@@ -52,6 +53,7 @@ public class ProjectDefinedExceptionHandler extends ResponseEntityExceptionHandl
         ErrorDTO dto = new ErrorDTO();
         dto.setMsg(e.getMessage());
         dto.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        e.printStackTrace();
         return dto;
     }
 }
