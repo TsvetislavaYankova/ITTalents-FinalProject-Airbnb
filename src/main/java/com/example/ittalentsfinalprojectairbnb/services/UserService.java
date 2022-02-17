@@ -3,8 +3,12 @@ package com.example.ittalentsfinalprojectairbnb.services;
 import com.example.ittalentsfinalprojectairbnb.exceptions.BadRequestException;
 import com.example.ittalentsfinalprojectairbnb.exceptions.NotFoundException;
 import com.example.ittalentsfinalprojectairbnb.exceptions.UnauthorizedException;
+import com.example.ittalentsfinalprojectairbnb.model.dto.UserLogInDTO;
+import com.example.ittalentsfinalprojectairbnb.model.dto.UserRegisterDTO;
+import com.example.ittalentsfinalprojectairbnb.model.dto.UserResponseDTO;
 import com.example.ittalentsfinalprojectairbnb.model.entities.User;
 import com.example.ittalentsfinalprojectairbnb.model.repositories.UserRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,10 +23,10 @@ public class UserService {
     @Autowired
     private UserRepository repository;
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private ModelMapper mapper;
 
 
-    public User login(String email, String password) {
+    public UserResponseDTO login(String email, String password) {
 
         if (email.isBlank() || email == null) {
             throw new BadRequestException("Email is a mandatory field!");
@@ -33,17 +37,18 @@ public class UserService {
         User user = repository.findByEmail(email);
 
         if (!BCrypt.checkpw(password, user.getPassword())) {
-            throw new UnauthorizedException("Please enter a valid password!");
+            throw new UnauthorizedException("Wrong credentials! Access denied!");
         }
         if (user == null) {
             throw new UnauthorizedException("Wrong credentials! Access denied!");
         }
-        return user;
+        UserResponseDTO dto = mapper.map(user, UserResponseDTO.class);
+        return dto;
     }
 
-    public User register(String email, String password, String confirmedPassword,
-                         String firstName, String lastName, char gender,
-                         LocalDateTime dateOfBirth, String phoneNumber, boolean isHost) {
+    public UserResponseDTO register(String email, String password, String confirmedPassword,
+                                    String firstName, String lastName, char gender,
+                                    LocalDateTime dateOfBirth, String phoneNumber, boolean isHost) {
         if (email.isBlank() || email == null) {
             throw new BadRequestException("Email is a mandatory field!");
         }
@@ -83,8 +88,8 @@ public class UserService {
         user.setPhoneNumber(phoneNumber);
 
         repository.save(user);
-
-        return user;
+        UserResponseDTO dto = mapper.map(user, UserResponseDTO.class);
+        return dto;
     }
 
     //todo

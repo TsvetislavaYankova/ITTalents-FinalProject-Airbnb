@@ -2,6 +2,7 @@ package com.example.ittalentsfinalprojectairbnb.controller;
 
 import com.example.ittalentsfinalprojectairbnb.exceptions.UnauthorizedException;
 import com.example.ittalentsfinalprojectairbnb.model.dto.UserGetByIdDTO;
+import com.example.ittalentsfinalprojectairbnb.model.dto.UserLogInDTO;
 import com.example.ittalentsfinalprojectairbnb.model.dto.UserResponseDTO;
 import com.example.ittalentsfinalprojectairbnb.model.dto.UserRegisterDTO;
 import com.example.ittalentsfinalprojectairbnb.model.entities.User;
@@ -31,36 +32,24 @@ public class UserController {
 
 
     @PostMapping("/login")
-    public UserResponseDTO login(@RequestBody User user, HttpSession session, HttpServletRequest request) {
-        String email = user.getEmail();
-        String password = user.getPassword();
+    public UserResponseDTO login(@RequestBody UserLogInDTO user, HttpSession session, HttpServletRequest request) {
 
-        User u = service.login(email, password);
+        UserResponseDTO u = service.login(user.getEmail(), user.getPassword());
         session.setAttribute(LOGGED, true);
         session.setAttribute(LOGGED_FROM, request.getRemoteAddr());
         session.setAttribute(USER_ID, u.getId());
-        UserResponseDTO dto = mapper.map(u, UserResponseDTO.class);
 
-        return dto;
+        return u;
     }
 
     @PostMapping("/register")
     public ResponseEntity<UserResponseDTO> register(@RequestBody UserRegisterDTO user) {
-        String email = user.getEmail();
-        String password = user.getPassword();
-        String confirmedPassword = user.getConfirmedPassword();
-        String firstName = user.getFirstName();
-        String lastName = user.getLastName();
-        char gender = user.getGender();
-        LocalDateTime dateOfBirth = user.getDateOfBirth();
-        String phoneNumber = user.getPhoneNumber();
-        boolean isHost = user.isHost();
+//
+        UserResponseDTO u = service.register(user.getEmail(), user.getPassword(), user.getConfirmedPassword(),
+                user.getFirstName(), user.getLastName(), user.getGender(), user.getDateOfBirth(), user.getPhoneNumber(), user.isHost());
 
-        User u = service.register(email, password, confirmedPassword, firstName, lastName, gender, dateOfBirth, phoneNumber, isHost);
 
-        UserResponseDTO dto = mapper.map(u, UserResponseDTO.class);
-
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.ok(u);
     }
 
     @PostMapping("/logout")
