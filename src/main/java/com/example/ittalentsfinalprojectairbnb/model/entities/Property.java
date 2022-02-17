@@ -17,4 +17,31 @@ public class Property {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @ManyToOne
+    @JoinColumn(name = "host_id")
+    private User host;
+
+    @ManyToOne
+    @JoinColumn(name = "address_id")
+    private Address address;
+
+    @Column
+    private String propertyType;
+
+    @Column
+    private int nOfBedrooms;
+
+    @Column
+    private  int nOfBathrooms;
+
+    @Column
+    private int nOfGuests;
+
+    @Column
+    private double pricePerNight;
+
+    @Column
+    private String description;
+
+
 }

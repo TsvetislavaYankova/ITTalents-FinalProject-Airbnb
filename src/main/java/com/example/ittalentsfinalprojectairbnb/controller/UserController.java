@@ -15,8 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+
 
 @RestController
 public class UserController {
@@ -32,12 +31,12 @@ public class UserController {
 
 
     @PostMapping("/login")
-    public UserResponseDTO login(@RequestBody UserLogInDTO user, HttpSession session, HttpServletRequest request) {
+    public UserResponseDTO login(@RequestBody UserLogInDTO user, HttpServletRequest request) {
 
         UserResponseDTO u = service.login(user.getEmail(), user.getPassword());
-        session.setAttribute(LOGGED, true);
-        session.setAttribute(LOGGED_FROM, request.getRemoteAddr());
-        session.setAttribute(USER_ID, u.getId());
+        request.getSession().setAttribute(LOGGED, true);
+        request.getSession().setAttribute(LOGGED_FROM, request.getRemoteAddr());
+        request.getSession().setAttribute(USER_ID, u.getId());
 
         return u;
     }
@@ -59,8 +58,8 @@ public class UserController {
     }
 
     @PostMapping("/add_photo")
-    public ResponseEntity<UserResponseDTO> addPhoto(@RequestBody User user, HttpSession session, HttpServletRequest request) {
-        validateLogin(session, request);
+    public ResponseEntity<UserResponseDTO> addPhoto(@RequestBody User user, HttpServletRequest request) {
+        validateLogin(request);
         user = service.addPhoto(user);
 
         UserResponseDTO dto = mapper.map(user, UserResponseDTO.class);
@@ -68,18 +67,18 @@ public class UserController {
     }
 
     @DeleteMapping("/delete_user/{id}")
-    public ResponseEntity<UserResponseDTO> deleteUser(@PathVariable("id") int id, HttpSession session, HttpServletRequest request) {
-        validateLogin(session, request);
+    public ResponseEntity<UserResponseDTO> deleteUser(@PathVariable("id") int id, HttpServletRequest request) {
+        validateLogin(request);
         User user = service.deleteById(id);
-        session.invalidate();
+        request.getSession().invalidate();
         UserResponseDTO dto = mapper.map(user, UserResponseDTO.class);
 
         return ResponseEntity.ok(dto);
     }
 
     @DeleteMapping("/delete_photo/{id}")
-    public ResponseEntity<UserResponseDTO> deletePhoto(@PathVariable("id") int id, HttpSession session, HttpServletRequest request) {
-        validateLogin(session, request);
+    public ResponseEntity<UserResponseDTO> deletePhoto(@PathVariable("id") int id, HttpServletRequest request) {
+        validateLogin(request);
         User user = service.deletePhotoById(id);
         UserResponseDTO dto = mapper.map(user, UserResponseDTO.class);
 
@@ -87,18 +86,20 @@ public class UserController {
     }
 
     @GetMapping("/get_user/{id}")
-    public ResponseEntity<UserGetByIdDTO> getById(@PathVariable("id") int id, HttpSession session, HttpServletRequest request) {
-        validateLogin(session, request);
+    public ResponseEntity<UserGetByIdDTO> getById(@PathVariable("id") int id, HttpServletRequest request) {
+        validateLogin(request);
         User user = service.getUserById(id);
         UserGetByIdDTO dto = mapper.map(user, UserGetByIdDTO.class);
 
         return ResponseEntity.ok(dto);
     }
 
-    private void validateLogin(HttpSession session, HttpServletRequest request) {
-        if (session.isNew() ||
-                (!(Boolean) session.getAttribute(LOGGED)) ||
-                (!request.getRemoteAddr().equals(session.getAttribute(LOGGED_FROM)))) {
+    //TODO refactor -> remove session from parameters
+    public static void validateLogin(HttpServletRequest request) {
+        boolean newSession = request.getSession().isNew();
+        boolean logged = request.getSession().getAttribute(LOGGED) != null && ((Boolean) request.getSession().getAttribute(LOGGED));
+        boolean sameIP = request.getRemoteAddr().equals(request.getSession().getAttribute(LOGGED_FROM));
+        if (newSession || !logged || !sameIP) {
             throw new UnauthorizedException("You have to login!");
         }
     }
