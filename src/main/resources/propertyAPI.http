@@ -1,0 +1,18 @@
+### addProperty
+POST localhost:9999/add
+Content-Type: application/json
+
+{
+  "propertyType": "vila",
+  "nOfBedrooms" : "2",
+  "nOfBathrooms" : "3",
+  "nOfGuests" : "2",
+  "pricePerNight": "120",
+  "description": "cozy",
+  "country": "Poland",
+  "city": "Krakow",
+  "street": "Svoboda",
+  "zipCode": "2345",
+  "apartmentNumber": "4",
+  "id": "2"
+}

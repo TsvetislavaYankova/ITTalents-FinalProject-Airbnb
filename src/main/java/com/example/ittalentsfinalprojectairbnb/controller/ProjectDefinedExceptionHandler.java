@@ -33,6 +33,7 @@ public class ProjectDefinedExceptionHandler extends ResponseEntityExceptionHandl
         ErrorDTO dto = new ErrorDTO();
         dto.setMsg(e.getMessage());
         dto.setStatus(HttpStatus.BAD_REQUEST.value());
+        e.printStackTrace();
         return dto;
     }
 
@@ -43,6 +44,7 @@ public class ProjectDefinedExceptionHandler extends ResponseEntityExceptionHandl
         ErrorDTO dto = new ErrorDTO();
         dto.setMsg(e.getMessage());
         dto.setStatus(HttpStatus.NOT_FOUND.value());
+        e.printStackTrace();
         return dto;
     }
 

@@ -26,8 +26,4 @@ public class Address {
     private String zipCode;
     @Column
     private String apartmentNumber;
-
-
-
-
 }
