@@ -23,7 +23,7 @@ Content-Type: application/json
 }
 
 ### get by id
-GET localhost:9999/1
+GET localhost:9999//get_user/14
 Content-Type: application/json
 
 ### edit

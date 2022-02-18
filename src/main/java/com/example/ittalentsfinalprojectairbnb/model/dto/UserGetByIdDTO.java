@@ -8,12 +8,12 @@ import java.time.LocalDateTime;
 public class UserGetByIdDTO {
 
     private int id;
-    private String first_name;
-    private String last_name;
+    private String firstName;
+    private String lastName;
     private String email;
-    private LocalDateTime date_of_birth;
+    private LocalDateTime dateOfBirth;
     private char gender;
-    private boolean is_host;
-    private String photo_url;
+    private short isHost;
+    private String photoUrl;
 
 }
