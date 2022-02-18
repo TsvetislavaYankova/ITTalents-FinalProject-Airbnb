@@ -1,8 +1,10 @@
 package com.example.ittalentsfinalprojectairbnb.controller;
 
+import com.example.ittalentsfinalprojectairbnb.model.dto.CancellationResponseDTO;
 import com.example.ittalentsfinalprojectairbnb.model.dto.MakeReservationDTO;
-import com.example.ittalentsfinalprojectairbnb.model.dto.ReservationCancellationDTO;
-import com.example.ittalentsfinalprojectairbnb.model.entities.Property;
+import com.example.ittalentsfinalprojectairbnb.model.dto.PaymentResponseDTO;
+import com.example.ittalentsfinalprojectairbnb.model.dto.ReservationResponseDTO;
+import com.example.ittalentsfinalprojectairbnb.model.entities.Cancellation;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Reservation;
 import com.example.ittalentsfinalprojectairbnb.services.ReservationService;
 import org.modelmapper.ModelMapper;
@@ -21,30 +23,27 @@ public class ReservationController {
     private ModelMapper mapper;
 
     @PostMapping("/make_reservation")
-    public ResponseEntity<MakeReservationDTO> makeReservation(@RequestBody Property property, HttpSession session) {
-        int id = property.getId();
-
-        Reservation reservation = service.makeReservation(id, (Integer) session.getAttribute(UserController.USER_ID));
+    public ResponseEntity<MakeReservationDTO> makeReservation(@RequestBody ReservationResponseDTO reservationDTO,
+                                                              @RequestBody PaymentResponseDTO paymentDTO,
+                                                              HttpSession session) {
+        Reservation reservation = service.makeReservation(reservationDTO,paymentDTO, (Integer) session.getAttribute(UserController.USER_ID));
         MakeReservationDTO dto = mapper.map(reservation, MakeReservationDTO.class);
 
         return ResponseEntity.ok(dto);
     }
 
     @DeleteMapping("/cancel_reservation")
-    public ResponseEntity<ReservationCancellationDTO> cancelReservation(@RequestBody Reservation reservation, HttpSession session) {
-        int id = reservation.getId();
-
-        Reservation cancelReservation = service.cancelReservation(id, (Integer) session.getAttribute(UserController.USER_ID));
-        ReservationCancellationDTO dto = mapper.map(cancelReservation, ReservationCancellationDTO.class);
+    public ResponseEntity<CancellationResponseDTO> cancelReservation(@RequestBody ReservationResponseDTO reservationDTO, HttpSession session) {
+        Cancellation cancellation = service.cancelReservation(reservationDTO, (Integer) session.getAttribute(UserController.USER_ID));
+        CancellationResponseDTO dto = mapper.map(cancellation, CancellationResponseDTO.class);
 
         return ResponseEntity.ok(dto);
     }
 
     @GetMapping("/reservation/{id}")
-    public ResponseEntity<ReservationCancellationDTO> getById(@PathVariable("id") int id, HttpSession session) {
-
+    public ResponseEntity<ReservationResponseDTO> getById(@PathVariable("id") int id, HttpSession session) {
         Reservation reservation = service.getReservationById(id, (Integer) session.getAttribute(UserController.USER_ID));
-        ReservationCancellationDTO dto = mapper.map(reservation, ReservationCancellationDTO.class);
+        ReservationResponseDTO dto = mapper.map(reservation, ReservationResponseDTO.class);
 
         return ResponseEntity.ok(dto);
     }

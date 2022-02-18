@@ -9,7 +9,7 @@ public class MakeReservationDTO {
 
     private int id;
     private int guestId;
+    private int propertyId;
     private LocalDateTime checkInDate;
     private LocalDateTime checkOutDate;
-    private int propertyId;
 }

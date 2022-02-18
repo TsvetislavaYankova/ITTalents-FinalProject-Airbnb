@@ -1,7 +1,6 @@
 package com.example.ittalentsfinalprojectairbnb.controller;
 
 import com.example.ittalentsfinalprojectairbnb.model.dto.AddReviewDTO;
-import com.example.ittalentsfinalprojectairbnb.model.dto.DeleteReviewDTO;
 import com.example.ittalentsfinalprojectairbnb.model.dto.ReviewResponseDTO;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Property;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Review;
@@ -32,10 +31,10 @@ public class ReviewController {
     }
 
     @DeleteMapping("/delete_review/{id}")
-    public ResponseEntity<DeleteReviewDTO> deleteReview(@PathVariable("id") int reviewId, HttpSession session) {
+    public ResponseEntity<ReviewResponseDTO> deleteReview(@PathVariable("id") int reviewId, HttpSession session) {
         service.deleteReview(reviewId, (Integer) session.getAttribute(UserController.USER_ID));
 
-        DeleteReviewDTO dto = new DeleteReviewDTO();
+        ReviewResponseDTO dto = new ReviewResponseDTO();
 
         return ResponseEntity.ok(dto);
     }
