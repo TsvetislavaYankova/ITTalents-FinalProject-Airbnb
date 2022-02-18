@@ -17,12 +17,18 @@ public class Characteristic {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column
-    private int propertyId;
+
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "id")
+    private Property property;
+
     @Column(name = "wifi")
     private short hasWifi;
-    @Column
+
+    @Column(name = "tv")
     private short hasTv;
+
     @Column(name = "ac")
     private short hasAirConditioner;
     @Column

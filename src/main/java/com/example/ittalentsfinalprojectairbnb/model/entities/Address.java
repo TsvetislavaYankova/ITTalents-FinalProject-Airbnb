@@ -16,6 +16,10 @@ public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "id")
+    private Property property;
     @Column
     private String country;
     @Column
