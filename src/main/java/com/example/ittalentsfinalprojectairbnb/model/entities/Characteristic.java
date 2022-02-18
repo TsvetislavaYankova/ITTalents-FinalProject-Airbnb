@@ -19,12 +19,12 @@ public class Characteristic {
     private int id;
     @Column
     private int propertyId;
+    @Column(name = "wifi")
+    private short hasWifi;
     @Column
-    private boolean hasWifi;
-    @Column
-    private boolean hasTv;
-    @Column
-    private boolean hasAc;
+    private short hasTv;
+    @Column(name = "ac")
+    private short hasAirConditioner;
     @Column
     private boolean hasFridge;
     @Column

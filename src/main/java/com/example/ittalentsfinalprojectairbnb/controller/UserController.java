@@ -6,7 +6,6 @@ import com.example.ittalentsfinalprojectairbnb.model.dto.UserLogInDTO;
 import com.example.ittalentsfinalprojectairbnb.model.dto.UserResponseDTO;
 import com.example.ittalentsfinalprojectairbnb.model.dto.UserRegisterDTO;
 import com.example.ittalentsfinalprojectairbnb.model.entities.User;
-import com.example.ittalentsfinalprojectairbnb.model.repositories.UserRepository;
 import com.example.ittalentsfinalprojectairbnb.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
