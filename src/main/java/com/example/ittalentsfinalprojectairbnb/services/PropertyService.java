@@ -6,12 +6,10 @@ import com.example.ittalentsfinalprojectairbnb.exceptions.NotFoundException;
 import com.example.ittalentsfinalprojectairbnb.model.dto.PropertyCreationDTO;
 import com.example.ittalentsfinalprojectairbnb.model.dto.PropertyIdDTO;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Address;
+import com.example.ittalentsfinalprojectairbnb.model.entities.Characteristic;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Property;
 import com.example.ittalentsfinalprojectairbnb.model.entities.PropertyPhoto;
-import com.example.ittalentsfinalprojectairbnb.model.repositories.AddressRepository;
-import com.example.ittalentsfinalprojectairbnb.model.repositories.PropertyPhotoRepository;
-import com.example.ittalentsfinalprojectairbnb.model.repositories.PropertyRepository;
-import com.example.ittalentsfinalprojectairbnb.model.repositories.UserRepository;
+import com.example.ittalentsfinalprojectairbnb.model.repositories.*;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FilenameUtils;
 import org.modelmapper.ModelMapper;
@@ -32,8 +30,6 @@ public class PropertyService {
     @Autowired
     PropertyRepository propertyRepository;
     @Autowired
-    AddressRepository addressRepository;
-    @Autowired
     private UserRepository userRepository;
     @Autowired
     private PropertyPhotoRepository propertyPhotoRepository;
@@ -41,24 +37,19 @@ public class PropertyService {
 
     public PropertyIdDTO addProperty(PropertyCreationDTO propertyDTO, Integer id) {
 
-        propertyDTO.addressValidation(propertyDTO);
-        propertyDTO.propertyValidation(propertyDTO);
+        propertyDTO.addressValidation();
+        propertyDTO.propertyValidation();
+        propertyDTO.characteristicValidation();
 
         Property property = new Property();
         Address address = new Address();
-
-        address.setCountry(propertyDTO.getCountry());
-        address.setCity(propertyDTO.getCity());
-        address.setStreet(propertyDTO.getStreet());
-        address.setZipCode(propertyDTO.getZipCode());
-        address.setApartmentNumber(propertyDTO.getApartmentNumber());
-        addressRepository.save(address);
+        Characteristic characteristic = new Characteristic();
 
         property.setHost(userRepository.findById(id).orElseThrow(() -> new NotFoundException("Host not found")));
         if (property.getHost().getIsHost() != 1) {
             new BadRequestException("The provided user is NOT registered as host!");
         }
-        property.setAddress(address);
+
         property.setPropertyType(propertyDTO.getPropertyType());
         property.setDescription(propertyDTO.getDescription());
         property.setBathrooms(propertyDTO.getBathrooms());
@@ -75,7 +66,27 @@ public class PropertyService {
             }
         }
 
+        characteristic.setHasBreakfast(propertyDTO.getHasBreakfast());
+        characteristic.setHasFitness(propertyDTO.getHasFitness());
+        characteristic.setHasAirConditioner(propertyDTO.getHasAirConditioner());
+        characteristic.setHasFridge(propertyDTO.getHasFridge());
+        characteristic.setHasTv(propertyDTO.getHasTv());
+        characteristic.setHasWifi(propertyDTO.getHasWifi());
+        characteristic.setHasBreakfast(propertyDTO.getHasBreakfast());
+        characteristic.setHasWashingMachine(propertyDTO.getHasWashingMachine());
+        characteristic.setHasParkingSpot(propertyDTO.getHasParkingSpot());
+        characteristic.setTypeOfBed(propertyDTO.getTypeOfBed());
+
+        address.setCountry(propertyDTO.getCountry());
+        address.setCity(propertyDTO.getCity());
+        address.setStreet(propertyDTO.getStreet());
+        address.setZipCode(propertyDTO.getZipCode());
+        address.setApartmentNumber(propertyDTO.getApartmentNumber());
+
+        property.setCharacteristic(characteristic);
+        property.setAddress(address);
         propertyRepository.save(property);
+
         PropertyIdDTO dto = mapper.map(property, PropertyIdDTO.class);
         return dto;
     }
@@ -113,9 +124,10 @@ public class PropertyService {
         Optional<Property> opt = propertyRepository.findById(id);
         if (opt.isPresent()) {
             propertyRepository.delete(opt.get());
-            addressRepository.delete(opt.get().getAddress());
         } else {
             throw new NotFoundException("Property not found!");
         }
     }
+
+
 }

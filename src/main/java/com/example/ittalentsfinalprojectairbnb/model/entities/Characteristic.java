@@ -15,13 +15,13 @@ import javax.persistence.*;
 public class Characteristic {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
 
     @OneToOne
     @MapsId
     @JoinColumn(name = "id")
-    private Property property;
+    private Property propertyCh;
 
     @Column(name = "wifi")
     private short hasWifi;
@@ -31,19 +31,26 @@ public class Characteristic {
 
     @Column(name = "ac")
     private short hasAirConditioner;
-    @Column
-    private boolean hasFridge;
-    @Column
-    private boolean hasKitchenFacilities;
-    @Column
-    private boolean hasBreakfast;
-    @Column
-    private boolean hasParkingSpot;
-    @Column
-    private boolean hasFitness;
-    @Column
-    private boolean hasWashingMachine;
-    @Column
+
+    @Column(name = "fridge")
+    private short hasFridge;
+
+    @Column(name = "kithcen_facilities")
+    private short hasKitchenFacilities;
+
+    @Column(name = "breakfast")
+    private short hasBreakfast;
+
+    @Column(name = "parking_spot")
+    private short hasParkingSpot;
+
+    @Column(name = "fitness")
+    private short hasFitness;
+
+    @Column(name = "washingmachine")
+    private short hasWashingMachine;
+
+    @Column(name = "type_of_bed")
     private String typeOfBed;
 }
 

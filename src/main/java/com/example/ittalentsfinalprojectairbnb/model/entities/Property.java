@@ -16,7 +16,16 @@ public class Property {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
+
+    @OneToOne(mappedBy = "propertyAd",cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private Address address;
+
+    @OneToOne(mappedBy = "propertyCh",cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private Characteristic characteristic;
 
     @ManyToOne
     @JoinColumn(name = "host_id")
@@ -25,7 +34,7 @@ public class Property {
     @Column
     private String propertyType;
 
-    @Column(name="n_of_bedrooms")
+    @Column(name = "n_of_bedrooms")
     private int bedrooms;
 
     @Column(name = "n_of_bathrooms")
@@ -40,15 +49,24 @@ public class Property {
     @Column
     private String description;
 
-    @OneToOne(mappedBy = "property", cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
-    private Address address;
-
-    @OneToOne(mappedBy = "property", cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
-    private Characteristic characteristic;
-
     @OneToMany(mappedBy = "property")
     private Set<PropertyPhoto> images;
+
+
+    public void setAddress(Address address) {
+        if (address != null) {
+
+            address.setPropertyAd(this);
+        }
+        this.address = address;
+    }
+
+    public void setCharacteristic(Characteristic characteristic) {
+        if (characteristic != null) {
+
+            characteristic.setPropertyCh(this);
+        }
+        this.characteristic = characteristic;
+    }
 
 }

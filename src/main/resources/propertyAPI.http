@@ -4,21 +4,31 @@ Content-Type: application/json
 
 {
   "propertyType": "vila",
-  "bedrooms" : 2,
-  "bathrooms" : 3,
-  "guests" : 2,
+  "bedrooms": 2,
+  "bathrooms": 3,
+  "guests": 2,
   "pricePerNight": 120,
   "description": "cozy",
   "country": "Poland",
   "city": "Krakow",
   "street": "Svoboda",
   "zipCode": "2345",
-  "apartmentNumber": 4
+  "apartmentNumber": 4,
+  "hasWifi": 1,
+  "hasTv": 1,
+  "hasAirConditioner": 0,
+  "hasFridge": 0,
+  "hasKitchenFacilities": 1,
+  "hasBreakfast": 1,
+  "hasParkingSpot": 1,
+  "hasFitness": 0,
+  "hasWashingMachine": 1,
+  "typeOfBed": "doubleBed"
 }
 
 ### getPropertyById
-GET localhost:9999/properties/14
+GET localhost:9999/properties/5
 Content-Type: application/json
 
 ### deletePropertyById
-DELETE localhost:9999/delete/15
+DELETE localhost:9999/delete/5

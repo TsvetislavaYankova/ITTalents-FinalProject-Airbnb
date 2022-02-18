@@ -14,20 +14,26 @@ import javax.persistence.*;
 public class Address {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
+
     @OneToOne
     @MapsId
     @JoinColumn(name = "id")
-    private Property property;
+    private Property propertyAd;
+
     @Column
     private String country;
+
     @Column
     private String city;
+
     @Column
     private String street;
+
     @Column
     private String zipCode;
+
     @Column
     private int apartmentNumber;
 }
