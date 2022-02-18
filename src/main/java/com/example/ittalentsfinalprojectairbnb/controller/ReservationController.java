@@ -23,9 +23,9 @@ public class ReservationController {
     public ResponseEntity<MakeReservationDTO> makeReservation(@RequestBody ReservationPaymentResponseDTO dto,
                                                               HttpSession session) {
         Reservation reservation = service.makeReservation(dto, (Integer) session.getAttribute(UserController.USER_ID));
-        MakeReservationDTO dto = mapper.map(reservation, MakeReservationDTO.class);
+        MakeReservationDTO dto2 = mapper.map(reservation, MakeReservationDTO.class);
 
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.ok(dto2);
     }
 
     @DeleteMapping("/cancel_reservation")
