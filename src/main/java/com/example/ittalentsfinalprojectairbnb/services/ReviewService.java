@@ -2,6 +2,7 @@ package com.example.ittalentsfinalprojectairbnb.services;
 
 import com.example.ittalentsfinalprojectairbnb.exceptions.NotFoundException;
 import com.example.ittalentsfinalprojectairbnb.exceptions.UnauthorizedException;
+import com.example.ittalentsfinalprojectairbnb.model.dto.ReviewResponseDTO;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Review;
 import com.example.ittalentsfinalprojectairbnb.model.repositories.PropertyRepository;
 import com.example.ittalentsfinalprojectairbnb.model.repositories.ReviewRepository;
@@ -19,22 +20,23 @@ public class ReviewService {
     @Autowired
     private PropertyRepository propertyRepository;
 
-    public Review addReview(int propertyId, Integer userId) {
+    public Review addReview(ReviewResponseDTO reviewDTO, Integer userId) {
+        int propertyId = reviewDTO.getPropertyId();
+
         validateUser(userId);
         validateProperty(propertyId);
 
         Review review = new Review();
         review.setUserId(userId);
         review.setPropertyId(propertyId);
-        review.setRating(5);//todo
-        review.setReview("");//todo
+        review.setRating(reviewDTO.getRating());
+        review.setComment(reviewDTO.getComment());
 
         reviewRepository.save(review);
 
         return review;
     }
 
-    //todo
     public void deleteReview(int reviewId, Integer userId) {
         validateUser(userId);
         validateReview(reviewId);
