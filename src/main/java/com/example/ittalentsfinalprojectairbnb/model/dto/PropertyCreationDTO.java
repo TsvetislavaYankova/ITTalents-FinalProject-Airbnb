@@ -14,12 +14,16 @@ public class PropertyCreationDTO {
     private int guests;
     private double pricePerNight;
     private String description;
+    private Set<String> propertyPhotos;
+
     private String country;
     private String city;
     private String street;
     private String zipCode;
     private int apartmentNumber;
-    private Set<String> propertyPhotos;
+
+
+
 
 
     public void addressValidation(PropertyCreationDTO propertyDTO) {

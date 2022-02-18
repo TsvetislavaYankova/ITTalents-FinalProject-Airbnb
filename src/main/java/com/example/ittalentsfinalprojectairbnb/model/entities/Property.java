@@ -22,10 +22,6 @@ public class Property {
     @JoinColumn(name = "host_id")
     private User host;
 
-    @ManyToOne
-    @JoinColumn(name = "address_id")
-    private Address address;
-
     @Column
     private String propertyType;
 
@@ -43,6 +39,14 @@ public class Property {
 
     @Column
     private String description;
+
+    @OneToOne(mappedBy = "property", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private Address address;
+
+    @OneToOne(mappedBy = "property", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private Characteristic characteristic;
 
     @OneToMany(mappedBy = "property")
     private Set<PropertyPhoto> images;
