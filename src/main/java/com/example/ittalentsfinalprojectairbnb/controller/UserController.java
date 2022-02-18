@@ -6,6 +6,7 @@ import com.example.ittalentsfinalprojectairbnb.model.dto.UserLogInDTO;
 import com.example.ittalentsfinalprojectairbnb.model.dto.UserResponseDTO;
 import com.example.ittalentsfinalprojectairbnb.model.dto.UserRegisterDTO;
 import com.example.ittalentsfinalprojectairbnb.model.entities.User;
+import com.example.ittalentsfinalprojectairbnb.model.repositories.UserRepository;
 import com.example.ittalentsfinalprojectairbnb.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,14 +67,14 @@ public class UserController {
         return ResponseEntity.ok(dto);
     }
 
-    @DeleteMapping("/delete_user/{id}")
-    public ResponseEntity<UserResponseDTO> deleteUser(@PathVariable("id") int id, HttpServletRequest request) {
+    @DeleteMapping("/delete_user")
+    public ResponseEntity<String> deleteUser(HttpServletRequest request) {
         validateLogin(request);
-        User user = service.deleteById(id);
+        int userId = (Integer) request.getSession().getAttribute(USER_ID);
+        service.deleteById(userId);
         request.getSession().invalidate();
-        UserResponseDTO dto = mapper.map(user, UserResponseDTO.class);
 
-        return ResponseEntity.ok(dto);
+        return new ResponseEntity<>("Deletion successful!",HttpStatus.OK);
     }
 
     @DeleteMapping("/delete_photo/{id}")

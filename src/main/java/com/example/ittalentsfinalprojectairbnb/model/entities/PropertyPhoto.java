@@ -18,6 +18,7 @@ public class PropertyPhoto {
     private int id;
     @Column
     private String photo_url;
-    @Column
-    private int property_id;
+    @ManyToOne
+    @JoinColumn(name = "property_id")
+    private Property property;
 }

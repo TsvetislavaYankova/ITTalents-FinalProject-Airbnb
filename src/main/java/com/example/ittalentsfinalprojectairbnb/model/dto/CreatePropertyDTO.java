@@ -2,8 +2,10 @@ package com.example.ittalentsfinalprojectairbnb.model.dto;
 
 import lombok.Data;
 
+import java.util.Set;
+
 @Data
-public class PropertyWithAddressDTO {
+public class CreatePropertyDTO {
 
     private String propertyType;
     private int bedrooms;
@@ -16,6 +18,7 @@ public class PropertyWithAddressDTO {
     private String street;
     private String zipCode;
     private int apartmentNumber;
+    private Set<String> propertyPhotos;
 
 
 }

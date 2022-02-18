@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "properties")
@@ -43,5 +44,7 @@ public class Property {
     @Column
     private String description;
 
+    @OneToMany(mappedBy = "property")
+    private Set<PropertyPhoto> images;
 
 }

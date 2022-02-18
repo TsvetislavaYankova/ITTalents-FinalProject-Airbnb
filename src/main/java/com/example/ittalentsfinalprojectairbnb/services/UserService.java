@@ -3,15 +3,12 @@ package com.example.ittalentsfinalprojectairbnb.services;
 import com.example.ittalentsfinalprojectairbnb.exceptions.BadRequestException;
 import com.example.ittalentsfinalprojectairbnb.exceptions.NotFoundException;
 import com.example.ittalentsfinalprojectairbnb.exceptions.UnauthorizedException;
-import com.example.ittalentsfinalprojectairbnb.model.dto.UserLogInDTO;
-import com.example.ittalentsfinalprojectairbnb.model.dto.UserRegisterDTO;
 import com.example.ittalentsfinalprojectairbnb.model.dto.UserResponseDTO;
 import com.example.ittalentsfinalprojectairbnb.model.entities.User;
 import com.example.ittalentsfinalprojectairbnb.model.repositories.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -98,9 +95,13 @@ public class UserService {
         return new User();
     }
 
-    //todo
-    public User deleteById(int id) {
-        return new User();
+    public void deleteById(int id) {
+        Optional<User> opt = repository.findById(id);
+        if (opt.isPresent()) {
+            repository.delete(opt.get());
+        } else {
+            throw new NotFoundException("User not found");
+        }
     }
 
     public User deletePhotoById(int id) {
