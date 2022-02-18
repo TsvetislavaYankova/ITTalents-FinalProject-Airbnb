@@ -40,7 +40,6 @@ public class ReviewService {
     public void deleteReview(int reviewId, Integer userId) {
         validateUser(userId);
         validateReview(reviewId);
-        //validateProperty();
 
         reviewRepository.deleteById(reviewId);
     }
@@ -55,12 +54,12 @@ public class ReviewService {
     }
 
     private void validateUser(Integer userId) {
-        if (userId == null) {
-            throw new UnauthorizedException("To add a review you have to be logged in!");
-        }
-
         if (!userRepository.existsById(userId)) {
             throw new NotFoundException("There is no such user!");
+        }
+
+        if (userId == null) {
+            throw new UnauthorizedException("You have to be logged in!");
         }
     }
 
