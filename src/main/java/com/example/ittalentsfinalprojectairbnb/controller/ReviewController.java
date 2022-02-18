@@ -1,8 +1,6 @@
 package com.example.ittalentsfinalprojectairbnb.controller;
 
-import com.example.ittalentsfinalprojectairbnb.model.dto.AddReviewDTO;
 import com.example.ittalentsfinalprojectairbnb.model.dto.ReviewResponseDTO;
-import com.example.ittalentsfinalprojectairbnb.model.entities.Property;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Review;
 import com.example.ittalentsfinalprojectairbnb.services.ReviewService;
 import org.modelmapper.ModelMapper;
@@ -21,11 +19,9 @@ public class ReviewController {
     private ModelMapper mapper;
 
     @PostMapping("/add_review")
-    public ResponseEntity<AddReviewDTO> addReview(@RequestBody Property property, HttpSession session) {
-        int id = property.getId();
-
-        Review review = service.addReview(id, (Integer) session.getAttribute(UserController.USER_ID));
-        AddReviewDTO dto = mapper.map(review, AddReviewDTO.class);
+    public ResponseEntity<ReviewResponseDTO> addReview(@RequestBody ReviewResponseDTO reviewDTO, HttpSession session) {
+        Review review = service.addReview(reviewDTO, (Integer) session.getAttribute(UserController.USER_ID));
+        ReviewResponseDTO dto = mapper.map(review, ReviewResponseDTO.class);
 
         return ResponseEntity.ok(dto);
     }
@@ -33,7 +29,6 @@ public class ReviewController {
     @DeleteMapping("/delete_review/{id}")
     public ResponseEntity<ReviewResponseDTO> deleteReview(@PathVariable("id") int reviewId, HttpSession session) {
         service.deleteReview(reviewId, (Integer) session.getAttribute(UserController.USER_ID));
-
         ReviewResponseDTO dto = new ReviewResponseDTO();
 
         return ResponseEntity.ok(dto);
@@ -42,7 +37,6 @@ public class ReviewController {
     @GetMapping("/get_review/{id}")
     public ResponseEntity<ReviewResponseDTO> geById(@PathVariable("id") int reviewId, HttpSession session) {
         Review review = service.getById(reviewId,(Integer) session.getAttribute(UserController.USER_ID));
-
         ReviewResponseDTO dto = mapper.map(review,ReviewResponseDTO.class);
 
         return ResponseEntity.ok(dto);
