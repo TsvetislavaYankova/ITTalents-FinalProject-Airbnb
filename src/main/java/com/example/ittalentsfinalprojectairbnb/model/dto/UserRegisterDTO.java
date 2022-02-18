@@ -15,5 +15,5 @@ public class UserRegisterDTO {
     private char gender;
     private LocalDateTime dateOfBirth;
     private String phoneNumber;
-    private boolean isHost;
+    private short isHost;
 }

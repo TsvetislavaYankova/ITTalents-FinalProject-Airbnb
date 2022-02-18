@@ -38,7 +38,7 @@ public class PropertyService {
 //        return dto;
 //    }
 
-    public Property addProperty(PropertyWithAddressDTO propertyDTO, Integer id) {
+    public PropertyIdDTO addProperty(PropertyWithAddressDTO propertyDTO, Integer id) {
         //TODO validations
         Property property = new Property();
         Address address = new Address();
@@ -47,19 +47,18 @@ public class PropertyService {
         address.setStreet(propertyDTO.getStreet());
         address.setZipCode(propertyDTO.getZipCode());
         address.setApartmentNumber(propertyDTO.getApartmentNumber());
-        System.out.println(address);
         addressRepository.save(address);
         property.setHost(userRepository.findById(id).orElseThrow(() ->
                 new NotFoundException("Host not found")));
         property.setAddress(address);
         property.setPropertyType(propertyDTO.getPropertyType());
         property.setDescription(propertyDTO.getDescription());
-        property.setNOfBathrooms(propertyDTO.getNOfBathrooms());
-        property.setNOfBedrooms(propertyDTO.getNOfBedrooms());
+        property.setBathrooms(propertyDTO.getBathrooms());
+        property.setBedrooms(propertyDTO.getBedrooms());
         property.setPricePerNight(propertyDTO.getPricePerNight());
-        property.setNOfGuests(propertyDTO.getNOfGuests());
+        property.setGuests(propertyDTO.getGuests());
         propertyRepository.save(property);
-       // PropertyIdDTO dto = mapper.map(property, PropertyIdDTO.class);
-        return property;
+        PropertyIdDTO dto = mapper.map(property, PropertyIdDTO.class);
+        return dto;
     }
 }

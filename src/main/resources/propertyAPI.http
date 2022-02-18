@@ -4,15 +4,14 @@ Content-Type: application/json
 
 {
   "propertyType": "vila",
-  "nOfBedrooms" : "2",
-  "nOfBathrooms" : "3",
-  "nOfGuests" : "2",
-  "pricePerNight": "120",
+  "bedrooms" : 2,
+  "bathrooms" : 3,
+  "guests" : 2,
+  "pricePerNight": 120,
   "description": "cozy",
   "country": "Poland",
   "city": "Krakow",
   "street": "Svoboda",
   "zipCode": "2345",
-  "apartmentNumber": "4",
-  "id": "2"
+  "apartmentNumber": 4
 }

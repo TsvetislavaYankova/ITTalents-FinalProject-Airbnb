@@ -6,16 +6,16 @@ import lombok.Data;
 public class PropertyWithAddressDTO {
 
     private String propertyType;
-    private int nOfBedrooms;
-    private  int nOfBathrooms;
-    private int nOfGuests;
+    private int bedrooms;
+    private int bathrooms;
+    private int guests;
     private double pricePerNight;
     private String description;
     private String country;
     private String city;
     private String street;
     private String zipCode;
-    private String apartmentNumber;
+    private int apartmentNumber;
 
 
 }

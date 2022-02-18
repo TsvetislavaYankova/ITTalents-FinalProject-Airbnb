@@ -25,5 +25,5 @@ public class Address {
     @Column
     private String zipCode;
     @Column
-    private String apartmentNumber;
+    private int apartmentNumber;
 }

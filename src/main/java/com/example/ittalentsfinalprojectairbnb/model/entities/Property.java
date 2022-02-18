@@ -28,14 +28,14 @@ public class Property {
     @Column
     private String propertyType;
 
-    @Column
-    private int nOfBedrooms;
+    @Column(name="n_of_bedrooms")
+    private int bedrooms;
 
-    @Column
-    private  int nOfBathrooms;
+    @Column(name = "n_of_bathrooms")
+    private int bathrooms;
 
-    @Column
-    private int nOfGuests;
+    @Column(name = "n_of_guests")
+    private int guests;
 
     @Column
     private double pricePerNight;

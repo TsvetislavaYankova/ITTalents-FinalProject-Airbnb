@@ -18,9 +18,10 @@ public class PropertyController {
     private PropertyService service;
 
     @PostMapping("/add")
-    public Property addProperty(@RequestBody PropertyWithAddressDTO property, HttpServletRequest request) {
+    public ResponseEntity<PropertyIdDTO> addProperty(@RequestBody PropertyWithAddressDTO property, HttpServletRequest request) {
         UserController.validateLogin(request);
-        return service.addProperty(property, (Integer) request.getSession().getAttribute(UserController.USER_ID));
+        PropertyIdDTO dto = service.addProperty(property, (Integer) request.getSession().getAttribute(UserController.USER_ID));
+        return ResponseEntity.ok(dto);
     }
 
 //    @PostMapping("/addresses")

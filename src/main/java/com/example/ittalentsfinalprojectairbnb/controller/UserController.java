@@ -45,7 +45,7 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> register(@RequestBody UserRegisterDTO user) {
 
         UserResponseDTO u = service.register(user.getEmail(), user.getPassword(), user.getConfirmedPassword(),
-                user.getFirstName(), user.getLastName(), user.getGender(), user.getDateOfBirth(), user.getPhoneNumber(), user.isHost());
+                user.getFirstName(), user.getLastName(), user.getGender(), user.getDateOfBirth(), user.getPhoneNumber(), user.getIsHost());
 
 
         return ResponseEntity.ok(u);

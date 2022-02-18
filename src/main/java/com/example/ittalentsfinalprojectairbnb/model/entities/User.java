@@ -35,6 +35,6 @@ public class User {
     @Column
     private String photoUrl;
     @Column
-    private boolean isHost;
+    private short isHost;
 
 }

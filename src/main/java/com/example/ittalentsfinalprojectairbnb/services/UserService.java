@@ -48,7 +48,7 @@ public class UserService {
 
     public UserResponseDTO register(String email, String password, String confirmedPassword,
                                     String firstName, String lastName, char gender,
-                                    LocalDateTime dateOfBirth, String phoneNumber, boolean isHost) {
+                                    LocalDateTime dateOfBirth, String phoneNumber, short isHost) {
         if (email.isBlank() || email == null) {
             throw new BadRequestException("Email is a mandatory field!");
         }
@@ -84,7 +84,7 @@ public class UserService {
         user.setLastName(lastName);
         user.setDateOfBirth(dateOfBirth);
         user.setGender(gender);
-        user.setHost(isHost);
+        user.setIsHost(isHost);
         user.setPhoneNumber(phoneNumber);
 
         repository.save(user);
