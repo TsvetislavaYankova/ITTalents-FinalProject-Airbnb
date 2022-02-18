@@ -28,4 +28,7 @@ public class Reservation {
     private LocalDateTime checkInDate;
     @Column
     private LocalDateTime checkOutDate;
+    @OneToOne(mappedBy = "reservations", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private Cancellation cancellation;
 }

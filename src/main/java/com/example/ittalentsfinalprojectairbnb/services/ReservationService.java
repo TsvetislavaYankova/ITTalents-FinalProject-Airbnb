@@ -2,13 +2,18 @@ package com.example.ittalentsfinalprojectairbnb.services;
 
 import com.example.ittalentsfinalprojectairbnb.exceptions.NotFoundException;
 import com.example.ittalentsfinalprojectairbnb.exceptions.UnauthorizedException;
+import com.example.ittalentsfinalprojectairbnb.model.dto.MakeReservationDTO;
+import com.example.ittalentsfinalprojectairbnb.model.dto.PaymentResponseDTO;
+import com.example.ittalentsfinalprojectairbnb.model.dto.ReservationResponseDTO;
+import com.example.ittalentsfinalprojectairbnb.model.entities.Cancellation;
+import com.example.ittalentsfinalprojectairbnb.model.entities.Payment;
+import com.example.ittalentsfinalprojectairbnb.model.entities.Property;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Reservation;
-import com.example.ittalentsfinalprojectairbnb.model.repositories.PropertyRepository;
-import com.example.ittalentsfinalprojectairbnb.model.repositories.ReservationRepository;
-import com.example.ittalentsfinalprojectairbnb.model.repositories.UserRepository;
+import com.example.ittalentsfinalprojectairbnb.model.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Component
@@ -20,32 +25,62 @@ public class ReservationService {
     private UserRepository userRepository;
     @Autowired
     private PropertyRepository propertyRepository;
+    @Autowired
+    private CancellationRepository cancellationRepository;
+    @Autowired
+    private PaymentRepository paymentRepository;
 
-    public Reservation makeReservation(int propertyId, Integer userId) {
+    public Reservation makeReservation(ReservationResponseDTO reservationDTO,
+                                       PaymentResponseDTO paymentDTO,
+                                       Integer userId) {
+        int propertyId = reservationDTO.getPropertyId();
+
         validateUser(userId);
         validateProperty(propertyId);
 
+        Payment payment = new Payment();
+        payment.setPaymentType(paymentDTO.getPaymentType());
+        payment.setTotalPrice(payment.getTotalPrice());
+        payment.setDateOfPayment(paymentDTO.getDateOfPayment());
+        payment.setStatus(paymentDTO.getStatus());
+
+        paymentRepository.save(payment);
+
         Reservation reservation = new Reservation();
-        reservation.setGuestId(userId);
-        reservation.setCheckInDate(LocalDateTime.now());
-        reservation.setCheckOutDate(LocalDateTime.now());
         reservation.setPropertyId(propertyId);
+        reservation.setGuestId(userId);
+        reservation.setPaymentId(payment.getId());
+        reservation.setCheckInDate(reservationDTO.getCheckInDate());
+        reservation.setCheckOutDate(reservationDTO.getCheckOutDate());
+
         reservationRepository.save(reservation);
 
         return reservation;
     }
 
-    public Reservation cancelReservation(int reservationId, Integer userId) {
+    public Cancellation cancelReservation(ReservationResponseDTO dto, Integer userId) {
+        int reservationId = dto.getId();
+
         validateUser(userId);
         validateReservation(reservationId);
 
-        Reservation reservation = new Reservation();
-        reservation.setId(reservationId);
-        reservation.setGuestId(userId);
+        LocalDateTime checkIn = dto.getCheckInDate();
+        LocalDateTime checkOut = dto.getCheckOutDate();
+        long reservationDuration = Duration.between(checkOut, checkIn).toDays();
 
-        reservationRepository.deleteById(reservationId);
+        int propertyId = dto.getPropertyId();
+        validateProperty(propertyId);
+        Property property = propertyRepository.getPropertyById(propertyId);
+        double refund = property.getPricePerNight() * (reservationDuration);
 
-        return reservation;
+        Cancellation cancellation = new Cancellation();
+        cancellation.setId(reservationId);
+        cancellation.setCancelDate(LocalDateTime.now());
+        cancellation.setRefundAmount(refund);
+
+        cancellationRepository.save(cancellation);
+
+        return cancellation;
     }
 
 
@@ -75,9 +110,8 @@ public class ReservationService {
     }
 
     private void validateProperty(int propertyId) {
-        if(!propertyRepository.existsById(propertyId)){
+        if (!propertyRepository.existsById(propertyId)) {
             throw new NotFoundException("This property doesn't exist!");
         }
     }
-
 }
