@@ -1,9 +1,6 @@
 package com.example.ittalentsfinalprojectairbnb.controller;
 
-import com.example.ittalentsfinalprojectairbnb.model.dto.CancellationResponseDTO;
-import com.example.ittalentsfinalprojectairbnb.model.dto.MakeReservationDTO;
-import com.example.ittalentsfinalprojectairbnb.model.dto.PaymentResponseDTO;
-import com.example.ittalentsfinalprojectairbnb.model.dto.ReservationResponseDTO;
+import com.example.ittalentsfinalprojectairbnb.model.dto.*;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Cancellation;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Reservation;
 import com.example.ittalentsfinalprojectairbnb.services.ReservationService;
@@ -23,10 +20,9 @@ public class ReservationController {
     private ModelMapper mapper;
 
     @PostMapping("/make_reservation")
-    public ResponseEntity<MakeReservationDTO> makeReservation(@RequestBody ReservationResponseDTO reservationDTO,
-                                                              @RequestBody PaymentResponseDTO paymentDTO,
+    public ResponseEntity<MakeReservationDTO> makeReservation(@RequestBody ReservationPaymentResponseDTO dto,
                                                               HttpSession session) {
-        Reservation reservation = service.makeReservation(reservationDTO,paymentDTO, (Integer) session.getAttribute(UserController.USER_ID));
+        Reservation reservation = service.makeReservation(dto, (Integer) session.getAttribute(UserController.USER_ID));
         MakeReservationDTO dto = mapper.map(reservation, MakeReservationDTO.class);
 
         return ResponseEntity.ok(dto);

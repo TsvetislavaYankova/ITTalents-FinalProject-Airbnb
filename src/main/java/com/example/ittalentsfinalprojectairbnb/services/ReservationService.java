@@ -3,6 +3,7 @@ package com.example.ittalentsfinalprojectairbnb.services;
 import com.example.ittalentsfinalprojectairbnb.exceptions.NotFoundException;
 import com.example.ittalentsfinalprojectairbnb.exceptions.UnauthorizedException;
 import com.example.ittalentsfinalprojectairbnb.model.dto.PaymentResponseDTO;
+import com.example.ittalentsfinalprojectairbnb.model.dto.ReservationPaymentResponseDTO;
 import com.example.ittalentsfinalprojectairbnb.model.dto.ReservationResponseDTO;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Cancellation;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Payment;
@@ -29,19 +30,18 @@ public class ReservationService {
     @Autowired
     private PaymentRepository paymentRepository;
 
-    public Reservation makeReservation(ReservationResponseDTO reservationDTO,
-                                       PaymentResponseDTO paymentDTO,
+    public Reservation makeReservation(ReservationPaymentResponseDTO dto,
                                        Integer userId) {
-        int propertyId = reservationDTO.getPropertyId();
+        int propertyId = dto.getPropertyId();
 
         validateUser(userId);
         validateProperty(propertyId);
 
         Payment payment = new Payment();
-        payment.setPaymentType(paymentDTO.getPaymentType());
+        payment.setPaymentType(dto.getPaymentType());
         payment.setTotalPrice(payment.getTotalPrice());
-        payment.setDateOfPayment(paymentDTO.getDateOfPayment());
-        payment.setStatus(paymentDTO.getStatus());
+        payment.setDateOfPayment(dto.getDateOfPayment());
+        payment.setStatus(dto.getStatus());
 
         paymentRepository.save(payment);
 
@@ -49,8 +49,8 @@ public class ReservationService {
         reservation.setPropertyId(propertyId);
         reservation.setGuestId(userId);
         reservation.setPaymentId(payment.getId());
-        reservation.setCheckInDate(reservationDTO.getCheckInDate());
-        reservation.setCheckOutDate(reservationDTO.getCheckOutDate());
+        reservation.setCheckInDate(dto.getCheckInDate());
+        reservation.setCheckOutDate(dto.getCheckOutDate());
 
         reservationRepository.save(reservation);
 
