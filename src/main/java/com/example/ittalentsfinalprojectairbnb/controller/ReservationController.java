@@ -22,6 +22,7 @@ public class ReservationController {
     @PostMapping("/make_reservation")
     public ResponseEntity<MakeReservationDTO> makeReservation(@RequestBody ReservationPaymentResponseDTO dto,
                                                               HttpSession session) {
+        //service.makeReservation(mapper.map(dto.getKey(), MakeReservationDTO.class)
         Reservation reservation = service.makeReservation(dto, (Integer) session.getAttribute(UserController.USER_ID));
         MakeReservationDTO dto2 = mapper.map(reservation, MakeReservationDTO.class);
 
