@@ -39,5 +39,5 @@ Content-Type: application/json
 ### delete
 DELETE localhost:9999/delete_user
 
-### LOGOUT
+### logout
 POST localhost:9999/logout
