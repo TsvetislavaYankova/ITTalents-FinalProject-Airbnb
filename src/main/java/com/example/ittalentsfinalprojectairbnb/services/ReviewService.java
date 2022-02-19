@@ -8,9 +8,9 @@ import com.example.ittalentsfinalprojectairbnb.model.repositories.PropertyReposi
 import com.example.ittalentsfinalprojectairbnb.model.repositories.ReviewRepository;
 import com.example.ittalentsfinalprojectairbnb.model.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class ReviewService {
 
     @Autowired

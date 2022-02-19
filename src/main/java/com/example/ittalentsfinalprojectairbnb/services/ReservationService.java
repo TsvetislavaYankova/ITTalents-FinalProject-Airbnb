@@ -2,7 +2,6 @@ package com.example.ittalentsfinalprojectairbnb.services;
 
 import com.example.ittalentsfinalprojectairbnb.exceptions.NotFoundException;
 import com.example.ittalentsfinalprojectairbnb.exceptions.UnauthorizedException;
-import com.example.ittalentsfinalprojectairbnb.model.dto.PaymentResponseDTO;
 import com.example.ittalentsfinalprojectairbnb.model.dto.ReservationPaymentResponseDTO;
 import com.example.ittalentsfinalprojectairbnb.model.dto.ReservationResponseDTO;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Cancellation;
@@ -11,12 +10,12 @@ import com.example.ittalentsfinalprojectairbnb.model.entities.Property;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Reservation;
 import com.example.ittalentsfinalprojectairbnb.model.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-@Component
+@Service
 public class ReservationService {
 
     @Autowired
@@ -30,8 +29,9 @@ public class ReservationService {
     @Autowired
     private PaymentRepository paymentRepository;
 
+    //check if property is booked
     public Reservation makeReservation(ReservationPaymentResponseDTO dto,
-                                       Integer userId) {
+                                       Integer userId) {//todo (Reservation reservation, Payment payment, userID)
         int propertyId = dto.getPropertyId();
 
         validateUser(userId);
@@ -76,7 +76,7 @@ public class ReservationService {
         cancellation.setId(reservationId);
         cancellation.setCancelDate(LocalDateTime.now());
         cancellation.setRefundAmount(refund);
-
+//todo
         cancellationRepository.save(cancellation);
 
         return cancellation;

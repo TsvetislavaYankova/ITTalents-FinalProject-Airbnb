@@ -7,9 +7,11 @@ import com.example.ittalentsfinalprojectairbnb.model.entities.Payment;
 import com.example.ittalentsfinalprojectairbnb.model.repositories.PaymentRepository;
 import com.example.ittalentsfinalprojectairbnb.model.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+import java.util.Optional;
+
+@Service
 public class PaymentService {
 
     @Autowired
@@ -17,16 +19,8 @@ public class PaymentService {
     @Autowired
     private UserRepository userRepository;
 
-    public Payment addPayment(PaymentResponseDTO paymentDTO, Integer userId) {
-        int paymentId = paymentDTO.getId();
-
+    public Payment addPayment(Payment payment, Integer userId) {
         validateUser(userId);
-
-        Payment payment = new Payment();
-        payment.setPaymentType(paymentDTO.getPaymentType());
-        payment.setDateOfPayment(paymentDTO.getDateOfPayment());
-        payment.setTotalPrice(paymentDTO.getTotalPrice());
-        payment.setStatus(paymentDTO.getStatus());
 
         paymentRepository.save(payment);
 
@@ -35,27 +29,19 @@ public class PaymentService {
 
     public Payment getById(int paymentId, Integer userId) {
         validateUser(userId);
-        validatePayment(paymentId);
-        Payment payment = paymentRepository.getById(paymentId);
-        return payment;
+
+        return paymentRepository.findById(paymentId).orElseThrow(() -> new NotFoundException("There is no such payment"));
     }
 
     public Payment confirm(PaymentResponseDTO paymentDTO, Integer userId) {
         int paymentId = paymentDTO.getId();
         validateUser(userId);
-        validatePayment(paymentId);
+        //validatePayment(paymentId);
 
-        Payment payment = paymentRepository.getById(paymentId);
+        Payment payment = paymentRepository.getById(paymentId);//todo findById, throw
         payment.setStatus(paymentDTO.getStatus());
         //todo
         return new Payment();
-    }
-
-
-    private void validatePayment(Integer paymentId) {
-        if (!paymentRepository.existsById(paymentId)) {
-            throw new NotFoundException("There is no such payment");
-        }
     }
 
     private void validateUser(Integer userId) {
@@ -63,7 +49,7 @@ public class PaymentService {
             throw new NotFoundException("There is no such user!");
         }
 
-        if (userId == null) {
+        if (userId == null) {//todo  use validate
             throw new UnauthorizedException("You have to be logged in!");
         }
     }

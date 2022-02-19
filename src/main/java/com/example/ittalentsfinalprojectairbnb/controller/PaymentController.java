@@ -1,7 +1,7 @@
 package com.example.ittalentsfinalprojectairbnb.controller;
 
-import com.example.ittalentsfinalprojectairbnb.model.dto.PaymentStatusDTO;
 import com.example.ittalentsfinalprojectairbnb.model.dto.PaymentResponseDTO;
+import com.example.ittalentsfinalprojectairbnb.model.dto.PaymentStatusDTO;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Payment;
 import com.example.ittalentsfinalprojectairbnb.services.PaymentService;
 import org.modelmapper.ModelMapper;
@@ -22,7 +22,7 @@ public class PaymentController {
 
     @PostMapping("/add_payment")
     public ResponseEntity<PaymentResponseDTO> addPayment(@RequestBody PaymentResponseDTO paymentDTO, HttpSession session) {
-        Payment payment = service.addPayment(paymentDTO, (Integer) session.getAttribute(UserController.USER_ID));
+        Payment payment = service.addPayment(mapper.map(paymentDTO, Payment.class), (Integer) session.getAttribute(UserController.USER_ID));
         PaymentResponseDTO dto = mapper.map(payment, PaymentResponseDTO.class);
 
         return ResponseEntity.ok(dto);

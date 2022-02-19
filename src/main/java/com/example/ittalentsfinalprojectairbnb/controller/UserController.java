@@ -1,10 +1,7 @@
 package com.example.ittalentsfinalprojectairbnb.controller;
 
 import com.example.ittalentsfinalprojectairbnb.exceptions.UnauthorizedException;
-import com.example.ittalentsfinalprojectairbnb.model.dto.UserGetByIdDTO;
-import com.example.ittalentsfinalprojectairbnb.model.dto.UserLogInDTO;
-import com.example.ittalentsfinalprojectairbnb.model.dto.UserResponseDTO;
-import com.example.ittalentsfinalprojectairbnb.model.dto.UserRegisterDTO;
+import com.example.ittalentsfinalprojectairbnb.model.dto.*;
 import com.example.ittalentsfinalprojectairbnb.model.entities.User;
 import com.example.ittalentsfinalprojectairbnb.services.UserService;
 import org.modelmapper.ModelMapper;
@@ -58,9 +55,9 @@ public class UserController {
     }
 
     @PostMapping("/add_photo")
-    public ResponseEntity<UserResponseDTO> addPhoto(@RequestBody User user, HttpServletRequest request) {
+    public ResponseEntity<UserResponseDTO> addPhoto(@RequestBody UserGetByIdDTO userDTO, HttpServletRequest request) {
         validateLogin(request);
-        user = service.addPhoto(user);
+        User user = service.addPhoto(userDTO);
 
         UserResponseDTO dto = mapper.map(user, UserResponseDTO.class);
         return ResponseEntity.ok(dto);
@@ -73,7 +70,7 @@ public class UserController {
         service.deleteById(userId);
         request.getSession().invalidate();
 
-        return new ResponseEntity<>("Deletion successful!",HttpStatus.OK);
+        return new ResponseEntity<>("Deletion successful!", HttpStatus.OK);
     }
 
     @DeleteMapping("/delete_photo/{id}")
@@ -94,6 +91,16 @@ public class UserController {
         return ResponseEntity.ok(dto);
     }
 
+    @PutMapping("/edit")
+    public ResponseEntity<UserEditDTO> edit (@RequestBody UserEditDTO userDTO, HttpServletRequest request){
+        validateLogin(request);
+        User user = service.edit(userDTO);
+        UserEditDTO dto =mapper.map(user,UserEditDTO.class);
+
+        return ResponseEntity.ok(dto);
+    }
+
+//  3
     //TODO refactor -> remove session from parameters
     public static void validateLogin(HttpServletRequest request) {
         boolean newSession = request.getSession().isNew();
