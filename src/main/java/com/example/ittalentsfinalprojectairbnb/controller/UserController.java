@@ -107,7 +107,7 @@ public class UserController {
         return service.uploadPhoto(file, loggedUserId);
     }
 
-    @DeleteMapping("/delete/photo}")
+    @DeleteMapping("/delete/photo")
     public ResponseEntity<String> deletePhoto(HttpServletRequest request) {
         SessionManager.validateLogin(request);
         int id = (int) request.getSession().getAttribute(SessionManager.USER_ID);
