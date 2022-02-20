@@ -22,7 +22,7 @@ public class Review {
     @Column
     private int propertyId;
     @Column
-    private int rating;
+    private double rating;
     @Column
     private String comment;
 }
