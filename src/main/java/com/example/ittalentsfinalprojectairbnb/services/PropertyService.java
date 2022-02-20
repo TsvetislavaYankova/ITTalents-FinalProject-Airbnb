@@ -99,31 +99,6 @@ public class PropertyService {
         return propertyRepository.findById(id).orElseThrow(() -> new NotFoundException("Property not found"));
     }
 
-    @SneakyThrows
-    public String uploadFile(PropertyIdDTO propertyID, MultipartFile file, HttpServletRequest request) {
-        SessionManager.validateLogin(request);
-
-        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
-        String name = System.nanoTime() + "." + extension;
-        Files.copy(file.getInputStream(), new File("uploads" + File.separator + name).toPath());
-        Property p = new Property();
-        PropertyPhoto photo = new PropertyPhoto();
-        photo.setPhoto_url(name);
-        p.setId(propertyID.getId());
-        p.getImages().add(photo);
-        propertyPhotoRepository.save(photo);
-        return name;
-    }
-
-    public void deletePhotoById(int id) {
-        Optional<PropertyPhoto> opt = propertyPhotoRepository.findById(id);
-        if (opt.isPresent()) {
-            propertyPhotoRepository.delete(opt.get());
-        } else {
-            throw new NotFoundException("Photo not found!");
-        }
-    }
-
     public void deletePropertyById(int id) {
         Optional<Property> opt = propertyRepository.findById(id);
         if (opt.isPresent()) {
@@ -132,6 +107,7 @@ public class PropertyService {
             throw new NotFoundException("Property not found!");
         }
     }
+
 
     public PropertyIdDTO editCharacteristic(EditCharacteristicDTO characteristicDTO, int id) {
         Property p = getPropertyById(id);
@@ -201,7 +177,7 @@ public class PropertyService {
         return dto;
     }
 
-    public List<PropertyIdDTO> filter(FilterPropertyDTO filter) {
+    public List<PropertyIdDTO> filterByCharacteristics(FilterPropertyDTO filter) {
         List<Property> allProperties = propertyRepository.findAll();
         List<PropertyIdDTO> filteredPropertiesId = new ArrayList<>();
 
@@ -226,6 +202,47 @@ public class PropertyService {
             }
         }
         return filteredPropertiesId;
+    }
+
+
+    public List<PropertyIdDTO> filterByPrice(PropertyPriceDTO filter) {
+        List<Property> allProperties = propertyRepository.findAll();
+        List<PropertyIdDTO> filteredPropertiesId = new ArrayList<>();
+
+        for (Property p : allProperties) {
+            if (p.getPricePerNight() >= filter.getLowerLimitPrice() && p.getPricePerNight() <= filter.getUpperLimitPrice()) {
+                PropertyIdDTO dto = new PropertyIdDTO();
+                dto.setId(p.getId());
+                filteredPropertiesId.add(dto);
+            }
+        }
+        return filteredPropertiesId;
+
+    }
+
+    @SneakyThrows
+    public String uploadPhoto(PropertyIdDTO propertyID, MultipartFile file, HttpServletRequest request) {
+        SessionManager.validateLogin(request);
+
+        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+        String name = System.nanoTime() + "." + extension;
+        Files.copy(file.getInputStream(), new File("uploads" + File.separator + name).toPath());
+        Property p = new Property();
+        PropertyPhoto photo = new PropertyPhoto();
+        photo.setPhoto_url(name);
+        p.setId(propertyID.getId());
+        p.getImages().add(photo);
+        propertyPhotoRepository.save(photo);
+        return name;
+    }
+
+    public void deletePhotoById(int id) {
+        Optional<PropertyPhoto> opt = propertyPhotoRepository.findById(id);
+        if (opt.isPresent()) {
+            propertyPhotoRepository.delete(opt.get());
+        } else {
+            throw new NotFoundException("Photo not found!");
+        }
     }
 
 

@@ -62,7 +62,7 @@ Content-Type: application/json
   "typeOfBed": "singleBed"
 }
 
-###filterProperty
+###filterPropertyByCharacteristics
 GET localhost:9999/filter/by/characteristics
 Content-Type: application/json
 
@@ -81,4 +81,13 @@ Content-Type: application/json
   "hasParkingSpot": 1,
   "hasFitness": 0,
   "hasWashingMachine": 0
+}
+
+###filterPropertyByPrice
+GET localhost:9999/filter/by/price
+Content-Type: application/json
+
+{
+  "lowerLimitPrice": 90.0,
+  "upperLimitPrice": 140.99
 }

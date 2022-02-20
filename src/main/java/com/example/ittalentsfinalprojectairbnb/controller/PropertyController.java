@@ -4,7 +4,6 @@ import com.example.ittalentsfinalprojectairbnb.model.dto.*;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Property;
 import com.example.ittalentsfinalprojectairbnb.model.entities.PropertyPhoto;
 import com.example.ittalentsfinalprojectairbnb.services.PropertyService;
-import com.example.ittalentsfinalprojectairbnb.services.UserService;
 import com.example.ittalentsfinalprojectairbnb.utils.SessionManager;
 import lombok.NonNull;
 import lombok.SneakyThrows;
@@ -25,8 +24,6 @@ public class PropertyController {
     private ModelMapper mapper;
     @Autowired
     private PropertyService propertyService;
-    @Autowired
-    private UserService userService;
 
     @PostMapping("/add")
     public ResponseEntity<PropertyIdDTO> addProperty(@RequestBody PropertyCreationDTO property, HttpServletRequest request) {
@@ -36,8 +33,14 @@ public class PropertyController {
     }
 
     @GetMapping(value = "/filter/by/characteristics")
-    public ResponseEntity<List<PropertyIdDTO>> filterProperty(@RequestBody @NonNull FilterPropertyDTO filter) {
-        List<PropertyIdDTO> list = propertyService.filter(filter);
+    public ResponseEntity<List<PropertyIdDTO>> filterPropertyByCharacteristics(@RequestBody @NonNull FilterPropertyDTO filter) {
+        List<PropertyIdDTO> list = propertyService.filterByCharacteristics(filter);
+        return ResponseEntity.ok(list);
+    }
+
+    @GetMapping(value = "/filter/by/price")
+    public ResponseEntity<List<PropertyIdDTO>> filterPropertyByPrice(@RequestBody @NonNull PropertyPriceDTO filter) {
+        List<PropertyIdDTO> list = propertyService.filterByPrice(filter);
         return ResponseEntity.ok(list);
     }
 
@@ -84,14 +87,14 @@ public class PropertyController {
     }
 
     @SneakyThrows
-    @PostMapping("/image/upload")
+    @PostMapping("/photo/upload")
     public String uploadImage(@RequestBody PropertyIdDTO propertyID, @RequestParam(name = "file") MultipartFile
             file, HttpServletRequest request) {
         SessionManager.validateLogin(request);
-        return propertyService.uploadFile(propertyID, file, request);
+        return propertyService.uploadPhoto(propertyID, file, request);
     }
 
-    @DeleteMapping("/image/delete/{id}")
+    @DeleteMapping("/photo/delete/{id}")
     public ResponseEntity<String> deleteUser(HttpServletRequest request, @PathVariable int id) {
         SessionManager.validateLogin(request);
         propertyService.deletePhotoById(id);
