@@ -79,8 +79,12 @@ public class UserController {
     }
 
     @GetMapping("/get_user/{id}")
+<<<<<<< HEAD
     public ResponseEntity<UserGetByIdDTO> getById(@PathVariable("id") int id, HttpServletRequest request) {
         SessionManager.validateLogin(request);
+=======
+    public ResponseEntity<UserGetByIdDTO> getById(@PathVariable("id") int id) {
+>>>>>>> 5d0162cc6f3451154be6641298df0f24482f2943
         User user = service.getUserById(id);
         UserGetByIdDTO dto = mapper.map(user, UserGetByIdDTO.class);
 

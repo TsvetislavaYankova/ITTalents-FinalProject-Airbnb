@@ -3,7 +3,7 @@ package com.example.ittalentsfinalprojectairbnb.model.dto;
 import com.example.ittalentsfinalprojectairbnb.exceptions.BadRequestException;
 import lombok.Data;
 
-import javax.persistence.Column;
+
 import java.util.Set;
 
 @Data
@@ -50,9 +50,6 @@ public class PropertyCreationDTO {
         }
         if (this.getZipCode().isBlank() || this.getZipCode() == null) {
             throw new BadRequestException("Zip code is a mandatory field!");
-        }
-        if (this.getApartmentNumber() < 1) {
-            throw new BadRequestException("Invalid apartment number!");
         }
     }
 

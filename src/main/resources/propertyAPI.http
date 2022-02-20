@@ -3,17 +3,16 @@ POST localhost:9999/add
 Content-Type: application/json
 
 {
-  "propertyType": "vila",
+  "propertyType": "guesthouse",
   "bedrooms": 2,
   "bathrooms": 3,
   "guests": 2,
   "pricePerNight": 120,
   "description": "cozy",
-  "country": "Poland",
-  "city": "Krakow",
+  "country": "Bulgaria",
+  "city": "Sofia",
   "street": "Svoboda",
-  "zipCode": "2345",
-  "apartmentNumber": 4,
+  "zipCode": "1212",
   "hasWifi": 1,
   "hasTv": 1,
   "hasAirConditioner": 0,
@@ -32,3 +31,37 @@ Content-Type: application/json
 
 ### deletePropertyById
 DELETE localhost:9999/delete/5
+Content-Type: application/json
+
+###editAddress
+PUT localhost:9999/edit/address/1
+Content-Type: application/json
+
+{
+"country": "Bulgaria",
+"city": "Sofia",
+"street": "Lipa",
+"zipCode": "1616",
+"apartmentNumber": 2
+}
+
+###filterProperty
+GET localhost:9999/filter/by/characteristics
+Content-Type: application/json
+
+{
+  "country": "Bulgaria",
+  "city": "Sofia",
+  "bedrooms": 2,
+  "bathrooms": 3,
+  "guests": 2,
+  "hasWifi": 1,
+  "hasTv": 1,
+  "hasAirConditioner": 0,
+  "hasFridge": 0,
+  "hasKitchenFacilities": 1,
+  "hasBreakfast": 1,
+  "hasParkingSpot": 1,
+  "hasFitness": 0,
+  "hasWashingMachine": 0
+}

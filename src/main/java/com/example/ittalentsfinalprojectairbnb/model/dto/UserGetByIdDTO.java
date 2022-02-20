@@ -11,7 +11,6 @@ public class UserGetByIdDTO {
     private String firstName;
     private String lastName;
     private String email;
-    private LocalDateTime dateOfBirth;
     private char gender;
     private short isHost;
     private String photoUrl;

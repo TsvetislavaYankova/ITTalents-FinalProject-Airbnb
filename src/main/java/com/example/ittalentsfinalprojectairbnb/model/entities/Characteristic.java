@@ -35,7 +35,7 @@ public class Characteristic {
     @Column(name = "fridge")
     private short hasFridge;
 
-    @Column(name = "kithcen_facilities")
+    @Column(name = "kitchen_facilities")
     private short hasKitchenFacilities;
 
     @Column(name = "breakfast")
