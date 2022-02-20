@@ -30,15 +30,14 @@ public class PaymentService {
     public Payment getById(int paymentId, Integer userId) {
         validateUser(userId);
 
-        return paymentRepository.findById(paymentId).orElseThrow(() -> new NotFoundException("There is no such payment"));
+        return paymentRepository.findById(paymentId).orElseThrow(() -> new NotFoundException("There is no such payment!"));
     }
 
     public Payment confirm(PaymentResponseDTO paymentDTO, Integer userId) {
         int paymentId = paymentDTO.getId();
         validateUser(userId);
-        //validatePayment(paymentId);
 
-        Payment payment = paymentRepository.getById(paymentId);//todo findById, throw
+        Payment payment = paymentRepository.findById(paymentId).orElseThrow(()-> new NotFoundException("There is no such payment!"));
         payment.setStatus(paymentDTO.getStatus());
         //todo
         return new Payment();
@@ -49,7 +48,7 @@ public class PaymentService {
             throw new NotFoundException("There is no such user!");
         }
 
-        if (userId == null) {//todo  use validate
+        if (userId == null) {//\todo  use validate
             throw new UnauthorizedException("You have to be logged in!");
         }
     }

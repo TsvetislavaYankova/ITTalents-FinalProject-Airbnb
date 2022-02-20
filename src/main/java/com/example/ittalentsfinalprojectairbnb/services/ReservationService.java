@@ -29,7 +29,7 @@ public class ReservationService {
     @Autowired
     private PaymentRepository paymentRepository;
 
-    //check if property is booked
+    //todo check if property is booked
     public Reservation makeReservation(ReservationPaymentResponseDTO dto,
                                        Integer userId) {//todo (Reservation reservation, Payment payment, userID)
         int propertyId = dto.getPropertyId();

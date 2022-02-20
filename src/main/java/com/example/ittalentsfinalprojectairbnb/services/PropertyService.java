@@ -9,6 +9,7 @@ import com.example.ittalentsfinalprojectairbnb.model.entities.Characteristic;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Property;
 import com.example.ittalentsfinalprojectairbnb.model.entities.PropertyPhoto;
 import com.example.ittalentsfinalprojectairbnb.model.repositories.*;
+import com.example.ittalentsfinalprojectairbnb.utils.SessionManager;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FilenameUtils;
 import org.modelmapper.ModelMapper;
@@ -103,7 +104,7 @@ public class PropertyService {
 
     @SneakyThrows
     public String uploadFile(PropertyIdDTO propertyID, MultipartFile file, HttpServletRequest request) {
-        UserController.validateLogin(request);
+        SessionManager.validateLogin(request);
 
         String extension = FilenameUtils.getExtension(file.getOriginalFilename());
         String name = System.nanoTime() + "." + extension;

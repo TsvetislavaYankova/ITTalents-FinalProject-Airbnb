@@ -4,6 +4,7 @@ import com.example.ittalentsfinalprojectairbnb.model.dto.*;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Cancellation;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Reservation;
 import com.example.ittalentsfinalprojectairbnb.services.ReservationService;
+import com.example.ittalentsfinalprojectairbnb.utils.SessionManager;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class ReservationController {
     public ResponseEntity<MakeReservationDTO> makeReservation(@RequestBody ReservationPaymentResponseDTO dto,
                                                               HttpSession session) {
         //service.makeReservation(mapper.map(dto.getKey(), MakeReservationDTO.class)
-        Reservation reservation = service.makeReservation(dto, (Integer) session.getAttribute(UserController.USER_ID));
+        Reservation reservation = service.makeReservation(dto, (Integer) session.getAttribute(SessionManager.USER_ID));
         MakeReservationDTO dto2 = mapper.map(reservation, MakeReservationDTO.class);
 
         return ResponseEntity.ok(dto2);
@@ -31,7 +32,7 @@ public class ReservationController {
 
     @DeleteMapping("/cancel_reservation")
     public ResponseEntity<CancellationResponseDTO> cancelReservation(@RequestBody ReservationResponseDTO reservationDTO, HttpSession session) {
-        Cancellation cancellation = service.cancelReservation(reservationDTO, (Integer) session.getAttribute(UserController.USER_ID));
+        Cancellation cancellation = service.cancelReservation(reservationDTO, (Integer) session.getAttribute(SessionManager.USER_ID));
         CancellationResponseDTO dto = mapper.map(cancellation, CancellationResponseDTO.class);
 
         return ResponseEntity.ok(dto);
@@ -39,7 +40,7 @@ public class ReservationController {
 
     @GetMapping("/reservation/{id}")
     public ResponseEntity<ReservationResponseDTO> getById(@PathVariable("id") int id, HttpSession session) {
-        Reservation reservation = service.getReservationById(id, (Integer) session.getAttribute(UserController.USER_ID));
+        Reservation reservation = service.getReservationById(id, (Integer) session.getAttribute(SessionManager.USER_ID));
         ReservationResponseDTO dto = mapper.map(reservation, ReservationResponseDTO.class);
 
         return ResponseEntity.ok(dto);
