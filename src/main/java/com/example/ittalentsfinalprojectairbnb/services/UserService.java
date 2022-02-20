@@ -90,6 +90,12 @@ public class UserService {
         return new User();
     }
 
+    //TODO
+    public User deletePhotoById(int id) {
+        return new User();
+    }
+
+
     public void deleteById(int id) {
         Optional<User> opt = repository.findById(id);
         if (opt.isPresent()) {
@@ -97,11 +103,6 @@ public class UserService {
         } else {
             throw new NotFoundException("User not found");
         }
-    }
-
-    //TODO
-    public User deletePhotoById(int id) {
-        return new User();
     }
 
     public User getUserById(int id) {
