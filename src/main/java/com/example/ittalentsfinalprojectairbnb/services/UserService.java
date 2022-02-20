@@ -8,11 +8,18 @@ import com.example.ittalentsfinalprojectairbnb.model.dto.UserGetByIdDTO;
 import com.example.ittalentsfinalprojectairbnb.model.dto.UserResponseDTO;
 import com.example.ittalentsfinalprojectairbnb.model.entities.User;
 import com.example.ittalentsfinalprojectairbnb.model.repositories.UserRepository;
+import com.example.ittalentsfinalprojectairbnb.utils.SessionManager;
+import lombok.SneakyThrows;
+import org.apache.commons.io.FilenameUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -78,18 +85,6 @@ public class UserService {
         UserResponseDTO dto = mapper.map(user, UserResponseDTO.class);
         return dto;
     }
-
-    //todo
-    public User addPhoto(UserGetByIdDTO userDTO) {
-
-        return new User();
-    }
-
-    //TODO
-    public User deletePhotoById(int id) {
-        return new User();
-    }
-
 
     public void deleteById(int id) {
         Optional<User> opt = repository.findById(id);
@@ -183,12 +178,32 @@ public class UserService {
         return user;
     }
 
-    private void validatePhoneNumber(String phoneNumber) {
-        if (!phoneNumber.matches("^\\d{10}$")) {
-            throw new BadRequestException("Phone number should be 10 digits long. ");
+    @SneakyThrows
+    public String uploadPhoto(MultipartFile file, int loggedUserId) {
+
+        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+        String name = System.nanoTime() + "." + extension;
+        Files.copy(file.getInputStream(), new File("uploads" + File.separator + name).toPath());
+        User u = getUserById(loggedUserId);
+        u.setPhotoUrl(name);
+        repository.save(u);
+        return name;
+    }
+
+    public void deletePhoto(int id) {
+        Optional<User> opt = repository.findById(id);
+        if (opt.isPresent()) {
+            opt.get().setPhotoUrl(null);
+        } else {
+            throw new NotFoundException("User not found! Photo could not be deleted!");
         }
     }
 
+    private void validatePhoneNumber(String phoneNumber) {
+        if (!phoneNumber.matches("^\\d{10}$")) {
+            throw new BadRequestException("Phone number should be 10 digits long.");
+        }
+    }
 
     private void validateEmail(String email) {
         if (email.isBlank()) {
@@ -207,4 +222,6 @@ public class UserService {
                     "No spaces are allowed");
         }
     }
+
+
 }

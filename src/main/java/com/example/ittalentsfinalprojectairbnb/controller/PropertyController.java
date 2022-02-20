@@ -88,8 +88,7 @@ public class PropertyController {
 
     @SneakyThrows
     @PostMapping("/photo/upload")
-    public String uploadImage(@RequestBody PropertyIdDTO propertyID, @RequestParam(name = "file") MultipartFile
-            file, HttpServletRequest request) {
+    public String uploadImage(@RequestBody PropertyIdDTO propertyID, @RequestParam(name = "file") MultipartFile file, HttpServletRequest request) {
         SessionManager.validateLogin(request);
         return propertyService.uploadPhoto(propertyID, file, request);
     }
