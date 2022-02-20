@@ -3,6 +3,7 @@ package com.example.ittalentsfinalprojectairbnb.controller;
 import com.example.ittalentsfinalprojectairbnb.model.dto.ReviewResponseDTO;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Review;
 import com.example.ittalentsfinalprojectairbnb.services.ReviewService;
+import com.example.ittalentsfinalprojectairbnb.utils.SessionManager;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class ReviewController {
 
     @PostMapping("/add_review")
     public ResponseEntity<ReviewResponseDTO> addReview(@RequestBody ReviewResponseDTO reviewDTO, HttpSession session) {
-        Review review = service.addReview(reviewDTO, (Integer) session.getAttribute(UserController.USER_ID));
+        Review review = service.addReview(reviewDTO, (Integer) session.getAttribute(SessionManager.USER_ID));
         ReviewResponseDTO dto = mapper.map(review, ReviewResponseDTO.class);
 
         return ResponseEntity.ok(dto);
@@ -28,7 +29,7 @@ public class ReviewController {
 
     @DeleteMapping("/delete_review/{id}")
     public ResponseEntity<ReviewResponseDTO> deleteReview(@PathVariable("id") int reviewId, HttpSession session) {
-        service.deleteReview(reviewId, (Integer) session.getAttribute(UserController.USER_ID));
+        service.deleteReview(reviewId, (Integer) session.getAttribute(SessionManager.USER_ID));
         ReviewResponseDTO dto = new ReviewResponseDTO();
 
         return ResponseEntity.ok(dto);
@@ -36,7 +37,7 @@ public class ReviewController {
 
     @GetMapping("/get_review/{id}")
     public ResponseEntity<ReviewResponseDTO> geById(@PathVariable("id") int reviewId, HttpSession session) {
-        Review review = service.getById(reviewId,(Integer) session.getAttribute(UserController.USER_ID));
+        Review review = service.getById(reviewId,(Integer) session.getAttribute(SessionManager.USER_ID));
         ReviewResponseDTO dto = mapper.map(review,ReviewResponseDTO.class);
 
         return ResponseEntity.ok(dto);

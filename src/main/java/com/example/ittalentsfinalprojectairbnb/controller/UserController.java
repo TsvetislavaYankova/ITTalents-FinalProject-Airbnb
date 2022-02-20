@@ -4,6 +4,7 @@ import com.example.ittalentsfinalprojectairbnb.exceptions.UnauthorizedException;
 import com.example.ittalentsfinalprojectairbnb.model.dto.*;
 import com.example.ittalentsfinalprojectairbnb.model.entities.User;
 import com.example.ittalentsfinalprojectairbnb.services.UserService;
+import com.example.ittalentsfinalprojectairbnb.utils.SessionManager;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,10 +18,6 @@ import javax.servlet.http.HttpSession;
 @RestController
 public class UserController {
 
-    public static final String LOGGED = "logged";
-    public static final String LOGGED_FROM = "logged_from";
-    public static final String USER_ID = "user_id";
-
     @Autowired
     private UserService service;
     @Autowired
@@ -31,9 +28,9 @@ public class UserController {
     public UserResponseDTO login(@RequestBody UserLogInDTO user, HttpServletRequest request) {
 
         UserResponseDTO u = service.login(user.getEmail(), user.getPassword());
-        request.getSession().setAttribute(LOGGED, true);
-        request.getSession().setAttribute(LOGGED_FROM, request.getRemoteAddr());
-        request.getSession().setAttribute(USER_ID, u.getId());
+        request.getSession().setAttribute(SessionManager.LOGGED, true);
+        request.getSession().setAttribute(SessionManager.LOGGED_FROM, request.getRemoteAddr());
+        request.getSession().setAttribute(SessionManager.USER_ID, u.getId());
 
         return u;
     }
@@ -43,7 +40,6 @@ public class UserController {
 
         UserResponseDTO u = service.register(user.getEmail(), user.getPassword(), user.getConfirmedPassword(),
                 user.getFirstName(), user.getLastName(), user.getGender(), user.getDateOfBirth(), user.getPhoneNumber(), user.getIsHost());
-
 
         return ResponseEntity.ok(u);
     }
@@ -56,7 +52,7 @@ public class UserController {
 
     @PostMapping("/add_photo")
     public ResponseEntity<UserResponseDTO> addPhoto(@RequestBody UserGetByIdDTO userDTO, HttpServletRequest request) {
-        validateLogin(request);
+        SessionManager.validateLogin(request);
         User user = service.addPhoto(userDTO);
 
         UserResponseDTO dto = mapper.map(user, UserResponseDTO.class);
@@ -65,8 +61,8 @@ public class UserController {
 
     @DeleteMapping("/delete_user")
     public ResponseEntity<String> deleteUser(HttpServletRequest request) {
-        validateLogin(request);
-        int userId = (Integer) request.getSession().getAttribute(USER_ID);
+        SessionManager.validateLogin(request);
+        int userId = (Integer) request.getSession().getAttribute(SessionManager.USER_ID);
         service.deleteById(userId);
         request.getSession().invalidate();
 
@@ -75,7 +71,7 @@ public class UserController {
 
     @DeleteMapping("/delete_photo/{id}")
     public ResponseEntity<UserResponseDTO> deletePhoto(@PathVariable("id") int id, HttpServletRequest request) {
-        validateLogin(request);
+        SessionManager.validateLogin(request);
         User user = service.deletePhotoById(id);
         UserResponseDTO dto = mapper.map(user, UserResponseDTO.class);
 
@@ -84,7 +80,7 @@ public class UserController {
 
     @GetMapping("/get_user/{id}")
     public ResponseEntity<UserGetByIdDTO> getById(@PathVariable("id") int id, HttpServletRequest request) {
-        validateLogin(request);
+        SessionManager.validateLogin(request);
         User user = service.getUserById(id);
         UserGetByIdDTO dto = mapper.map(user, UserGetByIdDTO.class);
 
@@ -93,21 +89,11 @@ public class UserController {
 
     @PutMapping("/edit")
     public ResponseEntity<UserEditDTO> edit (@RequestBody UserEditDTO userDTO, HttpServletRequest request){
-        validateLogin(request);
+        SessionManager.validateLogin(request);
         User user = service.edit(userDTO);
         UserEditDTO dto =mapper.map(user,UserEditDTO.class);
 
         return ResponseEntity.ok(dto);
     }
 
-//  3
-    //TODO refactor -> remove session from parameters
-    public static void validateLogin(HttpServletRequest request) {
-        boolean newSession = request.getSession().isNew();
-        boolean logged = request.getSession().getAttribute(LOGGED) != null && ((Boolean) request.getSession().getAttribute(LOGGED));
-        boolean sameIP = request.getRemoteAddr().equals(request.getSession().getAttribute(LOGGED_FROM));
-        if (newSession || !logged || !sameIP) {
-            throw new UnauthorizedException("You have to login!");
-        }
-    }
 }
