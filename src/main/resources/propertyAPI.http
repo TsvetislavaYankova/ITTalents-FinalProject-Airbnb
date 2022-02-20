@@ -45,6 +45,23 @@ Content-Type: application/json
 "apartmentNumber": 2
 }
 
+###editCharacteristics
+PUT localhost:9999/edit/characteristic/1
+Content-Type: application/json
+
+{
+  "hasWifi": 0,
+  "hasTv": 0,
+  "hasAirConditioner": 0,
+  "hasFridge": 0,
+  "hasKitchenFacilities": 1,
+  "hasBreakfast": 1,
+  "hasParkingSpot": 1,
+  "hasFitness": 0,
+  "hasWashingMachine": 1,
+  "typeOfBed": "singleBed"
+}
+
 ###filterProperty
 GET localhost:9999/filter/by/characteristics
 Content-Type: application/json

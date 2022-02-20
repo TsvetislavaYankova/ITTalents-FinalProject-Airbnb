@@ -1,6 +1,5 @@
 package com.example.ittalentsfinalprojectairbnb.services;
 
-import com.example.ittalentsfinalprojectairbnb.controller.UserController;
 import com.example.ittalentsfinalprojectairbnb.exceptions.BadRequestException;
 import com.example.ittalentsfinalprojectairbnb.exceptions.NotFoundException;
 import com.example.ittalentsfinalprojectairbnb.model.dto.*;
@@ -14,12 +13,10 @@ import lombok.SneakyThrows;
 import org.apache.commons.io.FilenameUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -142,6 +139,33 @@ public class PropertyService {
 
         if ((characteristicDTO.getHasWifi() == 0 || characteristicDTO.getHasWifi() == 1) && characteristicDTO.getHasWifi() != ch.getHasWifi()) {
             ch.setHasTv(characteristicDTO.getHasWifi());
+        }
+        if ((characteristicDTO.getHasTv() == 0 || characteristicDTO.getHasTv() == 1) && characteristicDTO.getHasTv() != ch.getHasTv()) {
+            ch.setHasTv(characteristicDTO.getHasTv());
+        }
+        if ((characteristicDTO.getHasAirConditioner() == 0 || characteristicDTO.getHasAirConditioner() == 1) && characteristicDTO.getHasAirConditioner() != ch.getHasAirConditioner()) {
+            ch.setHasTv(characteristicDTO.getHasAirConditioner());
+        }
+        if ((characteristicDTO.getHasFridge() == 0 || characteristicDTO.getHasFridge() == 1) && characteristicDTO.getHasFridge() != ch.getHasFridge()) {
+            ch.setHasTv(characteristicDTO.getHasFridge());
+        }
+        if ((characteristicDTO.getHasKitchenFacilities() == 0 || characteristicDTO.getHasKitchenFacilities() == 1) && characteristicDTO.getHasKitchenFacilities() != ch.getHasKitchenFacilities()) {
+            ch.setHasTv(characteristicDTO.getHasKitchenFacilities());
+        }
+        if ((characteristicDTO.getHasBreakfast() == 0 || characteristicDTO.getHasBreakfast() == 1) && characteristicDTO.getHasBreakfast() != ch.getHasBreakfast()) {
+            ch.setHasTv(characteristicDTO.getHasBreakfast());
+        }
+        if ((characteristicDTO.getHasParkingSpot() == 0 || characteristicDTO.getHasParkingSpot() == 1) && characteristicDTO.getHasParkingSpot() != ch.getHasParkingSpot()) {
+            ch.setHasTv(characteristicDTO.getHasParkingSpot());
+        }
+        if ((characteristicDTO.getHasFitness() == 0 || characteristicDTO.getHasFitness() == 1) && characteristicDTO.getHasFitness() != ch.getHasFitness()) {
+            ch.setHasTv(characteristicDTO.getHasFitness());
+        }
+        if ((characteristicDTO.getHasWashingMachine() == 0 || characteristicDTO.getHasWashingMachine() == 1) && characteristicDTO.getHasWashingMachine() != ch.getHasWashingMachine()) {
+            ch.setHasTv(characteristicDTO.getHasWashingMachine());
+        }
+        if (characteristicDTO.getTypeOfBed() != null) {
+            ch.setTypeOfBed(characteristicDTO.getTypeOfBed());
         }
 
         p.setCharacteristic(ch);
