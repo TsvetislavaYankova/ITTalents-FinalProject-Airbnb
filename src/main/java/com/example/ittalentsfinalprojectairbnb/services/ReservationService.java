@@ -7,7 +7,10 @@ import com.example.ittalentsfinalprojectairbnb.model.entities.Cancellation;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Payment;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Property;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Reservation;
-import com.example.ittalentsfinalprojectairbnb.model.repositories.*;
+import com.example.ittalentsfinalprojectairbnb.model.repositories.CancellationRepository;
+import com.example.ittalentsfinalprojectairbnb.model.repositories.PaymentRepository;
+import com.example.ittalentsfinalprojectairbnb.model.repositories.PropertyRepository;
+import com.example.ittalentsfinalprojectairbnb.model.repositories.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +23,6 @@ public class ReservationService {
 
     @Autowired
     private ReservationRepository reservationRepository;
-    @Autowired
-    private UserRepository userRepository;
     @Autowired
     private PropertyRepository propertyRepository;
     @Autowired
@@ -92,10 +93,10 @@ public class ReservationService {
     private void checkReservations(int propertyId, LocalDateTime checkInDate, LocalDateTime checkOutDate) {
         List<Reservation> reservations = reservationRepository.findAllByPropertyId(propertyId);
 
-        for (int i = 0; i < reservations.size(); i++) {
-            LocalDateTime checkInDate1 = reservations.get(i).getCheckInDate();
-            LocalDateTime checkOutDate1 = reservations.get(i).getCheckOutDate();
-            //todo
-        }
+//        for (int i = 0; i < reservations.size(); i++) {
+//            LocalDateTime checkInDate1 = reservations.get(i).getCheckInDate();
+//            LocalDateTime checkOutDate1 = reservations.get(i).getCheckOutDate();
+//            //todo
+//        }
     }
 }

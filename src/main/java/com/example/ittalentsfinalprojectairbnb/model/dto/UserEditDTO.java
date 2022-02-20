@@ -10,9 +10,11 @@ public class UserEditDTO {
     private int id;
     private String firstName;
     private String lastName;
+    private String password;
+    private String confirmedPassword;
     private char gender;
     private String email;
     private LocalDateTime dateOfBirth;
     private String phoneNumber;
-    private boolean isHost;
+    private short isHost;
 }

@@ -53,12 +53,7 @@ public class UserService {
         if (password == null || password.isBlank()) {
             throw new BadRequestException("Password is a mandatory field!");
         }
-        if (!password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])(?=\\S+$).{8,20}$")) {
-            throw new BadRequestException("Password should be: at least 8 symbols long. " +
-                    "Contain at least one digit. " +
-                    "Contain at least one upper case character. " +
-                    "No spaces are allowed");
-        }
+        validatePassword(password);
         if (!password.equals(confirmedPassword)) {
             throw new BadRequestException("Passwords mismatch!");
         }
@@ -114,47 +109,76 @@ public class UserService {
     }
 
     public User edit(UserEditDTO userDTO) {
-        User user = new User();
-
+        int id = userDTO.getId();
         String firstName = userDTO.getFirstName();
         String lastName = userDTO.getLastName();
-        Character gender = userDTO.getGender();
+        char gender = userDTO.getGender();
         String email = userDTO.getEmail();
         LocalDateTime dateOfBirth = userDTO.getDateOfBirth();
         String phoneNumber = userDTO.getPhoneNumber();
-        Boolean isHost = userDTO.isHost();
+        short isHost = userDTO.getIsHost();
 
-        if (firstName != null) {
+        User user = repository.findById(id).orElseThrow(() -> new NotFoundException("There is no such user!"));
+
+        if (!firstName.isBlank() && !firstName.equals(user.getFirstName())) {
             user.setFirstName(firstName);
         }
 
-        if (lastName != null) {
+        if (!firstName.isBlank() && !firstName.equals(user.getLastName())) {
             user.setLastName(lastName);
         }
 
-        if (gender != null) {
+        if (gender != user.getGender()) {
             user.setGender(gender);
         }
 
-        if (email != null) {
+        if (!email.isBlank() && !email.equals(user.getEmail())) {
             validateEmail(email);
             user.setEmail(email);
         }
 
-        if (dateOfBirth != null) {
+        if (dateOfBirth != null && !dateOfBirth.equals(user.getDateOfBirth())) {
             user.setDateOfBirth(dateOfBirth);
         }
 
-        if (phoneNumber != null) {
+        if (phoneNumber.isBlank() && !phoneNumber.equals(user.getPhoneNumber())) {
             validatePhoneNumber(phoneNumber);
             user.setPhoneNumber(phoneNumber);
         }
 
-        if (isHost != null) {
-            user.setIsHost(user.getIsHost());
+        if (isHost != user.getIsHost()) {
+            user.setIsHost(isHost);
         }
+
         repository.save(user);
 
+        return user;
+    }
+
+
+    public User changePassword(UserEditDTO userDTO) {
+        int id = userDTO.getId();
+
+        User user = repository.findById(id).orElseThrow(() -> new NotFoundException("There is no such user!"));
+        String password = userDTO.getPassword();
+        String confirmedPassword = userDTO.getConfirmedPassword();
+
+        if (!password.isBlank() && !confirmedPassword.isBlank()) {
+            validatePassword(password);
+            if (!password.equals(confirmedPassword)) {
+                if (!BCrypt.checkpw(password, user.getPassword())) {
+                    user.setPassword(BCrypt.hashpw(password, BCrypt.gensalt()));
+                } else {
+                    throw new BadRequestException("The new password is the same as the old password!");
+                }
+            } else {
+                throw new BadRequestException("The confirmed password doesn't match the new password!");
+            }
+        } else {
+            throw new BadRequestException("You must enter a new password!");
+        }
+
+        repository.save(user);
         return user;
     }
 
@@ -166,11 +190,20 @@ public class UserService {
 
 
     private void validateEmail(String email) {
-        if (email.isBlank() || email == null) {
+        if (email.isBlank()) {
             throw new BadRequestException("Email is a mandatory field!");
         }
         if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
             throw new BadRequestException("You must enter valid email address!");
+        }
+    }
+
+    private void validatePassword(String password) {
+        if (!password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])(?=\\S+$).{8,20}$")) {
+            throw new BadRequestException("Password should be: at least 8 symbols long. " +
+                    "Contain at least one digit. " +
+                    "Contain at least one upper case character. " +
+                    "No spaces are allowed");
         }
     }
 }

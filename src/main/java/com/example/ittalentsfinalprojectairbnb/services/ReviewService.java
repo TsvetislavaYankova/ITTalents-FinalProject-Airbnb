@@ -46,14 +46,14 @@ public class ReviewService {
         int reviewId = reviewDTO.getId();
         Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new NotFoundException("There is no such Review!"));
 
-        Double rating = reviewDTO.getRating();
+        double rating = reviewDTO.getRating();
         String comment = reviewDTO.getComment();
 
-        if(rating!=null){
+        if(rating!=review.getRating()){
             review.setRating(rating);
         }
 
-        if(comment != null){
+        if(!comment.isBlank()){
             review.setComment(comment);
         }
 
