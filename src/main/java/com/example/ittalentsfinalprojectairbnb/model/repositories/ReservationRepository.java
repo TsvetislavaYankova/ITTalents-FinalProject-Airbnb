@@ -4,10 +4,10 @@ import com.example.ittalentsfinalprojectairbnb.model.entities.Reservation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Integer> {
 
-    Reservation findReservationById(Integer id);//todo optional and use orElseThrow when used
-    @Override
-    void deleteById(Integer integer);
+    List<Reservation> findAllByPropertyId(int id);
 }

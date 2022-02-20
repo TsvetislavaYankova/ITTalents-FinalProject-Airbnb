@@ -1,6 +1,5 @@
 package com.example.ittalentsfinalprojectairbnb.controller;
 
-import com.example.ittalentsfinalprojectairbnb.exceptions.UnauthorizedException;
 import com.example.ittalentsfinalprojectairbnb.model.dto.*;
 import com.example.ittalentsfinalprojectairbnb.model.entities.User;
 import com.example.ittalentsfinalprojectairbnb.services.UserService;
@@ -25,23 +24,23 @@ public class UserController {
 
 
     @PostMapping("/login")
-    public UserResponseDTO login(@RequestBody UserLogInDTO user, HttpServletRequest request) {
+    public UserResponseDTO login(@RequestBody UserLogInDTO userDTO, HttpServletRequest request) {
 
-        UserResponseDTO u = service.login(user.getEmail(), user.getPassword());
+        UserResponseDTO user = service.login(userDTO.getEmail(), userDTO.getPassword());
         request.getSession().setAttribute(SessionManager.LOGGED, true);
         request.getSession().setAttribute(SessionManager.LOGGED_FROM, request.getRemoteAddr());
-        request.getSession().setAttribute(SessionManager.USER_ID, u.getId());
+        request.getSession().setAttribute(SessionManager.USER_ID, user.getId());
 
-        return u;
+        return user;
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponseDTO> register(@RequestBody UserRegisterDTO user) {
+    public ResponseEntity<UserResponseDTO> register(@RequestBody UserRegisterDTO userDTO) {
 
-        UserResponseDTO u = service.register(user.getEmail(), user.getPassword(), user.getConfirmedPassword(),
-                user.getFirstName(), user.getLastName(), user.getGender(), user.getDateOfBirth(), user.getPhoneNumber(), user.getIsHost());
+        UserResponseDTO user = service.register(userDTO.getEmail(), userDTO.getPassword(), userDTO.getConfirmedPassword(),
+                userDTO.getFirstName(), userDTO.getLastName(), userDTO.getGender(), userDTO.getDateOfBirth(), userDTO.getPhoneNumber(), userDTO.getIsHost());
 
-        return ResponseEntity.ok(u);
+        return ResponseEntity.ok(user);
     }
 
     @PostMapping("/logout")
@@ -89,12 +88,31 @@ public class UserController {
     }
 
     @PutMapping("/edit")
-    public ResponseEntity<UserEditDTO> edit(@RequestBody UserEditDTO userDTO, HttpServletRequest request){
+    public ResponseEntity<UserEditDTO> edit(@RequestBody UserEditDTO userDTO, HttpServletRequest request) {
         SessionManager.validateLogin(request);
         User user = service.edit(userDTO);
-        UserEditDTO dto =mapper.map(user,UserEditDTO.class);
+        UserEditDTO dto = mapper.map(user, UserEditDTO.class);
 
         return ResponseEntity.ok(dto);
     }
 
+    @PutMapping("/change_password")
+    public ResponseEntity<UserResponseDTO> changePassword(@RequestBody UserEditDTO userDTO, HttpServletRequest request) {
+        SessionManager.validateLogin(request);
+
+        User user = service.changePassword(userDTO);
+        UserResponseDTO dto = mapper.map(user, UserResponseDTO.class);
+
+        return ResponseEntity.ok(dto);
+    }
+
+    @PutMapping("/forgot_password")
+    public ResponseEntity<UserResponseDTO> forgotPassword(@RequestBody UserEditDTO userDTO, HttpServletRequest request) {
+        SessionManager.validateLogin(request);
+
+        User user = service.changePassword(userDTO);
+        UserResponseDTO dto = mapper.map(user, UserResponseDTO.class);
+
+        return ResponseEntity.ok(dto);
+    }
 }
