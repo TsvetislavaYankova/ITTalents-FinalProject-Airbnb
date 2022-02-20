@@ -48,6 +48,14 @@ public class PropertyController {
         return ResponseEntity.ok(p);
     }
 
+    @PutMapping("/edit/characteristic/{id}")
+    public ResponseEntity<PropertyIdDTO> editCharacteristic(@RequestBody EditCharacteristicDTO characteristicDTO, HttpServletRequest request,
+                                                     @PathVariable int id) {
+        UserController.validateLogin(request);
+        PropertyIdDTO p = propertyService.editCharacteristic(characteristicDTO, id);
+        return ResponseEntity.ok(p);
+    }
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteProperty(HttpServletRequest request, @PathVariable int id) {
         UserController.validateLogin(request);

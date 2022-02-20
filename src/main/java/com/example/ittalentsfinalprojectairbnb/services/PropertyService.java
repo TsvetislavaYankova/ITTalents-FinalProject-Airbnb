@@ -3,10 +3,7 @@ package com.example.ittalentsfinalprojectairbnb.services;
 import com.example.ittalentsfinalprojectairbnb.controller.UserController;
 import com.example.ittalentsfinalprojectairbnb.exceptions.BadRequestException;
 import com.example.ittalentsfinalprojectairbnb.exceptions.NotFoundException;
-import com.example.ittalentsfinalprojectairbnb.model.dto.EditAddressDTO;
-import com.example.ittalentsfinalprojectairbnb.model.dto.FilterPropertyDTO;
-import com.example.ittalentsfinalprojectairbnb.model.dto.PropertyCreationDTO;
-import com.example.ittalentsfinalprojectairbnb.model.dto.PropertyIdDTO;
+import com.example.ittalentsfinalprojectairbnb.model.dto.*;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Address;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Characteristic;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Property;
@@ -138,6 +135,20 @@ public class PropertyService {
         }
     }
 
+    public PropertyIdDTO editCharacteristic(EditCharacteristicDTO characteristicDTO, int id) {
+        Property p = getPropertyById(id);
+        Characteristic ch = p.getCharacteristic();
+
+        if ((characteristicDTO.getHasWifi() == 0 || characteristicDTO.getHasWifi() == 1) && characteristicDTO.getHasWifi() != ch.getHasWifi()) {
+            ch.setHasTv(characteristicDTO.getHasWifi());
+        }
+
+        p.setCharacteristic(ch);
+        propertyRepository.save(p);
+
+        PropertyIdDTO dto = mapper.map(p, PropertyIdDTO.class);
+        return dto;
+    }
 
     public PropertyIdDTO editAddress(EditAddressDTO addressDTO, int id) {
         Property p = getPropertyById(id);
@@ -191,4 +202,6 @@ public class PropertyService {
         }
         return filteredPropertiesId;
     }
+
+
 }
