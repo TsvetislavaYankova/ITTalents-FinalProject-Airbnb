@@ -5,11 +5,8 @@ import com.example.ittalentsfinalprojectairbnb.model.entities.Property;
 import com.example.ittalentsfinalprojectairbnb.model.entities.PropertyPhoto;
 import com.example.ittalentsfinalprojectairbnb.services.PropertyService;
 import com.example.ittalentsfinalprojectairbnb.services.UserService;
-<<<<<<< HEAD
 import com.example.ittalentsfinalprojectairbnb.utils.SessionManager;
-=======
 import lombok.NonNull;
->>>>>>> 5d0162cc6f3451154be6641298df0f24482f2943
 import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,28 +44,27 @@ public class PropertyController {
     @PutMapping("/edit/address/{id}")
     public ResponseEntity<PropertyIdDTO> editAddress(@RequestBody EditAddressDTO addressDTO, HttpServletRequest request,
                                                      @PathVariable int id) {
-        UserController.validateLogin(request);
+        SessionManager.validateLogin(request);
         PropertyIdDTO p = propertyService.editAddress(addressDTO, id);
         return ResponseEntity.ok(p);
     }
 
     @PutMapping("/edit/characteristic/{id}")
     public ResponseEntity<PropertyIdDTO> editCharacteristic(@RequestBody EditCharacteristicDTO characteristicDTO, HttpServletRequest request,
-                                                     @PathVariable int id) {
-        UserController.validateLogin(request);
+                                                            @PathVariable int id) {
+        SessionManager.validateLogin(request);
         PropertyIdDTO p = propertyService.editCharacteristic(characteristicDTO, id);
         return ResponseEntity.ok(p);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteProperty(HttpServletRequest request, @PathVariable int id) {
-<<<<<<< HEAD
         SessionManager.validateLogin(request);
-         propertyService.deletePropertyById(id);
-=======
-        UserController.validateLogin(request);
         propertyService.deletePropertyById(id);
->>>>>>> 5d0162cc6f3451154be6641298df0f24482f2943
+
+        SessionManager.validateLogin(request);
+        propertyService.deletePropertyById(id);
+
         return new ResponseEntity<>("Deletion successful!", HttpStatus.OK);
     }
 
