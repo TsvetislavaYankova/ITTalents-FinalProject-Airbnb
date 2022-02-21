@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -36,8 +36,8 @@ public class ReservationService {
 
         propertyRepository.findById(propertyId).orElseThrow(() -> new NotFoundException("There is no such property!"));
 
-        LocalDateTime checkInDate = dto.getCheckInDate();
-        LocalDateTime checkOutDate = dto.getCheckOutDate();
+        LocalDate checkInDate = dto.getCheckInDate();
+        LocalDate checkOutDate = dto.getCheckOutDate();
 
         checkReservations(propertyId, checkInDate, checkOutDate);
 
@@ -57,8 +57,8 @@ public class ReservationService {
 
         reservationRepository.findById(reservationId).orElseThrow(() -> new NotFoundException("There is no such reservation!"));
 
-        LocalDateTime checkIn = dto.getCheckInDate();
-        LocalDateTime checkOut = dto.getCheckOutDate();
+        LocalDate checkIn = dto.getCheckInDate();
+        LocalDate checkOut = dto.getCheckOutDate();
         long reservationDuration = Duration.between(checkOut, checkIn).toDays();
 
         int propertyId = dto.getPropertyId();
@@ -68,7 +68,7 @@ public class ReservationService {
 
         Cancellation cancellation = new Cancellation();
         cancellation.setId(reservationId);
-        cancellation.setCancelDate(LocalDateTime.now());
+        cancellation.setCancelDate(LocalDate.now());
         cancellation.setRefundAmount(refund);
 
         cancellationRepository.save(cancellation);
@@ -108,7 +108,7 @@ public class ReservationService {
         return payment;
     }
 
-    private void checkReservations(int propertyId, LocalDateTime checkInDate, LocalDateTime checkOutDate) {
+    private void checkReservations(int propertyId, LocalDate checkInDate, LocalDate checkOutDate) {
         List<Reservation> reservations = reservationRepository.findAllByPropertyId(propertyId);
 
 //        for (int i = 0; i < reservations.size(); i++) {

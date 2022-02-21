@@ -2,7 +2,7 @@ package com.example.ittalentsfinalprojectairbnb.model.dto;
 
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 public class ReservationResponseDTO {
@@ -11,6 +11,6 @@ public class ReservationResponseDTO {
     private int propertyId;
     private int guestId;
     private int paymentId;
-    private LocalDateTime checkInDate;
-    private LocalDateTime checkOutDate;
+    private LocalDate checkInDate;
+    private LocalDate checkOutDate;
 }

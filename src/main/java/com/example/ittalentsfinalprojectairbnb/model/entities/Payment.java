@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "payments")
@@ -27,7 +27,7 @@ public class Payment {
     @Column
     private double totalPrice;
     @Column
-    private LocalDateTime dateOfPayment;
+    private LocalDate dateOfPayment;
     @Column
     private String status;
 }
