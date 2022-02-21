@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.nio.file.Files;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -53,7 +54,7 @@ public class UserService {
 
     public UserResponseDTO register(String email, String password, String confirmedPassword,
                                     String firstName, String lastName, char gender,
-                                    LocalDateTime dateOfBirth, String phoneNumber, short isHost) {
+                                    LocalDate dateOfBirth, String phoneNumber, short isHost) {
 
         validateEmail(email);
 
@@ -110,7 +111,7 @@ public class UserService {
         String lastName = userDTO.getLastName();
         char gender = userDTO.getGender();
         String email = userDTO.getEmail();
-        LocalDateTime dateOfBirth = userDTO.getDateOfBirth();
+        LocalDate dateOfBirth = userDTO.getDateOfBirth();
         String phoneNumber = userDTO.getPhoneNumber();
         short isHost = userDTO.getIsHost();
 
