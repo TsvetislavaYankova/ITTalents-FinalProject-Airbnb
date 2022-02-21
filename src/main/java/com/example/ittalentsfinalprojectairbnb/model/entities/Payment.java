@@ -18,6 +18,10 @@ public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "id")
+    private Reservation reservation;
     @Column
     private String paymentType;
     @Column

@@ -31,4 +31,7 @@ public class Reservation {
     @OneToOne(mappedBy = "reservation", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private Cancellation cancellation;
+    @OneToOne(mappedBy = "reservation", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private Payment payment;
 }
