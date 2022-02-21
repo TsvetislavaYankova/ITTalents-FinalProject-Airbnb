@@ -2,6 +2,7 @@ package com.example.ittalentsfinalprojectairbnb.model.dto;
 
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -14,7 +15,7 @@ public class UserEditDTO {
     private String confirmedPassword;
     private char gender;
     private String email;
-    private LocalDateTime dateOfBirth;
+    private LocalDate dateOfBirth;
     private String phoneNumber;
     private short isHost;
 }

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -25,7 +26,7 @@ public class User {
     @Column
     private char gender;
     @Column
-    private LocalDateTime dateOfBirth;
+    private LocalDate dateOfBirth;
     @Column
     private String email;
     @Column
