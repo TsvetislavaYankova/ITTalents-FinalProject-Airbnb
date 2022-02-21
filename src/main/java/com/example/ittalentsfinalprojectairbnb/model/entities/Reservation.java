@@ -1,12 +1,11 @@
 package com.example.ittalentsfinalprojectairbnb.model.entities;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "reservations")
@@ -25,10 +24,13 @@ public class Reservation {
     @Column
     private int paymentId;
     @Column
-    private LocalDateTime checkInDate;
+    private LocalDate checkInDate;
     @Column
-    private LocalDateTime checkOutDate;
+    private LocalDate checkOutDate;
     @OneToOne(mappedBy = "reservation", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private Cancellation cancellation;
+    @OneToOne(mappedBy = "reservation", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private Payment payment;
 }

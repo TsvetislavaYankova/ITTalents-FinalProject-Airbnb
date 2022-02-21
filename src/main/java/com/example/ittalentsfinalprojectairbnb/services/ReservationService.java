@@ -1,7 +1,7 @@
 package com.example.ittalentsfinalprojectairbnb.services;
 
 import com.example.ittalentsfinalprojectairbnb.exceptions.NotFoundException;
-import com.example.ittalentsfinalprojectairbnb.model.dto.ReservationPaymentResponseDTO;
+import com.example.ittalentsfinalprojectairbnb.model.dto.PaymentResponseDTO;
 import com.example.ittalentsfinalprojectairbnb.model.dto.ReservationResponseDTO;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Cancellation;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Payment;
@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -31,29 +31,19 @@ public class ReservationService {
     private PaymentRepository paymentRepository;
 
     //todo check if property is booked
-    public Reservation makeReservation(ReservationPaymentResponseDTO dto,
-                                       Integer userId) {//todo (Reservation reservation, Payment payment, userID)?
+    public Reservation makeReservation(ReservationResponseDTO dto, Integer userId) {
         int propertyId = dto.getPropertyId();
 
         propertyRepository.findById(propertyId).orElseThrow(() -> new NotFoundException("There is no such property!"));
 
-        LocalDateTime checkInDate = dto.getCheckInDate();
-        LocalDateTime checkOutDate = dto.getCheckOutDate();
+        LocalDate checkInDate = dto.getCheckInDate();
+        LocalDate checkOutDate = dto.getCheckOutDate();
 
         checkReservations(propertyId, checkInDate, checkOutDate);
-
-        Payment payment = new Payment();
-//        payment.setPaymentType(dto.getPaymentType());
-//        payment.setTotalPrice(payment.getTotalPrice());
-//        payment.setDateOfPayment(dto.getDateOfPayment());
-//        payment.setStatus(dto.getStatus());
-
-        paymentRepository.save(payment);
 
         Reservation reservation = new Reservation();
         reservation.setPropertyId(propertyId);
         reservation.setGuestId(userId);
-        reservation.setPaymentId(payment.getId());
         reservation.setCheckInDate(checkInDate);
         reservation.setCheckOutDate(checkOutDate);
 
@@ -62,13 +52,13 @@ public class ReservationService {
         return reservation;
     }
 
-    public Cancellation cancelReservation(ReservationResponseDTO dto, Integer userId) {
+    public Cancellation cancelReservation(ReservationResponseDTO dto) {
         int reservationId = dto.getId();
 
         reservationRepository.findById(reservationId).orElseThrow(() -> new NotFoundException("There is no such reservation!"));
 
-        LocalDateTime checkIn = dto.getCheckInDate();
-        LocalDateTime checkOut = dto.getCheckOutDate();
+        LocalDate checkIn = dto.getCheckInDate();
+        LocalDate checkOut = dto.getCheckOutDate();
         long reservationDuration = Duration.between(checkOut, checkIn).toDays();
 
         int propertyId = dto.getPropertyId();
@@ -78,7 +68,7 @@ public class ReservationService {
 
         Cancellation cancellation = new Cancellation();
         cancellation.setId(reservationId);
-        cancellation.setCancelDate(LocalDateTime.now());
+        cancellation.setCancelDate(LocalDate.now());
         cancellation.setRefundAmount(refund);
 
         cancellationRepository.save(cancellation);
@@ -90,7 +80,35 @@ public class ReservationService {
         return reservationRepository.findById(reservationId).orElseThrow(() -> new NotFoundException("There is no suchReservation!"));
     }
 
-    private void checkReservations(int propertyId, LocalDateTime checkInDate, LocalDateTime checkOutDate) {
+    public Payment addPayment(PaymentResponseDTO paymentDTO) {
+        Payment payment = new Payment();
+
+        payment.setDateOfPayment(paymentDTO.getDateOfPayment());
+        payment.setTotalPrice(paymentDTO.getTotalPrice());
+        payment.setPaymentType(paymentDTO.getPaymentType());
+        payment.setStatus(paymentDTO.getStatus());
+
+        paymentRepository.save(payment);
+
+        return payment;
+    }
+
+    public Payment getPaymentById(int paymentId) {
+        return paymentRepository.findById(paymentId).orElseThrow(() -> new NotFoundException("There is no such payment!"));
+    }
+
+    public Payment confirmPayment(PaymentResponseDTO paymentDTO) {
+        int paymentId = paymentDTO.getId();
+
+        Payment payment = paymentRepository.findById(paymentId).orElseThrow(() -> new NotFoundException("There is no such payment!"));
+        payment.setStatus(paymentDTO.getStatus());
+
+        paymentRepository.save(payment);
+
+        return payment;
+    }
+
+    private void checkReservations(int propertyId, LocalDate checkInDate, LocalDate checkOutDate) {
         List<Reservation> reservations = reservationRepository.findAllByPropertyId(propertyId);
 
 //        for (int i = 0; i < reservations.size(); i++) {
