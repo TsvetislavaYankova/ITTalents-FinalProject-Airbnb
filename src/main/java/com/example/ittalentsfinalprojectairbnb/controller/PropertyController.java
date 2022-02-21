@@ -65,24 +65,16 @@ public class PropertyController {
         SessionManager.validateLogin(request);
         propertyService.deletePropertyById(id);
 
-        SessionManager.validateLogin(request);
-        propertyService.deletePropertyById(id);
-
         return new ResponseEntity<>("Deletion successful!", HttpStatus.OK);
     }
 
     @GetMapping("/properties/{id}")
     public ResponseEntity<PropertyGetByIdDTO> getById(@PathVariable int id) {
         Property p = propertyService.getPropertyById(id);
+
         PropertyGetByIdDTO dto = mapper.map(p, PropertyGetByIdDTO.class);
-        if (p.getImages() != null) {
-            for (PropertyPhoto ph : p.getImages()) {
-                String url = ph.getPhoto_url();
-                dto.getPropertyPhotos().add(url);
-            }
-        }
-        dto.setAddress_id(p.getAddress().getId());
         dto.setHost_id(p.getHost().getId());
+        dto.setAddress_id(p.getAddress().getId());
         return ResponseEntity.ok(dto);
     }
 
@@ -97,6 +89,6 @@ public class PropertyController {
     public ResponseEntity<String> deleteUser(HttpServletRequest request, @PathVariable int id) {
         SessionManager.validateLogin(request);
         propertyService.deletePhotoById(id);
-        return new ResponseEntity<>("Deletion successful!", HttpStatus.OK);
+        return new ResponseEntity<>("Photo deletion successful!", HttpStatus.OK);
     }
 }

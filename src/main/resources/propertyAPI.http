@@ -26,11 +26,11 @@ Content-Type: application/json
 }
 
 ### getPropertyById
-GET localhost:9999/properties/5
+GET localhost:9999/properties/3
 Content-Type: application/json
 
 ### deletePropertyById
-DELETE localhost:9999/delete/5
+DELETE localhost:9999/delete/2
 Content-Type: application/json
 
 ###editAddress
