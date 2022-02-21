@@ -51,6 +51,9 @@ public class Property {
     @Column
     private String description;
 
+    @Column
+    private double guestRating;
+
     @OneToMany(mappedBy = "property")
     private Set<PropertyPhoto> images;
 

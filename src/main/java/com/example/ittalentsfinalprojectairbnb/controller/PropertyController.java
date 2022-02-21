@@ -26,37 +26,37 @@ public class PropertyController {
     private PropertyService propertyService;
 
     @PostMapping("/add")
-    public ResponseEntity<PropertyIdDTO> addProperty(@RequestBody PropertyCreationDTO property, HttpServletRequest request) {
+    public ResponseEntity<PropertyGetByIdDTO> addProperty(@RequestBody PropertyCreationDTO property, HttpServletRequest request) {
         SessionManager.validateLogin(request);
-        PropertyIdDTO dto = propertyService.addProperty(property, (Integer) request.getSession().getAttribute(SessionManager.USER_ID));
+        PropertyGetByIdDTO dto = propertyService.addProperty(property, (Integer) request.getSession().getAttribute(SessionManager.USER_ID));
         return ResponseEntity.ok(dto);
     }
 
     @GetMapping(value = "/filter/by/characteristics")
-    public ResponseEntity<List<PropertyIdDTO>> filterPropertyByCharacteristics(@RequestBody @NonNull FilterPropertyDTO filter) {
-        List<PropertyIdDTO> list = propertyService.filterByCharacteristics(filter);
+    public ResponseEntity<List<PropertyGetByIdDTO>> filterPropertyByCharacteristics(@RequestBody @NonNull FilterPropertyDTO filter) {
+        List<PropertyGetByIdDTO> list = propertyService.filterByCharacteristics(filter);
         return ResponseEntity.ok(list);
     }
 
     @GetMapping(value = "/filter/by/price")
-    public ResponseEntity<List<PropertyIdDTO>> filterPropertyByPrice(@RequestBody @NonNull PropertyPriceDTO filter) {
-        List<PropertyIdDTO> list = propertyService.filterByPrice(filter);
+    public ResponseEntity<List<PropertyGetByIdDTO>> filterPropertyByPrice(@RequestBody @NonNull PropertyPriceDTO filter) {
+        List<PropertyGetByIdDTO> list = propertyService.filterByPrice(filter);
         return ResponseEntity.ok(list);
     }
 
     @PutMapping("/edit/address/{id}")
-    public ResponseEntity<PropertyIdDTO> editAddress(@RequestBody EditAddressDTO addressDTO, HttpServletRequest request,
+    public ResponseEntity<PropertyGetByIdDTO> editAddress(@RequestBody EditAddressDTO addressDTO, HttpServletRequest request,
                                                      @PathVariable int id) {
         SessionManager.validateLogin(request);
-        PropertyIdDTO p = propertyService.editAddress(addressDTO, id);
+        PropertyGetByIdDTO p = propertyService.editAddress(addressDTO, id);
         return ResponseEntity.ok(p);
     }
 
     @PutMapping("/edit/characteristic/{id}")
-    public ResponseEntity<PropertyIdDTO> editCharacteristic(@RequestBody EditCharacteristicDTO characteristicDTO, HttpServletRequest request,
+    public ResponseEntity<PropertyGetByIdDTO> editCharacteristic(@RequestBody EditCharacteristicDTO characteristicDTO, HttpServletRequest request,
                                                             @PathVariable int id) {
         SessionManager.validateLogin(request);
-        PropertyIdDTO p = propertyService.editCharacteristic(characteristicDTO, id);
+        PropertyGetByIdDTO p = propertyService.editCharacteristic(characteristicDTO, id);
         return ResponseEntity.ok(p);
     }
 
@@ -68,21 +68,27 @@ public class PropertyController {
         return new ResponseEntity<>("Deletion successful!", HttpStatus.OK);
     }
 
-    @GetMapping("/properties/{id}")
-    public ResponseEntity<PropertyGetByIdDTO> getById(@PathVariable int id) {
-        Property p = propertyService.getPropertyById(id);
+    @GetMapping("/properties/{propertyId}")
+    public ResponseEntity<PropertyGetByIdDTO> getById(@PathVariable int propertyId) {
+        Property p = propertyService.getPropertyById(propertyId);
 
         PropertyGetByIdDTO dto = mapper.map(p, PropertyGetByIdDTO.class);
         dto.setHost_id(p.getHost().getId());
         dto.setAddress_id(p.getAddress().getId());
+        if (p.getImages() != null) {
+            for (PropertyPhoto ph : p.getImages()) {
+                String url = ph.getPhoto_url();
+                dto.getPropertyPhotos().add(url);
+            }
+        }
         return ResponseEntity.ok(dto);
     }
 
     @SneakyThrows
-    @PostMapping("/photo/upload")
-    public String uploadImage(@RequestBody PropertyIdDTO propertyID, @RequestParam(name = "file") MultipartFile file, HttpServletRequest request) {
+    @PostMapping("/photo/upload/property/{id}")
+    public String uploadImage(@PathVariable int propertyId, @RequestParam(name = "file") MultipartFile file, HttpServletRequest request) {
         SessionManager.validateLogin(request);
-        return propertyService.uploadPhoto(propertyID, file, request);
+        return propertyService.uploadPhoto(propertyId, file, request);
     }
 
     @DeleteMapping("/photo/delete/{id}")

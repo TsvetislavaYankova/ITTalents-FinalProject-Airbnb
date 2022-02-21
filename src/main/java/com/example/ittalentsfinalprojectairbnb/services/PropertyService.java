@@ -36,7 +36,7 @@ public class PropertyService {
     private PropertyPhotoRepository propertyPhotoRepository;
 
 
-    public PropertyIdDTO addProperty(PropertyCreationDTO propertyDTO, Integer id) {
+    public PropertyGetByIdDTO addProperty(PropertyCreationDTO propertyDTO, Integer id) {
 
         propertyDTO.addressValidation();
         propertyDTO.propertyValidation();
@@ -90,7 +90,7 @@ public class PropertyService {
         property.setAddress(address);
         propertyRepository.save(property);
 
-        PropertyIdDTO dto = mapper.map(property, PropertyIdDTO.class);
+        PropertyGetByIdDTO dto = mapper.map(property, PropertyGetByIdDTO.class);
         return dto;
     }
 
@@ -109,7 +109,7 @@ public class PropertyService {
     }
 
 
-    public PropertyIdDTO editCharacteristic(EditCharacteristicDTO characteristicDTO, int id) {
+    public PropertyGetByIdDTO editCharacteristic(EditCharacteristicDTO characteristicDTO, int id) {
         Property p = getPropertyById(id);
         Characteristic ch = p.getCharacteristic();
 
@@ -147,11 +147,11 @@ public class PropertyService {
         p.setCharacteristic(ch);
         propertyRepository.save(p);
 
-        PropertyIdDTO dto = mapper.map(p, PropertyIdDTO.class);
+        PropertyGetByIdDTO dto = mapper.map(p, PropertyGetByIdDTO.class);
         return dto;
     }
 
-    public PropertyIdDTO editAddress(EditAddressDTO addressDTO, int id) {
+    public PropertyGetByIdDTO editAddress(EditAddressDTO addressDTO, int id) {
         Property p = getPropertyById(id);
         Address address = p.getAddress();
 
@@ -173,13 +173,13 @@ public class PropertyService {
         p.setAddress(address);
         propertyRepository.save(p);
 
-        PropertyIdDTO dto = mapper.map(p, PropertyIdDTO.class);
+        PropertyGetByIdDTO dto = mapper.map(p, PropertyGetByIdDTO.class);
         return dto;
     }
 
-    public List<PropertyIdDTO> filterByCharacteristics(FilterPropertyDTO filter) {
+    public List<PropertyGetByIdDTO> filterByCharacteristics(FilterPropertyDTO filter) {
         List<Property> allProperties = propertyRepository.findAll();
-        List<PropertyIdDTO> filteredPropertiesId = new ArrayList<>();
+        List<PropertyGetByIdDTO> filteredPropertiesId = new ArrayList<>();
 
         for (Property p : allProperties) {
             if (p.getAddress().getCountry().equalsIgnoreCase((filter.getCountry())) &&
@@ -196,7 +196,7 @@ public class PropertyService {
                     p.getCharacteristic().getHasParkingSpot() == filter.getHasParkingSpot() &&
                     p.getCharacteristic().getHasFitness() == filter.getHasFitness() &&
                     p.getCharacteristic().getHasWashingMachine() == filter.getHasWashingMachine()) {
-                PropertyIdDTO dto = new PropertyIdDTO();
+                PropertyGetByIdDTO dto = new PropertyGetByIdDTO();
                 dto.setId(p.getId());
                 filteredPropertiesId.add(dto);
             }
@@ -205,13 +205,13 @@ public class PropertyService {
     }
 
 
-    public List<PropertyIdDTO> filterByPrice(PropertyPriceDTO filter) {
+    public List<PropertyGetByIdDTO> filterByPrice(PropertyPriceDTO filter) {
         List<Property> allProperties = propertyRepository.findAll();
-        List<PropertyIdDTO> filteredPropertiesId = new ArrayList<>();
+        List<PropertyGetByIdDTO> filteredPropertiesId = new ArrayList<>();
 
         for (Property p : allProperties) {
             if (p.getPricePerNight() >= filter.getLowerLimitPrice() && p.getPricePerNight() <= filter.getUpperLimitPrice()) {
-                PropertyIdDTO dto = new PropertyIdDTO();
+                PropertyGetByIdDTO dto = new PropertyGetByIdDTO();
                 dto.setId(p.getId());
                 filteredPropertiesId.add(dto);
             }
@@ -221,7 +221,7 @@ public class PropertyService {
     }
 
     @SneakyThrows
-    public String uploadPhoto(PropertyIdDTO propertyID, MultipartFile file, HttpServletRequest request) {
+    public String uploadPhoto(int propertyId, MultipartFile file, HttpServletRequest request) {
         SessionManager.validateLogin(request);
 
         String extension = FilenameUtils.getExtension(file.getOriginalFilename());
@@ -230,8 +230,9 @@ public class PropertyService {
         Property p = new Property();
         PropertyPhoto photo = new PropertyPhoto();
         photo.setPhoto_url(name);
-        p.setId(propertyID.getId());
+        p.setId(propertyId);
         p.getImages().add(photo);
+
         propertyPhotoRepository.save(photo);
         return name;
     }

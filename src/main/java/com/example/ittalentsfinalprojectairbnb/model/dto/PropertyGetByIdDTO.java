@@ -16,5 +16,6 @@ public class PropertyGetByIdDTO {
     private int guests;
     private double pricePerNight;
     private String description;
+    private double guestRating;
     private Set<String> propertyPhotos;
 }
