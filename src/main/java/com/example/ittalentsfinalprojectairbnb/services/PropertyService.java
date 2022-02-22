@@ -3,10 +3,7 @@ package com.example.ittalentsfinalprojectairbnb.services;
 import com.example.ittalentsfinalprojectairbnb.exceptions.BadRequestException;
 import com.example.ittalentsfinalprojectairbnb.exceptions.NotFoundException;
 import com.example.ittalentsfinalprojectairbnb.model.dto.*;
-import com.example.ittalentsfinalprojectairbnb.model.entities.Address;
-import com.example.ittalentsfinalprojectairbnb.model.entities.Characteristic;
-import com.example.ittalentsfinalprojectairbnb.model.entities.Property;
-import com.example.ittalentsfinalprojectairbnb.model.entities.PropertyPhoto;
+import com.example.ittalentsfinalprojectairbnb.model.entities.*;
 import com.example.ittalentsfinalprojectairbnb.model.repositories.*;
 import com.example.ittalentsfinalprojectairbnb.utils.SessionManager;
 import lombok.SneakyThrows;
@@ -22,6 +19,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class PropertyService {
@@ -34,6 +32,8 @@ public class PropertyService {
     private UserRepository userRepository;
     @Autowired
     private PropertyPhotoRepository propertyPhotoRepository;
+    @Autowired
+    private ReviewRepository reviewRepository;
 
 
     public PropertyGetByIdDTO addProperty(PropertyCreationDTO propertyDTO, Integer id) {
@@ -177,6 +177,21 @@ public class PropertyService {
         return dto;
     }
 
+    public PropertyGetByIdDTO addRating(int id) {
+        double finalRating = 0;
+        Property p = propertyRepository.findById(id).orElseThrow(() -> new NotFoundException("Property not found"));
+        Set<Review> propertyRatings = reviewRepository.findByPropertyId(p.getId()).orElseThrow(() -> new NotFoundException("This property has not received reviews!"));
+        for (Review r : propertyRatings) {
+            finalRating += r.getRating();
+        }
+        finalRating = finalRating / propertyRatings.size();
+        p.setGuestRating(finalRating);
+        propertyRepository.save(p);
+
+        PropertyGetByIdDTO dto = mapper.map(p, PropertyGetByIdDTO.class);
+        return dto;
+    }
+
     public List<PropertyGetByIdDTO> filterByCharacteristics(FilterPropertyDTO filter) {
         List<Property> allProperties = propertyRepository.findAll();
         List<PropertyGetByIdDTO> filteredPropertiesId = new ArrayList<>();
@@ -245,6 +260,5 @@ public class PropertyService {
             throw new NotFoundException("Photo not found!");
         }
     }
-
 
 }

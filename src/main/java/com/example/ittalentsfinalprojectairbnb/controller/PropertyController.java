@@ -46,7 +46,7 @@ public class PropertyController {
 
     @PutMapping("/edit/address/{id}")
     public ResponseEntity<PropertyGetByIdDTO> editAddress(@RequestBody EditAddressDTO addressDTO, HttpServletRequest request,
-                                                     @PathVariable int id) {
+                                                          @PathVariable int id) {
         SessionManager.validateLogin(request);
         PropertyGetByIdDTO p = propertyService.editAddress(addressDTO, id);
         return ResponseEntity.ok(p);
@@ -54,16 +54,23 @@ public class PropertyController {
 
     @PutMapping("/edit/characteristic/{id}")
     public ResponseEntity<PropertyGetByIdDTO> editCharacteristic(@RequestBody EditCharacteristicDTO characteristicDTO, HttpServletRequest request,
-                                                            @PathVariable int id) {
+                                                                 @PathVariable int id) {
         SessionManager.validateLogin(request);
         PropertyGetByIdDTO p = propertyService.editCharacteristic(characteristicDTO, id);
         return ResponseEntity.ok(p);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteProperty(HttpServletRequest request, @PathVariable int id) {
+    @PutMapping("/add/rating/{propertyId}")
+    public ResponseEntity<PropertyGetByIdDTO> addRating(HttpServletRequest request, @PathVariable int propertyId) {
         SessionManager.validateLogin(request);
-        propertyService.deletePropertyById(id);
+        PropertyGetByIdDTO p = propertyService.addRating(propertyId);
+        return ResponseEntity.ok(p);
+    }
+
+    @DeleteMapping("/delete/{propertyId}")
+    public ResponseEntity<String> deleteProperty(HttpServletRequest request, @PathVariable int propertyId) {
+        SessionManager.validateLogin(request);
+        propertyService.deletePropertyById(propertyId);
 
         return new ResponseEntity<>("Deletion successful!", HttpStatus.OK);
     }
@@ -85,16 +92,16 @@ public class PropertyController {
     }
 
     @SneakyThrows
-    @PostMapping("/photo/upload/property/{id}")
+    @PostMapping("/photo/upload/{propertyId}")
     public String uploadImage(@PathVariable int propertyId, @RequestParam(name = "file") MultipartFile file, HttpServletRequest request) {
         SessionManager.validateLogin(request);
         return propertyService.uploadPhoto(propertyId, file, request);
     }
 
-    @DeleteMapping("/photo/delete/{id}")
-    public ResponseEntity<String> deleteUser(HttpServletRequest request, @PathVariable int id) {
+    @DeleteMapping("/photo/delete/{photoId}")
+    public ResponseEntity<String> deletePhoto(HttpServletRequest request, @PathVariable int photoId) {
         SessionManager.validateLogin(request);
-        propertyService.deletePhotoById(id);
+        propertyService.deletePhotoById(photoId);
         return new ResponseEntity<>("Photo deletion successful!", HttpStatus.OK);
     }
 }
