@@ -40,7 +40,7 @@ public class UserService {
         if (password.isBlank() || password == null) {
             throw new BadRequestException("Password is a mandatory field!");
         }
-        User user = repository.findByEmail(email);
+        User user = repository.findByEmail(email).orElseThrow(() -> new NotFoundException("Wrong credentials! Access denied!"));
 
         if (!BCrypt.checkpw(password, user.getPassword())) {
             throw new UnauthorizedException("Wrong credentials! Access denied!");
