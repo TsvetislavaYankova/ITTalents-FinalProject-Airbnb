@@ -35,8 +35,6 @@ public class UserService {
 
     public UserResponseDTO login(String email, String password) {
 
-        validateEmail(email);
-
         if (password.isBlank() || password == null) {
             throw new BadRequestException("Password is a mandatory field!");
         }
@@ -57,19 +55,21 @@ public class UserService {
                                     LocalDate dateOfBirth, String phoneNumber, short isHost) {
 
         validateEmail(email);
+        validatePhoneNumber(phoneNumber);
+        validatePassword(password);
 
         if (password == null || password.isBlank()) {
             throw new BadRequestException("Password is a mandatory field!");
         }
-        validatePassword(password);
+
         if (!password.equals(confirmedPassword)) {
             throw new BadRequestException("Passwords mismatch!");
         }
-        validatePhoneNumber(phoneNumber);
-        if (repository.findByEmail(email) != null) {
+
+        if (repository.findByEmail(email).isPresent()) {
             throw new BadRequestException("User with provided email address already exists!");
         }
-        if (repository.findByPhoneNumber(phoneNumber) != null) {
+        if (repository.findByPhoneNumber(phoneNumber).isPresent()) {
             throw new BadRequestException("User with provided phone number already exists!");
         }
         User user = new User();
