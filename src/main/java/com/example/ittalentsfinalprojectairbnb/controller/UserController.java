@@ -51,7 +51,7 @@ public class UserController {
         return new ResponseEntity<>("Logged out successfully!", HttpStatus.OK);
     }
 
-    @GetMapping("/get_user/{id}")
+    @GetMapping("/user/{id}")
     public ResponseEntity<UserGetByIdDTO> getById(@PathVariable("id") int id) {
 
         User user = service.getUserById(id);
@@ -69,7 +69,7 @@ public class UserController {
         return ResponseEntity.ok(dto);
     }
 
-    @DeleteMapping("/delete_user")
+    @DeleteMapping("/delete/user")
     public ResponseEntity<String> deleteUser(HttpServletRequest request) {
         SessionManager.validateLogin(request);
         int userId = (Integer) request.getSession().getAttribute(SessionManager.USER_ID);
@@ -79,7 +79,7 @@ public class UserController {
         return new ResponseEntity<>("User deletion successful!", HttpStatus.OK);
     }
 
-    @PutMapping("/change_password")
+    @PutMapping("/change/password")
     public ResponseEntity<UserResponseDTO> changePassword(@RequestBody UserEditDTO userDTO, HttpServletRequest request) {
         SessionManager.validateLogin(request);
 
@@ -89,7 +89,7 @@ public class UserController {
         return ResponseEntity.ok(dto);
     }
 
-    @PutMapping("/forgot_password")
+    @PutMapping("/forgot/password")
     public ResponseEntity<UserResponseDTO> forgotPassword(@RequestBody UserEditDTO userDTO, HttpServletRequest request) {
         SessionManager.validateLogin(request);
 
