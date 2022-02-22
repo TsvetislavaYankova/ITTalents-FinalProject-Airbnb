@@ -10,7 +10,6 @@ import lombok.SneakyThrows;
 import org.apache.commons.io.FilenameUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,7 +36,7 @@ public class PropertyService {
     private ReviewRepository reviewRepository;
 
 
-    public PropertyGetByIdDTO addProperty(PropertyCreationDTO propertyDTO, Integer id) {
+    public PropertyResponseDTO addProperty(PropertyCreationDTO propertyDTO, Integer id) {
 
         propertyDTO.addressValidation();
         propertyDTO.propertyValidation();
@@ -91,7 +90,7 @@ public class PropertyService {
         property.setAddress(address);
         propertyRepository.save(property);
 
-        PropertyGetByIdDTO dto = mapper.map(property, PropertyGetByIdDTO.class);
+        PropertyResponseDTO dto = mapper.map(property, PropertyResponseDTO.class);
 
         dto.additionalMapping(property);
 
@@ -113,7 +112,7 @@ public class PropertyService {
     }
 
 
-    public PropertyGetByIdDTO editCharacteristic(EditCharacteristicDTO characteristicDTO, int id) {
+    public PropertyResponseDTO editCharacteristic(EditCharacteristicDTO characteristicDTO, int id) {
         Property p = getPropertyById(id);
         Characteristic ch = p.getCharacteristic();
 
@@ -151,12 +150,12 @@ public class PropertyService {
         p.setCharacteristic(ch);
         propertyRepository.save(p);
 
-        PropertyGetByIdDTO dto = mapper.map(p, PropertyGetByIdDTO.class);
+        PropertyResponseDTO dto = mapper.map(p, PropertyResponseDTO.class);
         dto.additionalMapping(p);
         return dto;
     }
 
-    public PropertyGetByIdDTO editAddress(EditAddressDTO addressDTO, int id) {
+    public PropertyResponseDTO editAddress(EditAddressDTO addressDTO, int id) {
         Property p = getPropertyById(id);
         Address address = p.getAddress();
 
@@ -178,12 +177,12 @@ public class PropertyService {
         p.setAddress(address);
         propertyRepository.save(p);
 
-        PropertyGetByIdDTO dto = mapper.map(p, PropertyGetByIdDTO.class);
+        PropertyResponseDTO dto = mapper.map(p, PropertyResponseDTO.class);
         dto.additionalMapping(p);
         return dto;
     }
 
-    public PropertyGetByIdDTO addRating(int id) {
+    public PropertyResponseDTO addRating(int id) {
         double finalRating = 0;
         Property p = propertyRepository.findById(id).orElseThrow(() -> new NotFoundException("Property not found"));
         Set<Review> propertyRatings = reviewRepository.findByPropertyId(p.getId()).orElseThrow(() -> new NotFoundException("This property has not received reviews!"));
@@ -194,14 +193,14 @@ public class PropertyService {
         p.setGuestRating(finalRating);
         propertyRepository.save(p);
 
-        PropertyGetByIdDTO dto = mapper.map(p, PropertyGetByIdDTO.class);
+        PropertyResponseDTO dto = mapper.map(p, PropertyResponseDTO.class);
         dto.additionalMapping(p);
         return dto;
     }
 
-    public List<PropertyGetByIdDTO> filterByCharacteristics(FilterPropertyDTO filter) {
+    public List<PropertyResponseDTO> filterByCharacteristics(FilterPropertyDTO filter) {
         List<Property> allProperties = propertyRepository.findAll();
-        List<PropertyGetByIdDTO> filteredProperties = new ArrayList<>();
+        List<PropertyResponseDTO> filteredProperties = new ArrayList<>();
 
         for (Property p : allProperties) {
             if (p.getAddress().getCountry().equalsIgnoreCase((filter.getCountry())) &&
@@ -218,7 +217,7 @@ public class PropertyService {
                     p.getCharacteristic().getHasParkingSpot() == filter.getHasParkingSpot() &&
                     p.getCharacteristic().getHasFitness() == filter.getHasFitness() &&
                     p.getCharacteristic().getHasWashingMachine() == filter.getHasWashingMachine()) {
-                PropertyGetByIdDTO dto = mapper.map(p, PropertyGetByIdDTO.class);
+                PropertyResponseDTO dto = mapper.map(p, PropertyResponseDTO.class);
                 dto.additionalMapping(p);
                 filteredProperties.add(dto);
             }
@@ -227,13 +226,13 @@ public class PropertyService {
     }
 
 
-    public List<PropertyGetByIdDTO> filterByPrice(PropertyPriceDTO filter) {
+    public List<PropertyResponseDTO> filterByPrice(PropertyPriceDTO filter) {
         List<Property> allProperties = propertyRepository.findAll();
-        List<PropertyGetByIdDTO> filteredPropertiesId = new ArrayList<>();
+        List<PropertyResponseDTO> filteredPropertiesId = new ArrayList<>();
 
         for (Property p : allProperties) {
             if (p.getPricePerNight() >= filter.getLowerLimitPrice() && p.getPricePerNight() <= filter.getUpperLimitPrice()) {
-                PropertyGetByIdDTO dto = mapper.map(p, PropertyGetByIdDTO.class);
+                PropertyResponseDTO dto = mapper.map(p, PropertyResponseDTO.class);
                 dto.additionalMapping(p);
                 filteredPropertiesId.add(dto);
             }

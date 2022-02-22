@@ -22,6 +22,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Service
@@ -57,6 +58,7 @@ public class UserService {
         validateEmail(email);
         validatePhoneNumber(phoneNumber);
         validatePassword(password);
+        validateDateOfBirth(dateOfBirth);
 
         if (password == null || password.isBlank()) {
             throw new BadRequestException("Password is a mandatory field!");
@@ -135,6 +137,7 @@ public class UserService {
         }
 
         if (dateOfBirth != null && !dateOfBirth.equals(user.getDateOfBirth())) {
+            validateDateOfBirth(dateOfBirth);
             user.setDateOfBirth(dateOfBirth);
         }
 
@@ -224,5 +227,9 @@ public class UserService {
         }
     }
 
-
+    private void validateDateOfBirth(LocalDate dateOfBirth) {
+        if(!dateOfBirth.format(DateTimeFormatter.ofLocalizedDate())){
+            throw new BadRequestException("Date of birth should be formatted as: ")
+        }
+    }
 }

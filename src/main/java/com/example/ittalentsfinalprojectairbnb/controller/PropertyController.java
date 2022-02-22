@@ -2,7 +2,6 @@ package com.example.ittalentsfinalprojectairbnb.controller;
 
 import com.example.ittalentsfinalprojectairbnb.model.dto.*;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Property;
-import com.example.ittalentsfinalprojectairbnb.model.entities.PropertyPhoto;
 import com.example.ittalentsfinalprojectairbnb.services.PropertyService;
 import com.example.ittalentsfinalprojectairbnb.utils.SessionManager;
 import lombok.NonNull;
@@ -26,44 +25,44 @@ public class PropertyController {
     private PropertyService propertyService;
 
     @PostMapping("/add")
-    public ResponseEntity<PropertyGetByIdDTO> addProperty(@RequestBody PropertyCreationDTO property, HttpServletRequest request) {
+    public ResponseEntity<PropertyResponseDTO> addProperty(@RequestBody PropertyCreationDTO property, HttpServletRequest request) {
         SessionManager.validateLogin(request);
-        PropertyGetByIdDTO dto = propertyService.addProperty(property, (Integer) request.getSession().getAttribute(SessionManager.USER_ID));
+        PropertyResponseDTO dto = propertyService.addProperty(property, (Integer) request.getSession().getAttribute(SessionManager.USER_ID));
         return ResponseEntity.ok(dto);
     }
 
     @GetMapping(value = "/filter/by/characteristics")
-    public ResponseEntity<List<PropertyGetByIdDTO>> filterPropertyByCharacteristics(@RequestBody @NonNull FilterPropertyDTO filter) {
-        List<PropertyGetByIdDTO> list = propertyService.filterByCharacteristics(filter);
+    public ResponseEntity<List<PropertyResponseDTO>> filterPropertyByCharacteristics(@RequestBody @NonNull FilterPropertyDTO filter) {
+        List<PropertyResponseDTO> list = propertyService.filterByCharacteristics(filter);
         return ResponseEntity.ok(list);
     }
 
     @GetMapping(value = "/filter/by/price")
-    public ResponseEntity<List<PropertyGetByIdDTO>> filterPropertyByPrice(@RequestBody @NonNull PropertyPriceDTO filter) {
-        List<PropertyGetByIdDTO> list = propertyService.filterByPrice(filter);
+    public ResponseEntity<List<PropertyResponseDTO>> filterPropertyByPrice(@RequestBody @NonNull PropertyPriceDTO filter) {
+        List<PropertyResponseDTO> list = propertyService.filterByPrice(filter);
         return ResponseEntity.ok(list);
     }
 
     @PutMapping("/edit/address/{id}")
-    public ResponseEntity<PropertyGetByIdDTO> editAddress(@RequestBody EditAddressDTO addressDTO, HttpServletRequest request,
-                                                          @PathVariable int id) {
+    public ResponseEntity<PropertyResponseDTO> editAddress(@RequestBody EditAddressDTO addressDTO, HttpServletRequest request,
+                                                           @PathVariable int id) {
         SessionManager.validateLogin(request);
-        PropertyGetByIdDTO p = propertyService.editAddress(addressDTO, id);
+        PropertyResponseDTO p = propertyService.editAddress(addressDTO, id);
         return ResponseEntity.ok(p);
     }
 
     @PutMapping("/edit/characteristic/{id}")
-    public ResponseEntity<PropertyGetByIdDTO> editCharacteristic(@RequestBody EditCharacteristicDTO characteristicDTO, HttpServletRequest request,
-                                                                 @PathVariable int id) {
+    public ResponseEntity<PropertyResponseDTO> editCharacteristic(@RequestBody EditCharacteristicDTO characteristicDTO, HttpServletRequest request,
+                                                                  @PathVariable int id) {
         SessionManager.validateLogin(request);
-        PropertyGetByIdDTO p = propertyService.editCharacteristic(characteristicDTO, id);
+        PropertyResponseDTO p = propertyService.editCharacteristic(characteristicDTO, id);
         return ResponseEntity.ok(p);
     }
 
     @PutMapping("/add/rating/{propertyId}")
-    public ResponseEntity<PropertyGetByIdDTO> addRating(HttpServletRequest request, @PathVariable int propertyId) {
+    public ResponseEntity<PropertyResponseDTO> addRating(HttpServletRequest request, @PathVariable int propertyId) {
         SessionManager.validateLogin(request);
-        PropertyGetByIdDTO p = propertyService.addRating(propertyId);
+        PropertyResponseDTO p = propertyService.addRating(propertyId);
         return ResponseEntity.ok(p);
     }
 
@@ -76,10 +75,10 @@ public class PropertyController {
     }
 
     @GetMapping("/properties/{propertyId}")
-    public ResponseEntity<PropertyGetByIdDTO> getById(@PathVariable int propertyId) {
+    public ResponseEntity<PropertyResponseDTO> getById(@PathVariable int propertyId) {
         Property p = propertyService.getPropertyById(propertyId);
 
-        PropertyGetByIdDTO dto = mapper.map(p, PropertyGetByIdDTO.class);
+        PropertyResponseDTO dto = mapper.map(p, PropertyResponseDTO.class);
         dto.additionalMapping(p);
         return ResponseEntity.ok(dto);
     }

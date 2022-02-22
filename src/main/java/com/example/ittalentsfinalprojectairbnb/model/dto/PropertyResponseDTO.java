@@ -9,7 +9,7 @@ import lombok.Data;
 import java.util.Set;
 
 @Data
-public class PropertyGetByIdDTO {
+public class PropertyResponseDTO {
 
     private int id;
     private int host_id;
