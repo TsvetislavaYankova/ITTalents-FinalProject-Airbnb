@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.swing.text.DateFormatter;
 import java.io.File;
 import java.nio.file.Files;
 import java.time.LocalDate;
@@ -228,8 +229,8 @@ public class UserService {
     }
 
     private void validateDateOfBirth(LocalDate dateOfBirth) {
-        if(!dateOfBirth.format(DateTimeFormatter.ofLocalizedDate())){
-            throw new BadRequestException("Date of birth should be formatted as: ")
+        if(!dateOfBirth.toString().matches("^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$")){
+            throw new BadRequestException("Date of birth should be formatted as: yyyy-mm-dd");
         }
     }
 }

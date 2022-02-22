@@ -17,14 +17,14 @@ Content-Type: application/json
   "confirmedPassword": "MorskoKonche3!",
   "firstName": "John",
   "lastName": "Ivanov",
-  "dateOfBirth": "1998-08-10",
+  "dateOfBirth": "1998-12-08",
   "gender": "m",
- "phoneNumber": "0999789294",
+ "phoneNumber": "0999789293",
   "isHost": 1
 }
 
 ### get by id
-GET localhost:9999/get_user/3
+GET localhost:9999/get_user/5
 Content-Type: application/json
 
 ### edit
