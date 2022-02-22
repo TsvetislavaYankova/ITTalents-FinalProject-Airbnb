@@ -16,8 +16,10 @@ public class PropertyPhoto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     @Column
     private String photo_url;
+
     @ManyToOne
     @JoinColumn(name = "property_id")
     private Property property;

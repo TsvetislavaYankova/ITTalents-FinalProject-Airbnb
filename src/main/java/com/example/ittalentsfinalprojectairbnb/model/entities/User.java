@@ -32,7 +32,7 @@ public class User {
     private char gender;
 
     @Column
-    @DateTimeFormat(pattern = "yyyy/mm/dd")
+    @DateTimeFormat(pattern = "yyyy-mm-dd")
     private LocalDate dateOfBirth;
 
     @Column

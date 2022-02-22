@@ -59,7 +59,6 @@ public class UserService {
         validateEmail(email);
         validatePhoneNumber(phoneNumber);
         validatePassword(password);
-        validateDateOfBirth(dateOfBirth);
 
         if (password == null || password.isBlank()) {
             throw new BadRequestException("Password is a mandatory field!");
@@ -138,7 +137,6 @@ public class UserService {
         }
 
         if (dateOfBirth != null && !dateOfBirth.equals(user.getDateOfBirth())) {
-            validateDateOfBirth(dateOfBirth);
             user.setDateOfBirth(dateOfBirth);
         }
 
@@ -187,12 +185,12 @@ public class UserService {
     public String uploadPhoto(MultipartFile file, int loggedUserId) {
 
         String extension = FilenameUtils.getExtension(file.getOriginalFilename());
-        String name = System.nanoTime() + "." + extension;
-        Files.copy(file.getInputStream(), new File("uploads" + File.separator + name).toPath());
+        String fileName = System.nanoTime() + "." + extension;
+        Files.copy(file.getInputStream(), new File("images" + File.separator + fileName).toPath());
         User u = getUserById(loggedUserId);
-        u.setPhotoUrl(name);
+        u.setPhotoUrl(fileName);
         repository.save(u);
-        return name;
+        return fileName;
     }
 
     public void deletePhoto(int id) {
@@ -225,12 +223,6 @@ public class UserService {
                     "Contain at least one digit. " +
                     "Contain at least one upper case character. " +
                     "No spaces are allowed");
-        }
-    }
-
-    private void validateDateOfBirth(LocalDate dateOfBirth) {
-        if(!dateOfBirth.toString().matches("^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$")){
-            throw new BadRequestException("Date of birth should be formatted as: yyyy-mm-dd");
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.ittalentsfinalprojectairbnb.model.dto;
 
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,7 +16,10 @@ public class UserEditDTO {
     private String confirmedPassword;
     private char gender;
     private String email;
-    private LocalDate dateOfBirth;
     private String phoneNumber;
     private short isHost;
+
+    @DateTimeFormat(pattern = "yyyy-mm-dd")
+    private LocalDate dateOfBirth;
+
 }

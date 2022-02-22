@@ -19,7 +19,7 @@ public class UserRegisterDTO {
     private String phoneNumber;
     private short isHost;
 
-    @DateTimeFormat(pattern = "yyyy/mm/dd")
+    @DateTimeFormat(pattern = "yyyy-mm-dd")
     private LocalDate dateOfBirth;
 
 

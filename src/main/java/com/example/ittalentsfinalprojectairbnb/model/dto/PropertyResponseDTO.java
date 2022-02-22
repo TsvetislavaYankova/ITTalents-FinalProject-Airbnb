@@ -20,7 +20,7 @@ public class PropertyResponseDTO {
     private double pricePerNight;
     private String description;
     private double guestRating;
-    private Set<String> propertyPhotos;
+    private Set<String> images;
 
     private String country;
     private String city;
@@ -41,13 +41,6 @@ public class PropertyResponseDTO {
 
     public void additionalMapping(Property property) {
         this.setHost_id(property.getHost().getId());
-
-        if (property.getImages() != null) {
-            for (PropertyPhoto ph : property.getImages()) {
-                String url = ph.getPhoto_url();
-                this.getPropertyPhotos().add(url);
-            }
-        }
 
         this.setCountry(property.getAddress().getCountry());
         this.setCity(property.getAddress().getCity());

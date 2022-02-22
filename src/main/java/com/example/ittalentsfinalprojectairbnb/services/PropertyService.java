@@ -246,16 +246,20 @@ public class PropertyService {
         SessionManager.validateLogin(request);
 
         String extension = FilenameUtils.getExtension(file.getOriginalFilename());
-        String name = System.nanoTime() + "." + extension;
-        Files.copy(file.getInputStream(), new File("uploads" + File.separator + name).toPath());
-        Property p = new Property();
-        PropertyPhoto photo = new PropertyPhoto();
-        photo.setPhoto_url(name);
-        p.setId(propertyId);
-        p.getImages().add(photo);
+        String fileName = System.nanoTime() + "." + extension;
+        Files.copy(file.getInputStream(), new File("images" + File.separator + fileName).toPath());
+        Optional<Property> p = propertyRepository.findById(propertyId);
+        if (p.isPresent()) {
+            PropertyPhoto photo = new PropertyPhoto();
+            photo.setPhoto_url(fileName);
+            photo.setProperty(p.get());
 
-        propertyPhotoRepository.save(photo);
-        return name;
+            propertyPhotoRepository.save(photo);
+        } else {
+            throw new NotFoundException("Property not found! Photo upload failed!");
+        }
+
+        return fileName;
     }
 
     public void deletePhotoById(int id) {
