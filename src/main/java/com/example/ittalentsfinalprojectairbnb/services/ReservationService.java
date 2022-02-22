@@ -1,5 +1,6 @@
 package com.example.ittalentsfinalprojectairbnb.services;
 
+import com.example.ittalentsfinalprojectairbnb.exceptions.BadRequestException;
 import com.example.ittalentsfinalprojectairbnb.exceptions.NotFoundException;
 import com.example.ittalentsfinalprojectairbnb.model.dto.PaymentResponseDTO;
 import com.example.ittalentsfinalprojectairbnb.model.dto.ReservationResponseDTO;
@@ -30,7 +31,6 @@ public class ReservationService {
     @Autowired
     private PaymentRepository paymentRepository;
 
-    //todo check if property is booked
     public Reservation makeReservation(ReservationResponseDTO dto, Integer userId) {
         int propertyId = dto.getPropertyId();
 
@@ -39,7 +39,9 @@ public class ReservationService {
         LocalDate checkInDate = dto.getCheckInDate();
         LocalDate checkOutDate = dto.getCheckOutDate();
 
-        checkReservations(propertyId, checkInDate, checkOutDate);
+        if (!checkReservations(propertyId, checkInDate, checkOutDate)) {
+            throw new BadRequestException("You can't make reservations in this period!");
+        }
 
         Reservation reservation = new Reservation();
         reservation.setPropertyId(propertyId);
@@ -108,13 +110,24 @@ public class ReservationService {
         return payment;
     }
 
-    private void checkReservations(int propertyId, LocalDate checkInDate, LocalDate checkOutDate) {
+    private boolean checkReservations(int propertyId, LocalDate checkInDate, LocalDate checkOutDate) {
+        boolean isApproved = false;
         List<Reservation> reservations = reservationRepository.findAllByPropertyId(propertyId);
 
-//        for (int i = 0; i < reservations.size(); i++) {
-//            LocalDateTime checkInDate1 = reservations.get(i).getCheckInDate();
-//            LocalDateTime checkOutDate1 = reservations.get(i).getCheckOutDate();
-//            //todo
-//        }
+        for (Reservation reservation : reservations) {
+            LocalDate checkInDateR = reservation.getCheckInDate();
+            LocalDate checkOutDateR = reservation.getCheckOutDate();
+
+            if (checkInDate.isEqual(checkInDateR)) {
+                continue;
+            } else if (checkInDate.isAfter(checkInDateR) && checkInDate.isBefore(checkOutDateR)) {
+                continue;
+            } else if (checkOutDate.isAfter(checkInDateR)) {
+                continue;
+            } else {
+                isApproved = true;
+            }
+        }
+        return isApproved;
     }
 }
