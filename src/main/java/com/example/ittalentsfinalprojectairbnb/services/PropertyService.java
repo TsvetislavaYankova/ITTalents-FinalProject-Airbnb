@@ -10,6 +10,7 @@ import lombok.SneakyThrows;
 import org.apache.commons.io.FilenameUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -91,6 +92,9 @@ public class PropertyService {
         propertyRepository.save(property);
 
         PropertyGetByIdDTO dto = mapper.map(property, PropertyGetByIdDTO.class);
+
+        dto.additionalMapping(property);
+
         return dto;
     }
 
@@ -148,6 +152,7 @@ public class PropertyService {
         propertyRepository.save(p);
 
         PropertyGetByIdDTO dto = mapper.map(p, PropertyGetByIdDTO.class);
+        dto.additionalMapping(p);
         return dto;
     }
 
@@ -174,6 +179,7 @@ public class PropertyService {
         propertyRepository.save(p);
 
         PropertyGetByIdDTO dto = mapper.map(p, PropertyGetByIdDTO.class);
+        dto.additionalMapping(p);
         return dto;
     }
 
@@ -189,12 +195,13 @@ public class PropertyService {
         propertyRepository.save(p);
 
         PropertyGetByIdDTO dto = mapper.map(p, PropertyGetByIdDTO.class);
+        dto.additionalMapping(p);
         return dto;
     }
 
     public List<PropertyGetByIdDTO> filterByCharacteristics(FilterPropertyDTO filter) {
         List<Property> allProperties = propertyRepository.findAll();
-        List<PropertyGetByIdDTO> filteredPropertiesId = new ArrayList<>();
+        List<PropertyGetByIdDTO> filteredProperties = new ArrayList<>();
 
         for (Property p : allProperties) {
             if (p.getAddress().getCountry().equalsIgnoreCase((filter.getCountry())) &&
@@ -211,12 +218,12 @@ public class PropertyService {
                     p.getCharacteristic().getHasParkingSpot() == filter.getHasParkingSpot() &&
                     p.getCharacteristic().getHasFitness() == filter.getHasFitness() &&
                     p.getCharacteristic().getHasWashingMachine() == filter.getHasWashingMachine()) {
-                PropertyGetByIdDTO dto = new PropertyGetByIdDTO();
-                dto.setId(p.getId());
-                filteredPropertiesId.add(dto);
+                PropertyGetByIdDTO dto = mapper.map(p, PropertyGetByIdDTO.class);
+                dto.additionalMapping(p);
+                filteredProperties.add(dto);
             }
         }
-        return filteredPropertiesId;
+        return filteredProperties;
     }
 
 
@@ -226,8 +233,8 @@ public class PropertyService {
 
         for (Property p : allProperties) {
             if (p.getPricePerNight() >= filter.getLowerLimitPrice() && p.getPricePerNight() <= filter.getUpperLimitPrice()) {
-                PropertyGetByIdDTO dto = new PropertyGetByIdDTO();
-                dto.setId(p.getId());
+                PropertyGetByIdDTO dto = mapper.map(p, PropertyGetByIdDTO.class);
+                dto.additionalMapping(p);
                 filteredPropertiesId.add(dto);
             }
         }

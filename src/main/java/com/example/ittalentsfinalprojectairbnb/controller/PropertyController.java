@@ -80,14 +80,7 @@ public class PropertyController {
         Property p = propertyService.getPropertyById(propertyId);
 
         PropertyGetByIdDTO dto = mapper.map(p, PropertyGetByIdDTO.class);
-        dto.setHost_id(p.getHost().getId());
-        dto.setAddress_id(p.getAddress().getId());
-        if (p.getImages() != null) {
-            for (PropertyPhoto ph : p.getImages()) {
-                String url = ph.getPhoto_url();
-                dto.getPropertyPhotos().add(url);
-            }
-        }
+        dto.additionalMapping(p);
         return ResponseEntity.ok(dto);
     }
 
