@@ -4,11 +4,9 @@ import com.example.ittalentsfinalprojectairbnb.exceptions.BadRequestException;
 import com.example.ittalentsfinalprojectairbnb.exceptions.NotFoundException;
 import com.example.ittalentsfinalprojectairbnb.exceptions.UnauthorizedException;
 import com.example.ittalentsfinalprojectairbnb.model.dto.UserEditDTO;
-import com.example.ittalentsfinalprojectairbnb.model.dto.UserGetByIdDTO;
 import com.example.ittalentsfinalprojectairbnb.model.dto.UserResponseDTO;
 import com.example.ittalentsfinalprojectairbnb.model.entities.User;
 import com.example.ittalentsfinalprojectairbnb.model.repositories.UserRepository;
-import com.example.ittalentsfinalprojectairbnb.utils.SessionManager;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FilenameUtils;
 import org.modelmapper.ModelMapper;
@@ -17,11 +15,9 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.nio.file.Files;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -31,7 +27,6 @@ public class UserService {
     private UserRepository repository;
     @Autowired
     private ModelMapper mapper;
-
 
     public UserResponseDTO login(String email, String password) {
 
@@ -162,7 +157,7 @@ public class UserService {
 
         if (!password.isBlank() && !confirmedPassword.isBlank()) {
             validatePassword(password);
-            if (!password.equals(confirmedPassword)) {
+            if (password.equals(confirmedPassword)) {
                 if (!BCrypt.checkpw(password, user.getPassword())) {
                     user.setPassword(BCrypt.hashpw(password, BCrypt.gensalt()));
                 } else {
