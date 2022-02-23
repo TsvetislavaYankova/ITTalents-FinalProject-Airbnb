@@ -2,6 +2,7 @@ package com.example.ittalentsfinalprojectairbnb.controller;
 
 import com.example.ittalentsfinalprojectairbnb.model.dto.*;
 import com.example.ittalentsfinalprojectairbnb.model.entities.User;
+import com.example.ittalentsfinalprojectairbnb.services.EmailService;
 import com.example.ittalentsfinalprojectairbnb.services.UserService;
 import com.example.ittalentsfinalprojectairbnb.utils.SessionManager;
 import lombok.SneakyThrows;
@@ -23,7 +24,8 @@ public class UserController {
     private UserService service;
     @Autowired
     private ModelMapper mapper;
-
+@Autowired
+private EmailService emailService;
 
     @PostMapping("/login")
     public UserResponseDTO login(@RequestBody UserLogInDTO userDTO, HttpServletRequest request) {
@@ -82,6 +84,7 @@ public class UserController {
     @PutMapping("/change/password")
     public ResponseEntity<UserResponseDTO> changePassword(@RequestBody UserEditDTO userDTO, HttpServletRequest request) {
         SessionManager.validateLogin(request);
+        emailService.sendEmail(userDTO.getEmail(), "password","changed password");
 
         User user = service.changePassword(userDTO);
         UserResponseDTO dto = mapper.map(user, UserResponseDTO.class);
