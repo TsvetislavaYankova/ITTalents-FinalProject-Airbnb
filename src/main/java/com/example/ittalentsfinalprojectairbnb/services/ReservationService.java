@@ -113,20 +113,23 @@ public class ReservationService {
     private boolean checkReservations(int propertyId, LocalDate checkInDate, LocalDate checkOutDate) {
         boolean isApproved = false;
         List<Reservation> reservations = reservationRepository.findAllByPropertyId(propertyId);
+        if (!reservations.isEmpty()) {
+            for (Reservation reservation : reservations) {
+                LocalDate checkInDateR = reservation.getCheckInDate();
+                LocalDate checkOutDateR = reservation.getCheckOutDate();
 
-        for (Reservation reservation : reservations) {
-            LocalDate checkInDateR = reservation.getCheckInDate();
-            LocalDate checkOutDateR = reservation.getCheckOutDate();
-
-            if (checkInDate.isEqual(checkInDateR)) {
-                continue;
-            } else if (checkInDate.isAfter(checkInDateR) && checkInDate.isBefore(checkOutDateR)) {
-                continue;
-            } else if (checkOutDate.isAfter(checkInDateR)) {
-                continue;
-            } else {
-                isApproved = true;
+                if (checkInDate.isEqual(checkInDateR)) {
+                    continue;
+                } else if (checkInDate.isAfter(checkInDateR) && checkInDate.isBefore(checkOutDateR)) {
+                    continue;
+                } else if (checkOutDate.isAfter(checkInDateR)) {
+                    continue;
+                } else {
+                    isApproved = true;
+                }
             }
+        } else {
+            isApproved =true;
         }
         return isApproved;
     }

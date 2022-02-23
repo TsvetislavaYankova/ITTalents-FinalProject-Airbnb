@@ -24,7 +24,7 @@ public class ReservationController {
     @Autowired
     private ModelMapper mapper;
 
-    @PostMapping("/reservation/make_reservation")
+    @PostMapping("/reservation/make/reservation")
     public ResponseEntity<MakeReservationDTO> makeReservation(@RequestBody ReservationResponseDTO dto,
                                                               HttpServletRequest request) {
         SessionManager.validateLogin(request);

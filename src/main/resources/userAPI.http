@@ -12,14 +12,14 @@ POST localhost:9999/register
 Content-Type: application/json
 
 {
-  "email": "john.ivanov@gmail.com",
+  "email": "john.ivanov1@gmail.com",
   "password": "MorskoKonche3!",
   "confirmedPassword": "MorskoKonche3!",
   "firstName": "John",
   "lastName": "Ivanov",
-  "dateOfBirth": "1998-08-10",
+  "dateOfBirth": "1998-10-08",
   "gender": "m",
- "phoneNumber": "0999789293",
+ "phoneNumber": "0999789292",
   "isHost": 1
 }
 
