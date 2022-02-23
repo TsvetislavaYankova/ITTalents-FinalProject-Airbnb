@@ -8,6 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
+
 public class ItTalentsFinalProjectAirbnbApplication {
 
     public static void main(String[] args) {
@@ -23,4 +24,5 @@ public class ItTalentsFinalProjectAirbnbApplication {
     public ModelMapper modelMapper() {
         return new ModelMapper();
     }
+    
 }
