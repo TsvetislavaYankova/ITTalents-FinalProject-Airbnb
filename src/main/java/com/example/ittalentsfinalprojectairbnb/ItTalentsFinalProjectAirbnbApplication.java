@@ -24,5 +24,5 @@ public class ItTalentsFinalProjectAirbnbApplication {
     public ModelMapper modelMapper() {
         return new ModelMapper();
     }
-    
+
 }
