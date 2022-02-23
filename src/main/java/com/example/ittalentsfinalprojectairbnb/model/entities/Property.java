@@ -21,11 +21,11 @@ public class Property {
     @Column(name = "id")
     private int id;
 
-    @OneToOne(mappedBy = "propertyAd",cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "propertyAd", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private Address address;
 
-    @OneToOne(mappedBy = "propertyCh",cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "propertyCh", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private Characteristic characteristic;
 
@@ -54,7 +54,7 @@ public class Property {
     @Column
     private double guestRating;
 
-    @OneToMany(mappedBy = "property")
+    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL)
     private Set<PropertyPhoto> images;
 
 

@@ -15,9 +15,18 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+
 import java.io.File;
 import java.nio.file.Files;
 import java.time.LocalDate;
+import javax.servlet.http.HttpServletRequest;
+import javax.swing.text.DateFormatter;
+import java.io.File;
+import java.nio.file.Files;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+>>>>>>> 6ace9c3ba272509669597b43381f781f62e0ce26
 import java.util.Optional;
 
 @Service
@@ -30,12 +39,10 @@ public class UserService {
 
     public UserResponseDTO login(String email, String password) {
 
-        validateEmail(email);
-
         if (password.isBlank() || password == null) {
             throw new BadRequestException("Password is a mandatory field!");
         }
-        User user = repository.findByEmail(email);
+        User user = repository.findByEmail(email).orElseThrow(() -> new NotFoundException("Wrong credentials! Access denied!"));
 
         if (!BCrypt.checkpw(password, user.getPassword())) {
             throw new UnauthorizedException("Wrong credentials! Access denied!");
@@ -52,19 +59,21 @@ public class UserService {
                                     LocalDate dateOfBirth, String phoneNumber, short isHost) {
 
         validateEmail(email);
+        validatePhoneNumber(phoneNumber);
+        validatePassword(password);
 
         if (password == null || password.isBlank()) {
             throw new BadRequestException("Password is a mandatory field!");
         }
-        validatePassword(password);
+
         if (!password.equals(confirmedPassword)) {
             throw new BadRequestException("Passwords mismatch!");
         }
-        validatePhoneNumber(phoneNumber);
-        if (repository.findByEmail(email) != null) {
+
+        if (repository.findByEmail(email).isPresent()) {
             throw new BadRequestException("User with provided email address already exists!");
         }
-        if (repository.findByPhoneNumber(phoneNumber) != null) {
+        if (repository.findByPhoneNumber(phoneNumber).isPresent()) {
             throw new BadRequestException("User with provided phone number already exists!");
         }
         User user = new User();
@@ -178,12 +187,12 @@ public class UserService {
     public String uploadPhoto(MultipartFile file, int loggedUserId) {
 
         String extension = FilenameUtils.getExtension(file.getOriginalFilename());
-        String name = System.nanoTime() + "." + extension;
-        Files.copy(file.getInputStream(), new File("uploads" + File.separator + name).toPath());
+        String fileName = System.nanoTime() + "." + extension;
+        Files.copy(file.getInputStream(), new File("images" + File.separator + fileName).toPath());
         User u = getUserById(loggedUserId);
-        u.setPhotoUrl(name);
+        u.setPhotoUrl(fileName);
         repository.save(u);
-        return name;
+        return fileName;
     }
 
     public void deletePhoto(int id) {
@@ -218,6 +227,4 @@ public class UserService {
                     "No spaces are allowed");
         }
     }
-
-
 }

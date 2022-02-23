@@ -53,7 +53,7 @@ private EmailService emailService;
         return new ResponseEntity<>("Logged out successfully!", HttpStatus.OK);
     }
 
-    @GetMapping("/get_user/{id}")
+    @GetMapping("/user/{id}")
     public ResponseEntity<UserGetByIdDTO> getById(@PathVariable("id") int id) {
 
         User user = service.getUserById(id);
@@ -71,7 +71,7 @@ private EmailService emailService;
         return ResponseEntity.ok(dto);
     }
 
-    @DeleteMapping("/delete_user")
+    @DeleteMapping("/delete/user")
     public ResponseEntity<String> deleteUser(HttpServletRequest request) {
         SessionManager.validateLogin(request);
         int userId = (Integer) request.getSession().getAttribute(SessionManager.USER_ID);
@@ -81,7 +81,7 @@ private EmailService emailService;
         return new ResponseEntity<>("User deletion successful!", HttpStatus.OK);
     }
 
-    @PutMapping("/change_password")
+    @PutMapping("/change/password")
     public ResponseEntity<UserResponseDTO> changePassword(@RequestBody UserEditDTO userDTO, HttpServletRequest request) {
         SessionManager.validateLogin(request);
         emailService.sendEmail(userDTO.getEmail(), "password","changed password");
@@ -92,7 +92,7 @@ private EmailService emailService;
         return ResponseEntity.ok(dto);
     }
 
-    @PutMapping("/forgot_password")
+    @PutMapping("/forgot/password")
     public ResponseEntity<UserResponseDTO> forgotPassword(@RequestBody UserEditDTO userDTO, HttpServletRequest request) {
         SessionManager.validateLogin(request);
 
@@ -113,8 +113,8 @@ private EmailService emailService;
     @DeleteMapping("/delete/photo")
     public ResponseEntity<String> deletePhoto(HttpServletRequest request) {
         SessionManager.validateLogin(request);
-        int id = (int) request.getSession().getAttribute(SessionManager.USER_ID);
-        service.deletePhoto(id);
+        int loggedUserId = (int) request.getSession().getAttribute(SessionManager.USER_ID);
+        service.deletePhoto(loggedUserId);
 
         return new ResponseEntity<>("Photo deletion successful!", HttpStatus.OK);
     }

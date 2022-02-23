@@ -3,10 +3,7 @@ package com.example.ittalentsfinalprojectairbnb.services;
 import com.example.ittalentsfinalprojectairbnb.exceptions.BadRequestException;
 import com.example.ittalentsfinalprojectairbnb.exceptions.NotFoundException;
 import com.example.ittalentsfinalprojectairbnb.model.dto.*;
-import com.example.ittalentsfinalprojectairbnb.model.entities.Address;
-import com.example.ittalentsfinalprojectairbnb.model.entities.Characteristic;
-import com.example.ittalentsfinalprojectairbnb.model.entities.Property;
-import com.example.ittalentsfinalprojectairbnb.model.entities.PropertyPhoto;
+import com.example.ittalentsfinalprojectairbnb.model.entities.*;
 import com.example.ittalentsfinalprojectairbnb.model.repositories.*;
 import com.example.ittalentsfinalprojectairbnb.utils.SessionManager;
 import lombok.SneakyThrows;
@@ -22,6 +19,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class PropertyService {
@@ -34,9 +32,11 @@ public class PropertyService {
     private UserRepository userRepository;
     @Autowired
     private PropertyPhotoRepository propertyPhotoRepository;
+    @Autowired
+    private ReviewRepository reviewRepository;
 
 
-    public PropertyGetByIdDTO addProperty(PropertyCreationDTO propertyDTO, Integer id) {
+    public PropertyResponseDTO addProperty(PropertyCreationDTO propertyDTO, Integer id) {
 
         propertyDTO.addressValidation();
         propertyDTO.propertyValidation();
@@ -90,7 +90,10 @@ public class PropertyService {
         property.setAddress(address);
         propertyRepository.save(property);
 
-        PropertyGetByIdDTO dto = mapper.map(property, PropertyGetByIdDTO.class);
+        PropertyResponseDTO dto = mapper.map(property, PropertyResponseDTO.class);
+
+        dto.additionalMapping(property);
+
         return dto;
     }
 
@@ -109,7 +112,7 @@ public class PropertyService {
     }
 
 
-    public PropertyGetByIdDTO editCharacteristic(EditCharacteristicDTO characteristicDTO, int id) {
+    public PropertyResponseDTO editCharacteristic(EditCharacteristicDTO characteristicDTO, int id) {
         Property p = getPropertyById(id);
         Characteristic ch = p.getCharacteristic();
 
@@ -147,11 +150,12 @@ public class PropertyService {
         p.setCharacteristic(ch);
         propertyRepository.save(p);
 
-        PropertyGetByIdDTO dto = mapper.map(p, PropertyGetByIdDTO.class);
+        PropertyResponseDTO dto = mapper.map(p, PropertyResponseDTO.class);
+        dto.additionalMapping(p);
         return dto;
     }
 
-    public PropertyGetByIdDTO editAddress(EditAddressDTO addressDTO, int id) {
+    public PropertyResponseDTO editAddress(EditAddressDTO addressDTO, int id) {
         Property p = getPropertyById(id);
         Address address = p.getAddress();
 
@@ -173,13 +177,30 @@ public class PropertyService {
         p.setAddress(address);
         propertyRepository.save(p);
 
-        PropertyGetByIdDTO dto = mapper.map(p, PropertyGetByIdDTO.class);
+        PropertyResponseDTO dto = mapper.map(p, PropertyResponseDTO.class);
+        dto.additionalMapping(p);
         return dto;
     }
 
-    public List<PropertyGetByIdDTO> filterByCharacteristics(FilterPropertyDTO filter) {
+    public PropertyResponseDTO addRating(int id) {
+        double finalRating = 0;
+        Property p = propertyRepository.findById(id).orElseThrow(() -> new NotFoundException("Property not found"));
+        Set<Review> propertyRatings = reviewRepository.findByPropertyId(p.getId()).orElseThrow(() -> new NotFoundException("This property has not received reviews!"));
+        for (Review r : propertyRatings) {
+            finalRating += r.getRating();
+        }
+        finalRating = finalRating / propertyRatings.size();
+        p.setGuestRating(finalRating);
+        propertyRepository.save(p);
+
+        PropertyResponseDTO dto = mapper.map(p, PropertyResponseDTO.class);
+        dto.additionalMapping(p);
+        return dto;
+    }
+
+    public List<PropertyResponseDTO> filterByCharacteristics(FilterPropertyDTO filter) {
         List<Property> allProperties = propertyRepository.findAll();
-        List<PropertyGetByIdDTO> filteredPropertiesId = new ArrayList<>();
+        List<PropertyResponseDTO> filteredProperties = new ArrayList<>();
 
         for (Property p : allProperties) {
             if (p.getAddress().getCountry().equalsIgnoreCase((filter.getCountry())) &&
@@ -196,23 +217,23 @@ public class PropertyService {
                     p.getCharacteristic().getHasParkingSpot() == filter.getHasParkingSpot() &&
                     p.getCharacteristic().getHasFitness() == filter.getHasFitness() &&
                     p.getCharacteristic().getHasWashingMachine() == filter.getHasWashingMachine()) {
-                PropertyGetByIdDTO dto = new PropertyGetByIdDTO();
-                dto.setId(p.getId());
-                filteredPropertiesId.add(dto);
+                PropertyResponseDTO dto = mapper.map(p, PropertyResponseDTO.class);
+                dto.additionalMapping(p);
+                filteredProperties.add(dto);
             }
         }
-        return filteredPropertiesId;
+        return filteredProperties;
     }
 
 
-    public List<PropertyGetByIdDTO> filterByPrice(PropertyPriceDTO filter) {
+    public List<PropertyResponseDTO> filterByPrice(PropertyPriceDTO filter) {
         List<Property> allProperties = propertyRepository.findAll();
-        List<PropertyGetByIdDTO> filteredPropertiesId = new ArrayList<>();
+        List<PropertyResponseDTO> filteredPropertiesId = new ArrayList<>();
 
         for (Property p : allProperties) {
             if (p.getPricePerNight() >= filter.getLowerLimitPrice() && p.getPricePerNight() <= filter.getUpperLimitPrice()) {
-                PropertyGetByIdDTO dto = new PropertyGetByIdDTO();
-                dto.setId(p.getId());
+                PropertyResponseDTO dto = mapper.map(p, PropertyResponseDTO.class);
+                dto.additionalMapping(p);
                 filteredPropertiesId.add(dto);
             }
         }
@@ -225,16 +246,20 @@ public class PropertyService {
         SessionManager.validateLogin(request);
 
         String extension = FilenameUtils.getExtension(file.getOriginalFilename());
-        String name = System.nanoTime() + "." + extension;
-        Files.copy(file.getInputStream(), new File("uploads" + File.separator + name).toPath());
-        Property p = new Property();
-        PropertyPhoto photo = new PropertyPhoto();
-        photo.setPhoto_url(name);
-        p.setId(propertyId);
-        p.getImages().add(photo);
+        String fileName = System.nanoTime() + "." + extension;
+        Files.copy(file.getInputStream(), new File("images" + File.separator + fileName).toPath());
+        Optional<Property> p = propertyRepository.findById(propertyId);
+        if (p.isPresent()) {
+            PropertyPhoto photo = new PropertyPhoto();
+            photo.setPhoto_url(fileName);
+            photo.setProperty(p.get());
 
-        propertyPhotoRepository.save(photo);
-        return name;
+            propertyPhotoRepository.save(photo);
+        } else {
+            throw new NotFoundException("Property not found! Photo upload failed!");
+        }
+
+        return fileName;
     }
 
     public void deletePhotoById(int id) {
@@ -245,6 +270,5 @@ public class PropertyService {
             throw new NotFoundException("Photo not found!");
         }
     }
-
 
 }
