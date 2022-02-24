@@ -112,9 +112,7 @@ public class ReservationService {
         return paymentRepository.findById(paymentId).orElseThrow(() -> new NotFoundException("There is no such payment!"));
     }
 
-    public Payment confirmPayment(PaymentResponseDTO paymentDTO) {
-        int paymentId = paymentDTO.getId();
-
+    public Payment confirmPayment(PaymentResponseDTO paymentDTO,int paymentId) {
         Payment payment = paymentRepository.findById(paymentId).orElseThrow(() -> new NotFoundException("There is no such payment!"));
         payment.setStatus(paymentDTO.getStatus());
 

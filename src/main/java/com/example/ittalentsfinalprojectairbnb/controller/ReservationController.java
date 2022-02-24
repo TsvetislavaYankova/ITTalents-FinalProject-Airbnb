@@ -83,10 +83,11 @@ public class ReservationController {
     }
 
     @PutMapping("/reservation/confirm/payment/{id}")
-    public ResponseEntity<PaymentResponseDTO> confirmPayment(@RequestBody PaymentResponseDTO paymentDTO, HttpServletRequest request) {
+    public ResponseEntity<PaymentResponseDTO> confirmPayment(@PathVariable("id") int paymentId,
+                                                             @RequestBody PaymentResponseDTO paymentDTO, HttpServletRequest request) {
         SessionManager.validateLogin(request);
 
-        Payment payment = service.confirmPayment(paymentDTO);
+        Payment payment = service.confirmPayment(paymentDTO,paymentId);
         PaymentResponseDTO dto = mapper.map(payment, PaymentResponseDTO.class);
 
         return ResponseEntity.ok(dto);
