@@ -63,11 +63,11 @@ public class UserController {
     }
 
     @PutMapping("/edit")
-    public ResponseEntity<UserEditDTO> edit(@RequestBody UserEditDTO userDTO, HttpServletRequest request) {
+    public ResponseEntity<UserGetByIdDTO> edit(@RequestBody UserEditDTO userDTO, HttpServletRequest request) {
         SessionManager.validateLogin(request);
         int userId = (Integer) request.getSession().getAttribute(SessionManager.USER_ID);
         User user = service.edit(userDTO, userId);
-        UserEditDTO dto = mapper.map(user, UserEditDTO.class);
+        UserGetByIdDTO dto = mapper.map(user, UserGetByIdDTO.class);
 
         return ResponseEntity.ok(dto);
     }
@@ -97,7 +97,7 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> forgotPassword(@RequestBody UserEditDTO userDTO, HttpServletRequest request) {
         SessionManager.validateLogin(request);
         int userId = (Integer) request.getSession().getAttribute(SessionManager.USER_ID);
-        User user = service.changePassword(userDTO, userId);
+        User user = service.forgotPassword(userDTO, userId);
         UserResponseDTO dto = mapper.map(user, UserResponseDTO.class);
 
         return ResponseEntity.ok(dto);

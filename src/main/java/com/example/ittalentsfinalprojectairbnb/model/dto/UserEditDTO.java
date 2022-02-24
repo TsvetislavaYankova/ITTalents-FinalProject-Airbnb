@@ -11,8 +11,9 @@ public class UserEditDTO {
 
     private String firstName;
     private String lastName;
-    private String password;
-    private String confirmedPassword;
+    private String oldPassword;
+    private String newPassword;
+    private String confirmedNewPassword;
     private char gender;
     private String email;
     private String phoneNumber;

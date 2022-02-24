@@ -17,10 +17,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+
+import static com.example.ittalentsfinalprojectairbnb.services.UserService.AVAILABLE_FILE_TYPES;
+import static com.example.ittalentsfinalprojectairbnb.services.UserService.MAX_ALLOWED_FILE_SIZE;
 
 @Service
 public class PropertyService {
@@ -35,7 +35,6 @@ public class PropertyService {
     private PropertyPhotoRepository propertyPhotoRepository;
     @Autowired
     private ReviewRepository reviewRepository;
-
 
     public PropertyResponseDTO addProperty(PropertyCreationDTO propertyDTO, Integer id) {
 
@@ -243,9 +242,13 @@ public class PropertyService {
     }
 
     @SneakyThrows
-    public String uploadPhoto(int propertyId, MultipartFile file, HttpServletRequest request) {
-        SessionManager.validateLogin(request);
-
+    public String uploadPhoto(int propertyId, MultipartFile file) {
+        if(!AVAILABLE_FILE_TYPES.contains(file.getContentType())){
+            throw new BadRequestException("Invalid file type");
+        }
+        if(file.getSize()>MAX_ALLOWED_FILE_SIZE){
+            throw new BadRequestException("Please upload photo with max size 2MB.");
+        }
         String extension = FilenameUtils.getExtension(file.getOriginalFilename());
         String fileName = System.nanoTime() + "." + extension;
         Files.copy(file.getInputStream(), new File("images" + File.separator + fileName).toPath());
@@ -266,7 +269,7 @@ public class PropertyService {
     public void deletePhotoById(HttpServletRequest request, int id) {
         Optional<PropertyPhoto> opt = propertyPhotoRepository.findById(id);
         if (opt.isPresent()) {
-            if ((int) request.getSession().getAttribute(SessionManager.USER_ID) != this.getPropertyById(id).getHost().getId()) {
+            if ((int) request.getSession().getAttribute(SessionManager.USER_ID) != this.getPropertyById(opt.get().getProperty().getId()).getHost().getId()) {
                 throw new UnauthorizedException("Photo could not be deleted from property which does not belong to the logged user!");
             }
             propertyPhotoRepository.delete(opt.get());

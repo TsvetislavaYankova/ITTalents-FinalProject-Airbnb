@@ -18,6 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.nio.file.Files;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,6 +29,9 @@ public class UserService {
     private UserRepository repository;
     @Autowired
     private ModelMapper mapper;
+
+    public static final List<String> AVAILABLE_FILE_TYPES = Arrays.asList("image/jpeg", "image/png");
+    public static long MAX_ALLOWED_FILE_SIZE = 2000000L;
 
     public UserResponseDTO login(String email, String password) {
 
@@ -151,14 +156,43 @@ public class UserService {
     public User changePassword(UserEditDTO userDTO, int id) {
 
         User user = repository.findById(id).orElseThrow(() -> new NotFoundException("There is no such user!"));
-        String password = userDTO.getPassword();
-        String confirmedPassword = userDTO.getConfirmedPassword();
+        String oldPassword = userDTO.getOldPassword();
+        String newPassword = userDTO.getNewPassword();
+        String confirmedNewPassword = userDTO.getConfirmedNewPassword();
 
-        if (!password.isBlank() && !confirmedPassword.isBlank()) {
-            validatePassword(password);
-            if (password.equals(confirmedPassword)) {
-                if (!BCrypt.checkpw(password, user.getPassword())) {
-                    user.setPassword(BCrypt.hashpw(password, BCrypt.gensalt()));
+        if (!newPassword.isBlank() && !confirmedNewPassword.isBlank()) {
+            validatePassword(newPassword);
+            if(!BCrypt.checkpw(oldPassword,user.getPassword())){
+                throw new BadRequestException("Invalid password! In order to change your password, please enter your current one!");
+            }
+            if (newPassword.equals(confirmedNewPassword)) {
+                if (!BCrypt.checkpw(newPassword, user.getPassword())) {
+                    user.setPassword(BCrypt.hashpw(newPassword, BCrypt.gensalt()));
+                } else {
+                    throw new BadRequestException("The new password is the same as the old password!");
+                }
+            } else {
+                throw new BadRequestException("The confirmed password doesn't match the new password!");
+            }
+        } else {
+            throw new BadRequestException("You must enter a new password!");
+        }
+
+        repository.save(user);
+        return user;
+    }
+
+    public User forgotPassword(UserEditDTO userDTO, int id) {
+
+        User user = repository.findById(id).orElseThrow(() -> new NotFoundException("There is no such user!"));
+        String newPassword = userDTO.getNewPassword();
+        String confirmedNewPassword = userDTO.getConfirmedNewPassword();
+
+        if (!newPassword.isBlank() && !confirmedNewPassword.isBlank()) {
+            validatePassword(newPassword);
+            if (newPassword.equals(confirmedNewPassword)) {
+                if (!BCrypt.checkpw(newPassword, user.getPassword())) {
+                    user.setPassword(BCrypt.hashpw(newPassword, BCrypt.gensalt()));
                 } else {
                     throw new BadRequestException("The new password is the same as the old password!");
                 }
@@ -175,7 +209,12 @@ public class UserService {
 
     @SneakyThrows
     public String uploadPhoto(MultipartFile file, int loggedUserId) {
-
+        if(!AVAILABLE_FILE_TYPES.contains(file.getContentType())){
+            throw new BadRequestException("Invalid file type");
+        }
+        if(file.getSize()>MAX_ALLOWED_FILE_SIZE){
+            throw new BadRequestException("Please upload photo with max size 2MB.");
+        }
         String extension = FilenameUtils.getExtension(file.getOriginalFilename());
         String fileName = System.nanoTime() + "." + extension;
         Files.copy(file.getInputStream(), new File("images" + File.separator + fileName).toPath());
@@ -189,6 +228,7 @@ public class UserService {
         Optional<User> opt = repository.findById(id);
         if (opt.isPresent()) {
             opt.get().setPhotoUrl(null);
+            repository.save(opt.get());
         } else {
             throw new NotFoundException("User not found! Photo could not be deleted!");
         }

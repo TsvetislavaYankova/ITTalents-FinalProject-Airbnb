@@ -90,13 +90,13 @@ public class PropertyController {
 
     @SneakyThrows
     @PostMapping("/properties/photo/upload/{propertyId}")
-    public String uploadImage(@PathVariable int propertyId, @RequestParam(name = "file") MultipartFile file, HttpServletRequest request) {
+    public String uploadPhoto(@PathVariable int propertyId, @RequestParam(name = "file") MultipartFile file, HttpServletRequest request) {
         SessionManager.validateLogin(request);
         validatePropertyHost(request, propertyId);
-        return propertyService.uploadPhoto(propertyId, file, request);
+        return propertyService.uploadPhoto(propertyId, file);
     }
 
-    @DeleteMapping("/properties/photo/delete/{photoId}")
+    @DeleteMapping("/photos/delete/{photoId}")
     public ResponseEntity<String> deletePhoto(HttpServletRequest request, @PathVariable int photoId) {
         SessionManager.validateLogin(request);
 
