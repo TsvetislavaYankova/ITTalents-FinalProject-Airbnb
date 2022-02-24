@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 @Data
 public class UserEditDTO {
 
-    private int id;
     private String firstName;
     private String lastName;
     private String password;

@@ -100,8 +100,8 @@ public class UserService {
         }
     }
 
-    public User edit(UserEditDTO userDTO) {
-        int id = userDTO.getId();
+    public User edit(UserEditDTO userDTO, int id) {
+
         String firstName = userDTO.getFirstName();
         String lastName = userDTO.getLastName();
         char gender = userDTO.getGender();
@@ -148,8 +148,7 @@ public class UserService {
     }
 
 
-    public User changePassword(UserEditDTO userDTO) {
-        int id = userDTO.getId();
+    public User changePassword(UserEditDTO userDTO, int id) {
 
         User user = repository.findById(id).orElseThrow(() -> new NotFoundException("There is no such user!"));
         String password = userDTO.getPassword();

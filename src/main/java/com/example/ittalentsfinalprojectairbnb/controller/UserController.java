@@ -65,7 +65,8 @@ public class UserController {
     @PutMapping("/edit")
     public ResponseEntity<UserEditDTO> edit(@RequestBody UserEditDTO userDTO, HttpServletRequest request) {
         SessionManager.validateLogin(request);
-        User user = service.edit(userDTO);
+        int userId = (Integer) request.getSession().getAttribute(SessionManager.USER_ID);
+        User user = service.edit(userDTO, userId);
         UserEditDTO dto = mapper.map(user, UserEditDTO.class);
 
         return ResponseEntity.ok(dto);
@@ -85,8 +86,8 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> changePassword(@RequestBody UserEditDTO userDTO, HttpServletRequest request) {
         SessionManager.validateLogin(request);
        // emailService.sendEmail(userDTO.getEmail(), "password", "changed password");
-
-        User user = service.changePassword(userDTO);
+        int userId = (Integer) request.getSession().getAttribute(SessionManager.USER_ID);
+        User user = service.changePassword(userDTO, userId);
         UserResponseDTO dto = mapper.map(user, UserResponseDTO.class);
 
         return ResponseEntity.ok(dto);
@@ -95,8 +96,8 @@ public class UserController {
     @PutMapping("/forgot/password")
     public ResponseEntity<UserResponseDTO> forgotPassword(@RequestBody UserEditDTO userDTO, HttpServletRequest request) {
         SessionManager.validateLogin(request);
-
-        User user = service.changePassword(userDTO);
+        int userId = (Integer) request.getSession().getAttribute(SessionManager.USER_ID);
+        User user = service.changePassword(userDTO, userId);
         UserResponseDTO dto = mapper.map(user, UserResponseDTO.class);
 
         return ResponseEntity.ok(dto);
