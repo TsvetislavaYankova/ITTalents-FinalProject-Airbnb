@@ -22,8 +22,6 @@ public class Reservation {
     @Column
     private int guestId;
     @Column
-    private int paymentId;
-    @Column
     private LocalDate checkInDate;
     @Column
     private LocalDate checkOutDate;

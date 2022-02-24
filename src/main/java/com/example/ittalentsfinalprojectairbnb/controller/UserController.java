@@ -24,8 +24,8 @@ public class UserController {
     private UserService service;
     @Autowired
     private ModelMapper mapper;
-@Autowired
-private EmailService emailService;
+    @Autowired
+    private EmailService emailService;
 
     @PostMapping("/login")
     public UserResponseDTO login(@RequestBody UserLogInDTO userDTO, HttpServletRequest request) {
@@ -84,7 +84,7 @@ private EmailService emailService;
     @PutMapping("/change/password")
     public ResponseEntity<UserResponseDTO> changePassword(@RequestBody UserEditDTO userDTO, HttpServletRequest request) {
         SessionManager.validateLogin(request);
-        emailService.sendEmail(userDTO.getEmail(), "password","changed password");
+       // emailService.sendEmail(userDTO.getEmail(), "password", "changed password");
 
         User user = service.changePassword(userDTO);
         UserResponseDTO dto = mapper.map(user, UserResponseDTO.class);
@@ -104,7 +104,7 @@ private EmailService emailService;
 
     @SneakyThrows
     @PostMapping("/upload/photo")
-    public String uploadProfileImage(@RequestParam(name = "file") MultipartFile file, HttpServletRequest request){
+    public String uploadProfileImage(@RequestParam(name = "file") MultipartFile file, HttpServletRequest request) {
         SessionManager.validateLogin(request);
         int loggedUserId = (int) request.getSession().getAttribute(SessionManager.USER_ID);
         return service.uploadPhoto(file, loggedUserId);
@@ -118,8 +118,9 @@ private EmailService emailService;
 
         return new ResponseEntity<>("Photo deletion successful!", HttpStatus.OK);
     }
+
     @PutMapping("/edit/photo")
-    public String editPhoto(@RequestParam(name = "file") MultipartFile file, HttpServletRequest request){
+    public String editPhoto(@RequestParam(name = "file") MultipartFile file, HttpServletRequest request) {
         SessionManager.validateLogin(request);
         int id = (int) request.getSession().getAttribute(SessionManager.USER_ID);
 

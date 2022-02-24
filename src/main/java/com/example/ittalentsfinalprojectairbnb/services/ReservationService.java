@@ -2,8 +2,9 @@ package com.example.ittalentsfinalprojectairbnb.services;
 
 import com.example.ittalentsfinalprojectairbnb.exceptions.BadRequestException;
 import com.example.ittalentsfinalprojectairbnb.exceptions.NotFoundException;
+import com.example.ittalentsfinalprojectairbnb.model.dto.MakePaymentDTO;
+import com.example.ittalentsfinalprojectairbnb.model.dto.MakeReservationDTO;
 import com.example.ittalentsfinalprojectairbnb.model.dto.PaymentResponseDTO;
-import com.example.ittalentsfinalprojectairbnb.model.dto.ReservationResponseDTO;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Cancellation;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Payment;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Property;
@@ -15,9 +16,10 @@ import com.example.ittalentsfinalprojectairbnb.model.repositories.ReservationRep
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ReservationService {
@@ -31,7 +33,7 @@ public class ReservationService {
     @Autowired
     private PaymentRepository paymentRepository;
 
-    public Reservation makeReservation(ReservationResponseDTO dto, Integer userId) {
+    public Reservation makeReservation(MakeReservationDTO dto, Integer userId) {
         int propertyId = dto.getPropertyId();
 
         propertyRepository.findById(propertyId).orElseThrow(() -> new NotFoundException("There is no such property!"));
@@ -54,42 +56,53 @@ public class ReservationService {
         return reservation;
     }
 
-    public Cancellation cancelReservation(ReservationResponseDTO dto) {
-        int reservationId = dto.getId();
+    public Cancellation cancelReservation(int reservationId, int userId) {
+        Optional<Reservation> reservation = reservationRepository.findByGuestId((userId));
+        if (!reservation.isPresent()) {
+            throw new NotFoundException("There is no such reservation");
+        }
 
-        reservationRepository.findById(reservationId).orElseThrow(() -> new NotFoundException("There is no such reservation!"));
+        LocalDate checkIn = reservation.get().getCheckInDate();
+        LocalDate checkOut = reservation.get().getCheckOutDate();
+        int reservationDuration = Period.between(checkOut, checkIn).getDays();
 
-        LocalDate checkIn = dto.getCheckInDate();
-        LocalDate checkOut = dto.getCheckOutDate();
-        long reservationDuration = Duration.between(checkOut, checkIn).toDays();
-
-        int propertyId = dto.getPropertyId();
-        Property property = propertyRepository.findById(propertyId).orElseThrow(() -> new NotFoundException("There is no such property!"));
+        Property property = propertyRepository.findById(reservation.get().getPropertyId())
+                .orElseThrow(() -> new NotFoundException("There is no such property!"));
 
         double refund = property.getPricePerNight() * (reservationDuration);
 
         Cancellation cancellation = new Cancellation();
-        cancellation.setId(reservationId);
         cancellation.setCancelDate(LocalDate.now());
         cancellation.setRefundAmount(refund);
 
-        cancellationRepository.save(cancellation);
+        cancellation.setReservation(reservation.get());
+        reservationRepository.save(reservation.get());
 
         return cancellation;
     }
 
-    public Reservation getReservationById(int reservationId) {
-        return reservationRepository.findById(reservationId).orElseThrow(() -> new NotFoundException("There is no suchReservation!"));
+    public Reservation getReservationById(int reservationId, int userId) {
+        Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(() -> new NotFoundException("There is no suchReservation!"));
+
+        if (reservation.getGuestId() != userId) {
+            throw new BadRequestException("You can't view this reservation!");
+        }
+        return reservation;
     }
 
-    public Payment addPayment(PaymentResponseDTO paymentDTO) {
+    public Payment addPayment(MakePaymentDTO paymentDTO, int userId) {
+
+        Reservation reservation = reservationRepository.findByGuestIdAndPropertyId(userId, paymentDTO.getPropertyId())
+                .orElseThrow(() -> new NotFoundException("There is no such reservation!"));
+
         Payment payment = new Payment();
 
-        payment.setDateOfPayment(paymentDTO.getDateOfPayment());
+        payment.setDateOfPayment(LocalDate.now());
         payment.setTotalPrice(paymentDTO.getTotalPrice());
         payment.setPaymentType(paymentDTO.getPaymentType());
-        payment.setStatus(paymentDTO.getStatus());
+        payment.setStatus("transaction");
 
+        payment.setReservation(reservation);
         paymentRepository.save(payment);
 
         return payment;
@@ -102,7 +115,7 @@ public class ReservationService {
     public Payment confirmPayment(PaymentResponseDTO paymentDTO) {
         int paymentId = paymentDTO.getId();
 
-        Payment payment = paymentRepository.findById(paymentId).orElseThrow(() -> new NotFoundException("There is no such payment!"));
+         Payment payment = paymentRepository.findById(paymentId).orElseThrow(() -> new NotFoundException("There is no such payment!"));
         payment.setStatus(paymentDTO.getStatus());
 
         paymentRepository.save(payment);
@@ -129,7 +142,7 @@ public class ReservationService {
                 }
             }
         } else {
-            isApproved =true;
+            isApproved = true;
         }
         return isApproved;
     }

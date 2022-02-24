@@ -12,9 +12,6 @@ public interface ReviewRepository extends JpaRepository<Review,Integer> {
 
      Review getById(int id);
 
-     @Override
-     void deleteById(Integer integer);
-
     Optional<Set<Review>> findByPropertyId(int id);
 }
 

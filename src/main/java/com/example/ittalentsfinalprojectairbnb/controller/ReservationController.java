@@ -1,9 +1,6 @@
 package com.example.ittalentsfinalprojectairbnb.controller;
 
-import com.example.ittalentsfinalprojectairbnb.model.dto.CancellationResponseDTO;
-import com.example.ittalentsfinalprojectairbnb.model.dto.MakeReservationDTO;
-import com.example.ittalentsfinalprojectairbnb.model.dto.PaymentResponseDTO;
-import com.example.ittalentsfinalprojectairbnb.model.dto.ReservationResponseDTO;
+import com.example.ittalentsfinalprojectairbnb.model.dto.*;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Cancellation;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Payment;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Reservation;
@@ -25,21 +22,21 @@ public class ReservationController {
     private ModelMapper mapper;
 
     @PostMapping("/reservation/make/reservation")
-    public ResponseEntity<MakeReservationDTO> makeReservation(@RequestBody ReservationResponseDTO dto,
+    public ResponseEntity<MakeReservationDTO> makeReservation(@RequestBody MakeReservationDTO reservationDTO,
                                                               HttpServletRequest request) {
         SessionManager.validateLogin(request);
 
-        Reservation reservation = service.makeReservation(dto, (Integer) request.getAttribute(SessionManager.USER_ID));
-        MakeReservationDTO dto2 = mapper.map(reservation, MakeReservationDTO.class);
+        Reservation reservation = service.makeReservation(reservationDTO, (Integer) request.getSession().getAttribute(SessionManager.USER_ID));
+        MakeReservationDTO dto = mapper.map(reservation, MakeReservationDTO.class);
 
-        return ResponseEntity.ok(dto2);
+        return ResponseEntity.ok(dto);
     }
 
-    @DeleteMapping("/reservation/cancel_reservation")
-    public ResponseEntity<CancellationResponseDTO> cancelReservation(@RequestBody ReservationResponseDTO reservationDTO, HttpServletRequest request) {
+    @PostMapping("/reservation/cancel_reservation/{id}")
+    public ResponseEntity<CancellationResponseDTO> cancelReservation(@PathVariable("id") int id, HttpServletRequest request) {
         SessionManager.validateLogin(request);
 
-        Cancellation cancellation = service.cancelReservation(reservationDTO);
+        Cancellation cancellation = service.cancelReservation(id,(Integer) request.getSession().getAttribute(SessionManager.USER_ID));
         CancellationResponseDTO dto = mapper.map(cancellation, CancellationResponseDTO.class);
 
         return ResponseEntity.ok(dto);
@@ -49,17 +46,17 @@ public class ReservationController {
     public ResponseEntity<ReservationResponseDTO> getReservationById(@PathVariable("id") int id, HttpServletRequest request) {
         SessionManager.validateLogin(request);
 
-        Reservation reservation = service.getReservationById(id);
+        Reservation reservation = service.getReservationById(id,(Integer) request.getSession().getAttribute(SessionManager.USER_ID));
         ReservationResponseDTO dto = mapper.map(reservation, ReservationResponseDTO.class);
         return ResponseEntity.ok(dto);
     }
 
 
     @PostMapping("/reservation/add_payment")
-    public ResponseEntity<PaymentResponseDTO> addPayment(@RequestBody PaymentResponseDTO paymentDTO, HttpServletRequest request) {
+    public ResponseEntity<PaymentResponseDTO> addPayment(@RequestBody MakePaymentDTO paymentDTO, HttpServletRequest request) {
         SessionManager.validateLogin(request);
 
-        Payment payment = service.addPayment(paymentDTO);
+        Payment payment = service.addPayment(paymentDTO,(Integer) request.getSession().getAttribute(SessionManager.USER_ID));
         PaymentResponseDTO dto = mapper.map(payment, PaymentResponseDTO.class);
 
         return ResponseEntity.ok(dto);
@@ -85,7 +82,7 @@ public class ReservationController {
         return ResponseEntity.ok(dto);
     }
 
-    @PutMapping("/reservation/confirm_payment")
+    @PutMapping("/reservation/confirm_payment/{id}")
     public ResponseEntity<PaymentResponseDTO> confirmPayment(@RequestBody PaymentResponseDTO paymentDTO, HttpServletRequest request) {
         SessionManager.validateLogin(request);
 
