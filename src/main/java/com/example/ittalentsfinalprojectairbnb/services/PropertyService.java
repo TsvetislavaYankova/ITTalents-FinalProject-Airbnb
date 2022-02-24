@@ -2,6 +2,7 @@ package com.example.ittalentsfinalprojectairbnb.services;
 
 import com.example.ittalentsfinalprojectairbnb.exceptions.BadRequestException;
 import com.example.ittalentsfinalprojectairbnb.exceptions.NotFoundException;
+import com.example.ittalentsfinalprojectairbnb.exceptions.UnauthorizedException;
 import com.example.ittalentsfinalprojectairbnb.model.dto.*;
 import com.example.ittalentsfinalprojectairbnb.model.entities.*;
 import com.example.ittalentsfinalprojectairbnb.model.repositories.*;
@@ -49,7 +50,7 @@ public class PropertyService {
         property.setHost(userRepository
                 .findById(id).orElseThrow(() -> new NotFoundException("Host not found")));
         if (property.getHost().getIsHost() != 1) {
-            new BadRequestException("The provided user is NOT registered as host!");
+            throw new BadRequestException("The provided user is NOT registered as host!");
         }
 
         property.setPropertyType(propertyDTO.getPropertyType());
@@ -262,9 +263,12 @@ public class PropertyService {
         return fileName;
     }
 
-    public void deletePhotoById(int id) {
+    public void deletePhotoById(HttpServletRequest request, int id) {
         Optional<PropertyPhoto> opt = propertyPhotoRepository.findById(id);
         if (opt.isPresent()) {
+            if ((int) request.getSession().getAttribute(SessionManager.USER_ID) != this.getPropertyById(id).getHost().getId()) {
+                throw new UnauthorizedException("Photo could not be deleted from property which does not belong to the logged user!");
+            }
             propertyPhotoRepository.delete(opt.get());
         } else {
             throw new NotFoundException("Photo not found!");

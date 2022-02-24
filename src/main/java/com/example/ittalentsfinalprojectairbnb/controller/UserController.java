@@ -71,7 +71,7 @@ public class UserController {
         return ResponseEntity.ok(dto);
     }
 
-    @DeleteMapping("/delete/user")
+    @DeleteMapping("/delete")
     public ResponseEntity<String> deleteUser(HttpServletRequest request) {
         SessionManager.validateLogin(request);
         int userId = (Integer) request.getSession().getAttribute(SessionManager.USER_ID);

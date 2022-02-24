@@ -1,5 +1,5 @@
 ### addProperty
-POST localhost:9999/add
+POST localhost:9999/properties/add
 Content-Type: application/json
 
 {
@@ -31,11 +31,11 @@ GET localhost:9999/properties/4
 Content-Type: application/json
 
 ### deletePropertyById
-DELETE localhost:9999/delete/2
+DELETE localhost:9999/properties/delete/2
 Content-Type: application/json
 
 ###editAddress
-PUT localhost:9999/edit/address/1
+PUT localhost:9999/properties/edit/address/1
 Content-Type: application/json
 
 {
@@ -47,7 +47,7 @@ Content-Type: application/json
 }
 
 ###editCharacteristics
-PUT localhost:9999/edit/characteristic/1
+PUT localhost:9999/properties/edit/characteristic/1
 Content-Type: application/json
 
 {
@@ -64,7 +64,7 @@ Content-Type: application/json
 }
 
 ###filterPropertyByCharacteristics
-GET localhost:9999/filter/by/characteristics
+GET localhost:9999/properties/filter/by/characteristics
 Content-Type: application/json
 
 {
@@ -85,7 +85,7 @@ Content-Type: application/json
 }
 
 ###filterPropertyByPrice
-GET localhost:9999/filter/by/price
+GET localhost:9999/properties/filter/by/price
 Content-Type: application/json
 
 {
