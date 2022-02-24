@@ -1,5 +1,6 @@
 package com.example.ittalentsfinalprojectairbnb.controller;
 
+import com.example.ittalentsfinalprojectairbnb.model.dto.AddReviewDTO;
 import com.example.ittalentsfinalprojectairbnb.model.dto.ReviewResponseDTO;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Review;
 import com.example.ittalentsfinalprojectairbnb.services.ReviewService;
@@ -19,27 +20,27 @@ public class ReviewController {
     @Autowired
     private ModelMapper mapper;
 
-    @PostMapping("/add_review")
-    public ResponseEntity<ReviewResponseDTO> addReview(@RequestBody ReviewResponseDTO reviewDTO, HttpServletRequest request) {
+    @PostMapping("/add/review")
+    public ResponseEntity<ReviewResponseDTO> addReview(@RequestBody AddReviewDTO reviewDTO, HttpServletRequest request) {
         SessionManager.validateLogin(request);
 
-        Review review = service.addReview(reviewDTO, (Integer) request.getAttribute(SessionManager.USER_ID));
+        Review review = service.addReview(reviewDTO, (Integer) request.getSession().getAttribute(SessionManager.USER_ID));
         ReviewResponseDTO dto = mapper.map(review, ReviewResponseDTO.class);
 
         return ResponseEntity.ok(dto);
     }
 
-    @DeleteMapping("/delete_review/{id}")
+    @DeleteMapping("/delete/review/{id}")
     public ResponseEntity<ReviewResponseDTO> deleteReview(@PathVariable("id") int reviewId, HttpServletRequest request) {
         SessionManager.validateLogin(request);
 
-        service.deleteReview(reviewId);
+        service.deleteReview(reviewId, (Integer) request.getSession().getAttribute(SessionManager.USER_ID));
         ReviewResponseDTO dto = new ReviewResponseDTO();
 
         return ResponseEntity.ok(dto);
     }
 
-    @GetMapping("/get_review/{id}")
+    @GetMapping("/get/review/{id}")
     public ResponseEntity<ReviewResponseDTO> geById(@PathVariable("id") int reviewId, HttpServletRequest request) {
         SessionManager.validateLogin(request);
 

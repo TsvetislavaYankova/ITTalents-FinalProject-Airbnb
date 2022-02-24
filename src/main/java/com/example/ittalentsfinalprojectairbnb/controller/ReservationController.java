@@ -32,11 +32,11 @@ public class ReservationController {
         return ResponseEntity.ok(dto);
     }
 
-    @PostMapping("/reservation/cancel_reservation/{id}")
+    @PostMapping("/reservation/cancel/reservation/{id}")
     public ResponseEntity<CancellationResponseDTO> cancelReservation(@PathVariable("id") int id, HttpServletRequest request) {
         SessionManager.validateLogin(request);
 
-        Cancellation cancellation = service.cancelReservation(id,(Integer) request.getSession().getAttribute(SessionManager.USER_ID));
+        Cancellation cancellation = service.cancelReservation(id, (Integer) request.getSession().getAttribute(SessionManager.USER_ID));
         CancellationResponseDTO dto = mapper.map(cancellation, CancellationResponseDTO.class);
 
         return ResponseEntity.ok(dto);
@@ -46,23 +46,23 @@ public class ReservationController {
     public ResponseEntity<ReservationResponseDTO> getReservationById(@PathVariable("id") int id, HttpServletRequest request) {
         SessionManager.validateLogin(request);
 
-        Reservation reservation = service.getReservationById(id,(Integer) request.getSession().getAttribute(SessionManager.USER_ID));
+        Reservation reservation = service.getReservationById(id, (Integer) request.getSession().getAttribute(SessionManager.USER_ID));
         ReservationResponseDTO dto = mapper.map(reservation, ReservationResponseDTO.class);
         return ResponseEntity.ok(dto);
     }
 
 
-    @PostMapping("/reservation/add_payment")
+    @PostMapping("/reservation/add/payment")
     public ResponseEntity<PaymentResponseDTO> addPayment(@RequestBody MakePaymentDTO paymentDTO, HttpServletRequest request) {
         SessionManager.validateLogin(request);
 
-        Payment payment = service.addPayment(paymentDTO,(Integer) request.getSession().getAttribute(SessionManager.USER_ID));
+        Payment payment = service.addPayment(paymentDTO, (Integer) request.getSession().getAttribute(SessionManager.USER_ID));
         PaymentResponseDTO dto = mapper.map(payment, PaymentResponseDTO.class);
 
         return ResponseEntity.ok(dto);
     }
 
-    @GetMapping("/reservation/get_payment/{id}")
+    @GetMapping("/reservation/get/payment/{id}")
     public ResponseEntity<PaymentResponseDTO> getPaymentById(@PathVariable("id") int paymentId, HttpServletRequest request) {
         SessionManager.validateLogin(request);
 
@@ -72,7 +72,7 @@ public class ReservationController {
         return ResponseEntity.ok(dto);
     }
 
-    @GetMapping("/reservation/get_payment_status/{id}")
+    @GetMapping("/reservation/get/payment/status/{id}")
     public ResponseEntity<PaymentResponseDTO> getPaymentStatus(@PathVariable("id") int paymentId, HttpServletRequest request) {
         SessionManager.validateLogin(request);
 
@@ -82,7 +82,7 @@ public class ReservationController {
         return ResponseEntity.ok(dto);
     }
 
-    @PutMapping("/reservation/confirm_payment/{id}")
+    @PutMapping("/reservation/confirm/payment/{id}")
     public ResponseEntity<PaymentResponseDTO> confirmPayment(@RequestBody PaymentResponseDTO paymentDTO, HttpServletRequest request) {
         SessionManager.validateLogin(request);
 

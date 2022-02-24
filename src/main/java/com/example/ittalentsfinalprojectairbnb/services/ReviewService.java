@@ -1,7 +1,10 @@
 package com.example.ittalentsfinalprojectairbnb.services;
 
+import com.example.ittalentsfinalprojectairbnb.exceptions.BadRequestException;
 import com.example.ittalentsfinalprojectairbnb.exceptions.NotFoundException;
+import com.example.ittalentsfinalprojectairbnb.model.dto.AddReviewDTO;
 import com.example.ittalentsfinalprojectairbnb.model.dto.ReviewResponseDTO;
+import com.example.ittalentsfinalprojectairbnb.model.entities.Property;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Review;
 import com.example.ittalentsfinalprojectairbnb.model.repositories.PropertyRepository;
 import com.example.ittalentsfinalprojectairbnb.model.repositories.ReviewRepository;
@@ -16,7 +19,7 @@ public class ReviewService {
     @Autowired
     private PropertyRepository propertyRepository;
 
-    public Review addReview(ReviewResponseDTO reviewDTO, Integer userId) {
+    public Review addReview(AddReviewDTO reviewDTO, int userId) {
         int propertyId = reviewDTO.getPropertyId();
 
         propertyRepository.findById(propertyId).orElseThrow(() -> new NotFoundException("There is no such property"));
@@ -24,6 +27,11 @@ public class ReviewService {
         Review review = new Review();
         review.setUserId(userId);
         review.setPropertyId(propertyId);
+
+        if (reviewDTO.getRating() > 5 || reviewDTO.getRating() < 1) {
+            throw new BadRequestException("You can't add such rating");
+        }
+
         review.setRating(reviewDTO.getRating());
         review.setComment(reviewDTO.getComment());
 
@@ -32,8 +40,16 @@ public class ReviewService {
         return review;
     }
 
-    public void deleteReview(int reviewId) {
-        reviewRepository.findById(reviewId).orElseThrow(() -> new NotFoundException("There is no such Review!"));
+    public void deleteReview(int reviewId, int userId) {
+        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new NotFoundException("There is no such review!"));
+        Property property = propertyRepository.findById(review.getPropertyId())
+                .orElseThrow(() -> new NotFoundException("There is no such property!"));
+
+        if (userId != review.getUserId()) {
+            if (property.getHost().getId() != userId) {
+                throw new BadRequestException("You can't delete this review!");
+            }
+        }
 
         reviewRepository.deleteById(reviewId);
     }
@@ -49,11 +65,11 @@ public class ReviewService {
         double rating = reviewDTO.getRating();
         String comment = reviewDTO.getComment();
 
-        if(rating!=review.getRating()){
+        if (rating != review.getRating()) {
             review.setRating(rating);
         }
 
-        if(!comment.isBlank()){
+        if (!comment.isBlank()) {
             review.setComment(comment);
         }
 

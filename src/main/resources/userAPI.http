@@ -3,11 +3,7 @@ POST localhost:9999/login
 Content-Type: application/json
 
 {
-<<<<<<< HEAD
   "email": "john.ivanov2@gmail.com",
-=======
-  "email": "john.ivanov1@gmail.com",
->>>>>>> 0f30c5f1651cc83745de49ceaee32c5c94b7bb22
   "password": "MorskoKonche3!"
 }
 
@@ -24,7 +20,7 @@ Content-Type: application/json
   "dateOfBirth": "1998-10-08",
   "gender": "m",
  "phoneNumber": "0999789292",
-  "isHost": 0
+  "isHost": 1
 }
 
 ### get by id
