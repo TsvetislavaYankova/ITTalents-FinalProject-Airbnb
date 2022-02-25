@@ -22,12 +22,12 @@ public class ReservationController {
     private ModelMapper mapper;
 
     @PostMapping("/reservation/make/reservation")
-    public ResponseEntity<MakeReservationDTO> makeReservation(@RequestBody MakeReservationDTO reservationDTO,
-                                                              HttpServletRequest request) {
+    public ResponseEntity<ReservationResponseDTO> makeReservation(@RequestBody MakeReservationDTO reservationDTO,
+                                                                  HttpServletRequest request) {
         SessionManager.validateLogin(request);
 
         Reservation reservation = service.makeReservation(reservationDTO, (Integer) request.getSession().getAttribute(SessionManager.USER_ID));
-        MakeReservationDTO dto = mapper.map(reservation, MakeReservationDTO.class);
+        ReservationResponseDTO dto = mapper.map(reservation, ReservationResponseDTO.class);
 
         return ResponseEntity.ok(dto);
     }
@@ -52,11 +52,12 @@ public class ReservationController {
     }
 
 
-    @PostMapping("/reservation/add/payment")
-    public ResponseEntity<PaymentResponseDTO> addPayment(@RequestBody MakePaymentDTO paymentDTO, HttpServletRequest request) {
+    @PostMapping("/reservation/add/payment/{id}")
+    public ResponseEntity<PaymentResponseDTO> addPayment(@PathVariable("id") int reservationId,
+                                                         @RequestBody MakePaymentDTO paymentDTO, HttpServletRequest request) {
         SessionManager.validateLogin(request);
 
-        Payment payment = service.addPayment(paymentDTO, (Integer) request.getSession().getAttribute(SessionManager.USER_ID));
+        Payment payment = service.addPayment(paymentDTO, reservationId, (Integer) request.getSession().getAttribute(SessionManager.USER_ID));
         PaymentResponseDTO dto = mapper.map(payment, PaymentResponseDTO.class);
 
         return ResponseEntity.ok(dto);
@@ -87,7 +88,7 @@ public class ReservationController {
                                                              @RequestBody PaymentResponseDTO paymentDTO, HttpServletRequest request) {
         SessionManager.validateLogin(request);
 
-        Payment payment = service.confirmPayment(paymentDTO,paymentId);
+        Payment payment = service.confirmPayment(paymentDTO, paymentId,(Integer) request.getSession().getAttribute(SessionManager.USER_ID));
         PaymentResponseDTO dto = mapper.map(payment, PaymentResponseDTO.class);
 
         return ResponseEntity.ok(dto);
