@@ -2,6 +2,7 @@ package com.example.ittalentsfinalprojectairbnb.services;
 
 import com.example.ittalentsfinalprojectairbnb.exceptions.BadRequestException;
 import com.example.ittalentsfinalprojectairbnb.exceptions.NotFoundException;
+import com.example.ittalentsfinalprojectairbnb.exceptions.UnauthorizedException;
 import com.example.ittalentsfinalprojectairbnb.model.dto.AddReviewDTO;
 import com.example.ittalentsfinalprojectairbnb.model.dto.ReviewResponseDTO;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Property;
@@ -23,13 +24,13 @@ public class ReviewService {
         int propertyId = reviewDTO.getPropertyId();
 
         propertyRepository.findById(propertyId).orElseThrow(() -> new NotFoundException("There is no such property"));
-
+        
         Review review = new Review();
         review.setUserId(userId);
         review.setPropertyId(propertyId);
 
         if (reviewDTO.getRating() > 5 || reviewDTO.getRating() < 1) {
-            throw new BadRequestException("You can't add such rating");
+            throw new BadRequestException("Rating must be between 1 and 5!");
         }
 
         review.setRating(reviewDTO.getRating());
@@ -58,23 +59,30 @@ public class ReviewService {
         return reviewRepository.findById(reviewId).orElseThrow(() -> new NotFoundException("There is no such review"));
     }
 
-    public Review edit(ReviewResponseDTO reviewDTO) {
+    public Review edit(ReviewResponseDTO reviewDTO, int userId) {
         int reviewId = reviewDTO.getId();
         Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new NotFoundException("There is no such Review!"));
 
-        double rating = reviewDTO.getRating();
-        String comment = reviewDTO.getComment();
-
-        if (rating != review.getRating()) {
-            review.setRating(rating);
+        if (review.getUserId() != userId) {
+            throw new UnauthorizedException("You can't edit this review!");
         }
 
-        if (!comment.isBlank()) {
-            review.setComment(comment);
+
+        Double rating = reviewDTO.getRating();
+        {
+            String comment = reviewDTO.getComment();
+
+            if (rating != review.getRating()) {
+                review.setRating(rating);
+            }
+
+            if (!comment.isBlank()) {
+                review.setComment(comment);
+            }
+
+            reviewRepository.save(review);
+
+            return review;
         }
-
-        reviewRepository.save(review);
-
-        return review;
     }
 }

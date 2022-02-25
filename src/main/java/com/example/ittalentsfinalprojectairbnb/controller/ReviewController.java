@@ -54,7 +54,7 @@ public class ReviewController {
     public ResponseEntity<ReviewResponseDTO> edit(ReviewResponseDTO reviewDTO, HttpServletRequest request) {
         SessionManager.validateLogin(request);
 
-        Review review = service.edit(reviewDTO);
+        Review review = service.edit(reviewDTO, (Integer) request.getSession().getAttribute(SessionManager.USER_ID));
         ReviewResponseDTO dto = mapper.map(review, ReviewResponseDTO.class);
 
         return ResponseEntity.ok(dto);
