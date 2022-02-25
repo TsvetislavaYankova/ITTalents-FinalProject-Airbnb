@@ -15,12 +15,13 @@ import java.time.LocalDate;
 public class Cancellation {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "id")
+
+    @OneToOne(mappedBy = "cancellation")
     private Reservation reservation;
+
     @Column
     private LocalDate cancelDate;
     @Column

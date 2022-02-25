@@ -57,14 +57,17 @@ public class ReservationService {
     }
 
     public Cancellation cancelReservation(int reservationId, int userId) {
-        Optional<Reservation> reservation = reservationRepository.findByGuestId((userId));
+        Optional<Reservation> reservation = reservationRepository.findById((reservationId));
         if (!reservation.isPresent()) {
             throw new NotFoundException("There is no such reservation");
         }
 
         LocalDate checkIn = reservation.get().getCheckInDate();
         LocalDate checkOut = reservation.get().getCheckOutDate();
-        int reservationDuration = Period.between(checkOut, checkIn).getDays();
+        int reservationDuration = Period.between(checkIn, checkOut).getDays();
+        if (reservationDuration == 0) {
+            reservationDuration = 1;
+        }
 
         Property property = propertyRepository.findById(reservation.get().getPropertyId())
                 .orElseThrow(() -> new NotFoundException("There is no such property!"));
@@ -72,10 +75,11 @@ public class ReservationService {
         double refund = property.getPricePerNight() * (reservationDuration);
 
         Cancellation cancellation = new Cancellation();
-        cancellation.setCancelDate(LocalDate.now());
+        cancellation.setCancelDate(LocalDate.now());//todo why it is 0?
         cancellation.setRefundAmount(refund);
+        cancellationRepository.save(cancellation);
 
-        cancellation.setReservation(reservation.get());
+        reservation.get().setCancellation(cancellation);
         reservationRepository.save(reservation.get());
 
         return cancellation;
@@ -112,7 +116,7 @@ public class ReservationService {
         return paymentRepository.findById(paymentId).orElseThrow(() -> new NotFoundException("There is no such payment!"));
     }
 
-    public Payment confirmPayment(PaymentResponseDTO paymentDTO,int paymentId) {
+    public Payment confirmPayment(PaymentResponseDTO paymentDTO, int paymentId) {
         Payment payment = paymentRepository.findById(paymentId).orElseThrow(() -> new NotFoundException("There is no such payment!"));
         payment.setStatus(paymentDTO.getStatus());
 
@@ -126,18 +130,32 @@ public class ReservationService {
         List<Reservation> reservations = reservationRepository.findAllByPropertyId(propertyId);
         if (!reservations.isEmpty()) {
             for (Reservation reservation : reservations) {
+                //todo cancalled?
                 LocalDate checkInDateR = reservation.getCheckInDate();
                 LocalDate checkOutDateR = reservation.getCheckOutDate();
 
-                if (checkInDate.isEqual(checkInDateR)) {
-                    continue;
-                } else if (checkInDate.isAfter(checkInDateR) && checkInDate.isBefore(checkOutDateR)) {
-                    continue;
-                } else if (checkOutDate.isAfter(checkInDateR)) {
-                    continue;
-                } else {
-                    isApproved = true;
+//                if (checkInDate.isEqual(checkInDateR)) {
+//                    continue;
+//                } else if (checkInDate.isAfter(checkInDateR) && checkInDate.isBefore(checkOutDateR)) {
+//                    continue;
+//                } else if (checkOutDate.isAfter(checkInDateR)) {
+//                    continue;
+//                } else {
+//                    isApproved = true;
+//                }
+                if (checkInDate.isEqual(checkInDateR) || checkOutDate.isEqual(checkOutDateR)) {
+                    break;
                 }
+                if (checkInDate.isAfter(checkInDateR) && checkOutDate.isBefore(checkOutDateR)) {
+                    break;
+                }
+                if (checkOutDate.isAfter(checkInDateR) && checkOutDate.isBefore(checkOutDateR)) {
+                    break;
+                }
+                if (checkInDate.isAfter(checkInDateR) && checkInDate.isBefore(checkOutDateR)) {
+                    break;
+                }
+                isApproved = true;
             }
         } else {
             isApproved = true;

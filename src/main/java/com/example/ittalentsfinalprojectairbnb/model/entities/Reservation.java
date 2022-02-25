@@ -25,10 +25,34 @@ public class Reservation {
     private LocalDate checkInDate;
     @Column
     private LocalDate checkOutDate;
-    @OneToOne(mappedBy = "reservation", cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinTable(name = "reservations_have_cancellations",
+            joinColumns =
+                    {@JoinColumn(name = "reservation_id",
+                            referencedColumnName = "id")},
+            inverseJoinColumns =
+                    {@JoinColumn(name = "cancellation_id",
+                            referencedColumnName = "id")})
     private Cancellation cancellation;
+
     @OneToOne(mappedBy = "reservation", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private Payment payment;
+
+    public void setPayment(Payment payment) {
+        if (payment != null) {
+
+            payment.setReservation(this);
+        }
+        this.payment = payment;
+    }
+
+    public void setCancellation(Cancellation cancellation) {
+        if (cancellation != null) {
+
+            cancellation.setReservation(this);
+        }
+        this.cancellation = cancellation;
+    }
 }
