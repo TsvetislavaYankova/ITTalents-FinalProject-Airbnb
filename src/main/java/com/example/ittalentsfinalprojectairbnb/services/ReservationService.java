@@ -131,18 +131,10 @@ public class ReservationService {
         if (!reservations.isEmpty()) {
             for (Reservation reservation : reservations) {
                 //todo cancalled?
+                isApproved=false;
                 LocalDate checkInDateR = reservation.getCheckInDate();
                 LocalDate checkOutDateR = reservation.getCheckOutDate();
-
-//                if (checkInDate.isEqual(checkInDateR)) {
-//                    continue;
-//                } else if (checkInDate.isAfter(checkInDateR) && checkInDate.isBefore(checkOutDateR)) {
-//                    continue;
-//                } else if (checkOutDate.isAfter(checkInDateR)) {
-//                    continue;
-//                } else {
-//                    isApproved = true;
-//                }
+                
                 if (checkInDate.isEqual(checkInDateR) || checkOutDate.isEqual(checkOutDateR)) {
                     break;
                 }
