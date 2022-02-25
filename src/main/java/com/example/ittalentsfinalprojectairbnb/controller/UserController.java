@@ -2,7 +2,6 @@ package com.example.ittalentsfinalprojectairbnb.controller;
 
 import com.example.ittalentsfinalprojectairbnb.model.dto.*;
 import com.example.ittalentsfinalprojectairbnb.model.entities.User;
-import com.example.ittalentsfinalprojectairbnb.services.EmailService;
 import com.example.ittalentsfinalprojectairbnb.services.UserService;
 import com.example.ittalentsfinalprojectairbnb.utils.SessionManager;
 import lombok.SneakyThrows;

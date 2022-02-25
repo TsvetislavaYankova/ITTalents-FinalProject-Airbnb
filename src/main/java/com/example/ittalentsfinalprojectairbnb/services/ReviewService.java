@@ -24,7 +24,7 @@ public class ReviewService {
         int propertyId = reviewDTO.getPropertyId();
 
         propertyRepository.findById(propertyId).orElseThrow(() -> new NotFoundException("There is no such property"));
-        
+
         Review review = new Review();
         review.setUserId(userId);
         review.setPropertyId(propertyId);
