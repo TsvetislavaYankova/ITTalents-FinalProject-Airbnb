@@ -23,8 +23,6 @@ public class UserController {
     private UserService service;
     @Autowired
     private ModelMapper mapper;
-    @Autowired
-    private EmailService emailService;
 
     @PostMapping("/login")
     public UserResponseDTO login(@RequestBody UserLogInDTO userDTO, HttpServletRequest request) {

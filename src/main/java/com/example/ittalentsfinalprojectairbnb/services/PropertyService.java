@@ -242,7 +242,7 @@ public class PropertyService {
     }
 
     @SneakyThrows
-    public String uploadPhoto(int propertyId, MultipartFile file) {
+    public PropertyPhotoDTO uploadPhoto(int propertyId, MultipartFile file) {
         if(!AVAILABLE_FILE_TYPES.contains(file.getContentType())){
             throw new BadRequestException("Invalid file type");
         }
@@ -253,8 +253,8 @@ public class PropertyService {
         String fileName = System.nanoTime() + "." + extension;
         Files.copy(file.getInputStream(), new File("images" + File.separator + fileName).toPath());
         Optional<Property> p = propertyRepository.findById(propertyId);
+        PropertyPhoto photo = new PropertyPhoto();
         if (p.isPresent()) {
-            PropertyPhoto photo = new PropertyPhoto();
             photo.setPhoto_url(fileName);
             photo.setProperty(p.get());
 
@@ -263,7 +263,8 @@ public class PropertyService {
             throw new NotFoundException("Property not found! Photo upload failed!");
         }
 
-        return fileName;
+        PropertyPhotoDTO dto = mapper.map(photo, PropertyPhotoDTO.class);
+        return dto;
     }
 
     public void deletePhotoById(HttpServletRequest request, int id) {
