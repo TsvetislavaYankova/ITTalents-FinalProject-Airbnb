@@ -4,6 +4,7 @@ import com.example.ittalentsfinalprojectairbnb.exceptions.BadRequestException;
 import com.example.ittalentsfinalprojectairbnb.exceptions.NotFoundException;
 import com.example.ittalentsfinalprojectairbnb.exceptions.UnauthorizedException;
 import com.example.ittalentsfinalprojectairbnb.model.dto.UserEditDTO;
+import com.example.ittalentsfinalprojectairbnb.model.dto.UserPhotoURL;
 import com.example.ittalentsfinalprojectairbnb.model.dto.UserResponseDTO;
 import com.example.ittalentsfinalprojectairbnb.model.entities.User;
 import com.example.ittalentsfinalprojectairbnb.model.repositories.UserRepository;
@@ -208,7 +209,7 @@ public class UserService {
     }
 
     @SneakyThrows
-    public String uploadPhoto(MultipartFile file, int loggedUserId) {
+    public UserPhotoURL uploadPhoto(MultipartFile file, int loggedUserId) {
         if(!AVAILABLE_FILE_TYPES.contains(file.getContentType())){
             throw new BadRequestException("Invalid file type");
         }
@@ -221,7 +222,9 @@ public class UserService {
         User u = getUserById(loggedUserId);
         u.setPhotoUrl(fileName);
         repository.save(u);
-        return fileName;
+
+        UserPhotoURL dto = mapper.map(u, UserPhotoURL.class);
+        return dto;
     }
 
     public void deletePhoto(int id) {
@@ -254,7 +257,7 @@ public class UserService {
             throw new BadRequestException("Password should be: at least 8 symbols long. " +
                     "Contain at least one digit. " +
                     "Contain at least one upper case character. " +
-                    "No spaces are allowed");
+                    "No spaces are allowed.");
         }
     }
 }
