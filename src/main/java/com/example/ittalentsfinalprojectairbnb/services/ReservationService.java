@@ -80,7 +80,7 @@ public class ReservationService {
         double refund = property.getPricePerNight() * (reservationDuration);
 
         Cancellation cancellation = new Cancellation();
-        cancellation.setCancelDate(LocalDate.now());//todo why it is 0?
+        cancellation.setCancelDate(LocalDate.now());
         cancellation.setRefundAmount(refund);
         cancellationRepository.save(cancellation);
 

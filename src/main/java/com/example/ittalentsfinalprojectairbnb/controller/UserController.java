@@ -23,8 +23,6 @@ public class UserController {
     private UserService service;
     @Autowired
     private ModelMapper mapper;
-    @Autowired
-    private EmailService emailService;
 
     @PostMapping("/login")
     public UserResponseDTO login(@RequestBody UserLogInDTO userDTO, HttpServletRequest request) {
@@ -104,7 +102,7 @@ public class UserController {
 
     @SneakyThrows
     @PostMapping("/upload/photo")
-    public String uploadProfileImage(@RequestParam(name = "file") MultipartFile file, HttpServletRequest request) {
+    public UserPhotoURL uploadProfileImage(@RequestParam(name = "file") MultipartFile file, HttpServletRequest request) {
         SessionManager.validateLogin(request);
         int loggedUserId = (int) request.getSession().getAttribute(SessionManager.USER_ID);
         return service.uploadPhoto(file, loggedUserId);
@@ -120,7 +118,7 @@ public class UserController {
     }
 
     @PutMapping("/edit/photo")
-    public String editPhoto(@RequestParam(name = "file") MultipartFile file, HttpServletRequest request) {
+    public UserPhotoURL editPhoto(@RequestParam(name = "file") MultipartFile file, HttpServletRequest request) {
         SessionManager.validateLogin(request);
         int id = (int) request.getSession().getAttribute(SessionManager.USER_ID);
 

@@ -1,6 +1,7 @@
 package com.example.ittalentsfinalprojectairbnb.model.dto;
 
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -8,6 +9,8 @@ import java.time.LocalDate;
 public class MakeReservationDTO {
 
     private int propertyId;
+    @DateTimeFormat(pattern = "yyyy-mm-dd")
     private LocalDate checkInDate;
+    @DateTimeFormat(pattern = "yyyy-mm-dd")
     private LocalDate checkOutDate;
 }

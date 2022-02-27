@@ -1,7 +1,5 @@
 package com.example.ittalentsfinalprojectairbnb.model.dto;
 
-import com.example.ittalentsfinalprojectairbnb.model.entities.Address;
-import com.example.ittalentsfinalprojectairbnb.model.entities.Characteristic;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Property;
 import com.example.ittalentsfinalprojectairbnb.model.entities.PropertyPhoto;
 import lombok.Data;
@@ -20,7 +18,7 @@ public class PropertyResponseDTO {
     private double pricePerNight;
     private String description;
     private double guestRating;
-    private Set<String> images;
+    private Set<PropertyPhotoDTO> images;
 
     private String country;
     private String city;
@@ -58,5 +56,12 @@ public class PropertyResponseDTO {
         this.setHasAirConditioner(property.getCharacteristic().getHasAirConditioner());
         this.setHasTv(property.getCharacteristic().getHasTv());
         this.setHasWifi(property.getCharacteristic().getHasWifi());
+
+        for(PropertyPhoto ph : property.getImages()){
+            PropertyPhotoDTO dto = new PropertyPhotoDTO();
+            dto.setId(ph.getId());
+            dto.setPhoto_url(ph.getPhoto_url());
+            this.getImages().add(dto);
+        }
     }
 }
