@@ -118,11 +118,11 @@ public class UserService {
 
         User user = repository.findById(id).orElseThrow(() -> new NotFoundException("There is no such user!"));
 
-        if (!firstName.isBlank() && !firstName.equals(user.getFirstName())) {
+        if (firstName != null && !firstName.isBlank() && !firstName.equals(user.getFirstName())) {
             user.setFirstName(firstName);
         }
 
-        if (!firstName.isBlank() && !firstName.equals(user.getLastName())) {
+        if (lastName != null && !lastName.isBlank() && !lastName.equals(user.getLastName())) {
             user.setLastName(lastName);
         }
 
@@ -130,7 +130,7 @@ public class UserService {
             user.setGender(gender);
         }
 
-        if (!email.isBlank() && !email.equals(user.getEmail())) {
+        if (email != null && !email.isBlank() && !email.equals(user.getEmail())) {
             validateEmail(email);
             user.setEmail(email);
         }
@@ -139,12 +139,12 @@ public class UserService {
             user.setDateOfBirth(dateOfBirth);
         }
 
-        if (phoneNumber.isBlank() && !phoneNumber.equals(user.getPhoneNumber())) {
+        if (phoneNumber != null && phoneNumber.isBlank() && !phoneNumber.equals(user.getPhoneNumber())) {
             validatePhoneNumber(phoneNumber);
             user.setPhoneNumber(phoneNumber);
         }
 
-        if (isHost != user.getIsHost()) {
+        if ((isHost == 0 || isHost == 1) && isHost != user.getIsHost()) {
             user.setIsHost(isHost);
         }
 
@@ -163,7 +163,7 @@ public class UserService {
 
         if (!newPassword.isBlank() && !confirmedNewPassword.isBlank()) {
             validatePassword(newPassword);
-            if(!BCrypt.checkpw(oldPassword,user.getPassword())){
+            if (!BCrypt.checkpw(oldPassword, user.getPassword())) {
                 throw new BadRequestException("Invalid password! In order to change your password, please enter your current one!");
             }
             if (newPassword.equals(confirmedNewPassword)) {
@@ -210,10 +210,10 @@ public class UserService {
 
     @SneakyThrows
     public UserPhotoURL uploadPhoto(MultipartFile file, int loggedUserId) {
-        if(!AVAILABLE_FILE_TYPES.contains(file.getContentType())){
+        if (!AVAILABLE_FILE_TYPES.contains(file.getContentType())) {
             throw new BadRequestException("Invalid file type");
         }
-        if(file.getSize()>MAX_ALLOWED_FILE_SIZE){
+        if (file.getSize() > MAX_ALLOWED_FILE_SIZE) {
             throw new BadRequestException("Please upload photo with max size 2MB.");
         }
         String extension = FilenameUtils.getExtension(file.getOriginalFilename());
