@@ -57,11 +57,13 @@ public class PropertyResponseDTO {
         this.setHasTv(property.getCharacteristic().getHasTv());
         this.setHasWifi(property.getCharacteristic().getHasWifi());
 
-        for(PropertyPhoto ph : property.getImages()){
-            PropertyPhotoDTO dto = new PropertyPhotoDTO();
-            dto.setId(ph.getId());
-            dto.setPhoto_url(ph.getPhoto_url());
-            this.getImages().add(dto);
+        if (property.getImages()!=null) {
+            for (PropertyPhoto ph : property.getImages()) {
+                PropertyPhotoDTO dto = new PropertyPhotoDTO();
+                dto.setId(ph.getId());
+                dto.setPhoto_url(ph.getPhoto_url());
+                this.getImages().add(dto);
+            }
         }
     }
 }

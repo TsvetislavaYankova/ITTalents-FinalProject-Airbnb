@@ -218,7 +218,7 @@ public class UserService {
         }
         String extension = FilenameUtils.getExtension(file.getOriginalFilename());
         String fileName = System.nanoTime() + "." + extension;
-        Files.copy(file.getInputStream(), new File("images" + File.separator + fileName).toPath());
+        Files.copy(file.getInputStream(), new File("users_photos" + File.separator + fileName).toPath());
         User u = getUserById(loggedUserId);
         u.setPhotoUrl(fileName);
         repository.save(u);

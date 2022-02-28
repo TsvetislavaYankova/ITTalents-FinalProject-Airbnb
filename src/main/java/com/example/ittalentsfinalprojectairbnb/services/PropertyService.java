@@ -251,7 +251,7 @@ public class PropertyService {
         }
         String extension = FilenameUtils.getExtension(file.getOriginalFilename());
         String fileName = System.nanoTime() + "." + extension;
-        Files.copy(file.getInputStream(), new File("images" + File.separator + fileName).toPath());
+        Files.copy(file.getInputStream(), new File("properties_photos" + File.separator + fileName).toPath());
         Optional<Property> p = propertyRepository.findById(propertyId);
         PropertyPhoto photo = new PropertyPhoto();
         if (p.isPresent()) {

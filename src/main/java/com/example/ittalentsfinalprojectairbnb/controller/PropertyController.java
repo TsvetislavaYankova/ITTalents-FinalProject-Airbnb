@@ -1,5 +1,6 @@
 package com.example.ittalentsfinalprojectairbnb.controller;
 
+import com.example.ittalentsfinalprojectairbnb.exceptions.NotFoundException;
 import com.example.ittalentsfinalprojectairbnb.exceptions.UnauthorizedException;
 import com.example.ittalentsfinalprojectairbnb.model.dto.*;
 import com.example.ittalentsfinalprojectairbnb.model.entities.Property;
@@ -15,6 +16,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.nio.file.Files;
 import java.util.List;
 
 @RestController
@@ -94,6 +98,16 @@ public class PropertyController {
         SessionManager.validateLogin(request);
         validatePropertyHost(request, propertyId);
         return propertyService.uploadPhoto(propertyId, file);
+    }
+
+    @SneakyThrows
+    @GetMapping("/properties_photos/{filename}")
+    public void downloadPropertyPhoto(@PathVariable String filename, HttpServletResponse response){
+        File f = new File("properties_photos" + File.separator + filename);
+        if (!f.exists()){
+            throw new NotFoundException("File not found!");
+        }
+        Files.copy(f.toPath(),response.getOutputStream());
     }
 
     @DeleteMapping("/photos/{photoId}")

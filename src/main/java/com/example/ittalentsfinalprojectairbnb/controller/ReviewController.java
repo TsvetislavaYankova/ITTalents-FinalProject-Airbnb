@@ -7,6 +7,7 @@ import com.example.ittalentsfinalprojectairbnb.services.ReviewService;
 import com.example.ittalentsfinalprojectairbnb.utils.SessionManager;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,13 +32,13 @@ public class ReviewController {
     }
 
     @DeleteMapping("/delete/review/{id}")
-    public ResponseEntity<ReviewResponseDTO> deleteReview(@PathVariable("id") int reviewId, HttpServletRequest request) {
+    public ResponseEntity<String> deleteReview(@PathVariable("id") int reviewId, HttpServletRequest request) {
         SessionManager.validateLogin(request);
 
         service.deleteReview(reviewId, (Integer) request.getSession().getAttribute(SessionManager.USER_ID));
         ReviewResponseDTO dto = new ReviewResponseDTO();
 
-        return ResponseEntity.ok(dto);
+        return new ResponseEntity<>("Review deletion successful!", HttpStatus.OK);
     }
 
     @GetMapping("/get/review/{id}")

@@ -157,7 +157,7 @@ public class ReservationService {
         List<Reservation> reservations = reservationRepository.findAllByPropertyId(propertyId);
         if (!reservations.isEmpty()) {
             for (Reservation reservation : reservations) {
-                if (reservation.getCancellation() != null) {
+                if (reservation.getCancellation() == null) {
                     isApproved = false;
                     LocalDate checkInDateR = reservation.getCheckInDate();
                     LocalDate checkOutDateR = reservation.getCheckOutDate();
