@@ -115,7 +115,7 @@ public class UserController {
     @SneakyThrows
     @GetMapping("/users_photos/{filename}")
     public void downloadUserPhoto(@PathVariable String filename, HttpServletResponse response){
-        File f = new File("users_photos" + File.separator + filename);
+        File f = new File("photos/users_photos" + File.separator + filename);
         if (!f.exists()){
             throw new NotFoundException("File not found!");
         }

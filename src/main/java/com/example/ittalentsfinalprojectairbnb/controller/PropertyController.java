@@ -103,7 +103,7 @@ public class PropertyController {
     @SneakyThrows
     @GetMapping("/properties_photos/{filename}")
     public void downloadPropertyPhoto(@PathVariable String filename, HttpServletResponse response){
-        File f = new File("properties_photos" + File.separator + filename);
+        File f = new File("photos/properties_photos" + File.separator + filename);
         if (!f.exists()){
             throw new NotFoundException("File not found!");
         }
