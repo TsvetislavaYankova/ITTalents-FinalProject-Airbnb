@@ -150,32 +150,34 @@ public class ReservationService {
 
     private boolean checkReservations(int propertyId, LocalDate checkInDate, LocalDate checkOutDate) {
         boolean isApproved = false;
-        if(checkInDate.isAfter(checkOutDate)){
+        if (checkInDate.isAfter(checkOutDate)) {
             throw new BadRequestException("The check out date must be after the check in date!");
         }
-        
+
         List<Reservation> reservations = reservationRepository.findAllByPropertyId(propertyId);
         if (!reservations.isEmpty()) {
             for (Reservation reservation : reservations) {
-                if (reservation.getCancellation() == null) {
-                    isApproved = false;
-                    LocalDate checkInDateR = reservation.getCheckInDate();
-                    LocalDate checkOutDateR = reservation.getCheckOutDate();
-
-                    if (checkInDate.isEqual(checkInDateR) || checkOutDate.isEqual(checkOutDateR)) {
-                        break;
-                    }
-                    if (checkInDate.isAfter(checkInDateR) && checkOutDate.isBefore(checkOutDateR)) {
-                        break;
-                    }
-                    if (checkOutDate.isAfter(checkInDateR) && checkOutDate.isBefore(checkOutDateR)) {
-                        break;
-                    }
-                    if (checkInDate.isAfter(checkInDateR) && checkInDate.isBefore(checkOutDateR)) {
-                        break;
-                    }
+                if (reservation.getCancellation() != null) {
                     isApproved = true;
+                    continue;
                 }
+                isApproved = false;
+                LocalDate checkInDateR = reservation.getCheckInDate();
+                LocalDate checkOutDateR = reservation.getCheckOutDate();
+
+                if (checkInDate.isEqual(checkInDateR) || checkOutDate.isEqual(checkOutDateR)) {
+                    break;
+                }
+                if (checkInDate.isAfter(checkInDateR) && checkOutDate.isBefore(checkOutDateR)) {
+                    break;
+                }
+                if (checkOutDate.isAfter(checkInDateR) && checkOutDate.isBefore(checkOutDateR)) {
+                    break;
+                }
+                if (checkInDate.isAfter(checkInDateR) && checkInDate.isBefore(checkOutDateR)) {
+                    break;
+                }
+                isApproved = true;
             }
         } else {
             isApproved = true;
